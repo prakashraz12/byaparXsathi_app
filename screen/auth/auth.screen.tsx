@@ -37,6 +37,7 @@ const AuthScreen = () => {
     })
   );
 
+
   return (
     <PXWrapper>
       <Header title="Welcome Back!" onBackPress={() => router.replace("/")} />

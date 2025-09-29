@@ -6,8 +6,11 @@ import { useSalesControllerGetAllSales } from "@/service/queries-components";
 import { Search } from "lucide-react-native";
 import { Button, Pressable, Text, View } from "react-native";
 import type Customer from "@/database/model/customer.model";
+import { useUserStore } from "@/store/useUserStore";
+import { syncDatabase } from "@/database/sync.service";
 
 const SalesScreen = () => {
+  const {user} = useUserStore()
   const {data} = useSalesControllerGetAllSales({
    queryParams:{
     page:1,
@@ -36,6 +39,9 @@ const SalesScreen = () => {
       });
     });
   }
+  const sync =async()=>{
+    await syncDatabase()
+  }
   return (
     <PXWrapper
       header={
@@ -50,6 +56,7 @@ const SalesScreen = () => {
       <>
     <Button title="Add customer" onPress={handleAddCustomer}/>
     <Button title="Fetch Customer" onPress={fetchCustomers} />
+    <Button title="Sync" onPress={sync} />
       </>
     </PXWrapper>
   );

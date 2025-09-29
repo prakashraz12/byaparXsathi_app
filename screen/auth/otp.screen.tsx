@@ -19,13 +19,20 @@ const OtpScreen = () => {
   const [countdown, setCountdown] = useState<number>(60);
   const { email } = useLocalSearchParams<{ email: string }>();
 
-  const { setUser } = useUserStore();
+  const { setUser, setToken } = useUserStore();
 
   const { mutateAsync: verifyOtp, isPending } = useAuthControllerWithOtpLogin(
     apiOptions(undefined, (data: TLoginWithOtpResponse) => {
       setOtp(new Array(4).fill(""));
       setUser(data?.data);
-      router.replace("/(tabs)");
+      console.log(data)
+      setToken(data?.data?.accessToken);
+
+      if(data?.data?.stage === "CREATED"){ //if user is not create his first shop already navigate to create new one || else navigate to home
+        router.replace("/(routes)/complete-setup");
+      }else{
+        router.replace("/(tabs)");
+      }
     })
   );
 

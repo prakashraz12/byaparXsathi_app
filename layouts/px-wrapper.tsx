@@ -1,7 +1,8 @@
-import { Text } from "@/components/re-usables/text";
+import NotFound from "@/components/re-usables/not-found";
+import { COLORS } from "@/constants/Colors";
 import type React from "react";
 import { FlatList, ScrollView, StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {  useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface PXWrapperProps {
   children?: React.ReactNode;
@@ -24,12 +25,14 @@ const PXWrapper = ({
   renderItem,
   floatingAction,
 }: PXWrapperProps) => {
+  const insets = useSafeAreaInsets();
   return (
-    <SafeAreaView
+    <View
       style={[
         styles.safeArea,
+        { paddingTop: insets.top * 0.4 },
         style,
-        { backgroundColor: "#F5F5F5" },
+        { backgroundColor: "#fff" },
         floatingAction ? { position: "relative" } : {},
       ]}
     >
@@ -37,17 +40,15 @@ const PXWrapper = ({
       {floatingAction && (
         <View style={styles.floatingButtonContainer}>{floatingAction}</View>
       )}
-      {data && renderItem ? (
+      {data?.length > 0 && renderItem ? (
         <FlatList
           data={data}
           renderItem={renderItem}
           keyExtractor={(item, index) => item?.id || index.toString()}
-          contentContainerStyle={{ paddingBottom: 80, paddingHorizontal: 20 }}
+          contentContainerStyle={{ paddingBottom: 80, paddingHorizontal: 10, paddingTop:16 }}
         />
       ) : data?.length === 0 ? (
-        <View style={styles.contentContainer}>
-          <Text style={styles.noDataText}>No data available</Text>
-        </View>
+       <NotFound title="No Data Found" />
       ) : (
         <ScrollView
           style={styles.scrollView}
@@ -61,7 +62,7 @@ const PXWrapper = ({
           {children}
         </ScrollView>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -72,13 +73,20 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    height: "100%",
+    paddingVertical:10,
+    paddingHorizontal:10,
   },
   contentContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 10,
+    paddingHorizontal: 5,
+    paddingBottom: 20,
   },
   header: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    paddingBottom: 15,
+    marginTop:15,
+    borderBottomColor: COLORS.border,
   },
   noDataText: {
     fontSize: 16,

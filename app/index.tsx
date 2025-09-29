@@ -1,5 +1,5 @@
 import { useUserStore } from "@/store/useUserStore";
-import OnboardingPage from "./(routes)/onboarding";
+import OnboardingPage from "./(routes)/onboarding/index";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 
@@ -15,7 +15,11 @@ const Home = () => {
   useEffect(() => {
     if (!mounted) return;
 
-    if (user) {
+    console.log(user, "this is user created")
+    if (user?.stage === "CREATED") {
+
+      router.replace("/(routes)/complete-setup");
+    }else if(user?.stage === "SET_UP_COMPLETED"){
       router.replace("/(tabs)");
     }
     setChecking(false);

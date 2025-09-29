@@ -23,7 +23,7 @@ export const apiOptions = <T, Output>(
 
     // Call custom success callback
     if (successCallback) {
-      successCallback(data);
+      successCallback(data?.data);
     }
   },
 

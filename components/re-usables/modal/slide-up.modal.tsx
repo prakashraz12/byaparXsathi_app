@@ -1,7 +1,9 @@
 
+import { COLORS } from "@/constants/Colors"
+import { Ionicons } from "@expo/vector-icons"
 import type React from "react"
 import { useEffect, useRef } from "react"
-import { Modal, View, Text, Animated, Dimensions, StyleSheet, TouchableWithoutFeedback } from "react-native"
+import { Modal, View, Text, Animated, Dimensions, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from "react-native"
 import { PanGestureHandler, State, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler"
 import type { PanGestureHandlerGestureEvent } from "react-native-gesture-handler"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
@@ -108,7 +110,6 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
   return (
     <Modal visible={visible} transparent animationType="none" statusBarTranslucent>
       <GestureHandlerRootView style={styles.container}>
-        {/* Backdrop */}
         <TouchableWithoutFeedback onPress={handleBackdropPress}>
           <Animated.View
             style={[
@@ -120,7 +121,6 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
           />
         </TouchableWithoutFeedback>
 
-        {/* Modal Content */}
         <PanGestureHandler onGestureEvent={handleGestureEvent} onHandlerStateChange={handleGestureStateChange}>
           <Animated.View
             style={[
@@ -137,14 +137,15 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
               </View>
             )}
 
-            {/* Title */}
             {title && (
               <View style={styles.titleContainer}>
                 <Text style={styles.title}>{title}</Text>
+                <TouchableOpacity onPress={onClose}>
+                 <Ionicons name="close" size={24} color="#1A1A1A" />
+                </TouchableOpacity>
               </View>
             )}
 
-            {/* Content */}
             <ScrollView style={styles.content}>{children}</ScrollView>
             {stickyFooter ? <View style={[styles.stickyFooter, {paddingVertical: insets.bottom}]}>{stickyFooter}</View> : null }
           </Animated.View>
@@ -185,6 +186,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#F0F0F0",
     marginBottom: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 10,
   },
   title: {
     fontSize: 18,
@@ -197,10 +202,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     borderTopWidth: 1,
     borderTopColor: "#F0F0F0",
     backgroundColor: "white",
+    
   },
   content: {
     flex: 1,

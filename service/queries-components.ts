@@ -231,6 +231,52 @@ export const useAuthControllerRefreshToken = (
   });
 };
 
+export type AuthControllerCompleteSetupError = Fetcher.ErrorWrapper<undefined>;
+
+export type AuthControllerCompleteSetupVariables = {
+  body: Schemas.CompleteSetupDto;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAuthControllerCompleteSetup = (
+  variables: AuthControllerCompleteSetupVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.TCompletedSetupResponse,
+    AuthControllerCompleteSetupError,
+    Schemas.CompleteSetupDto,
+    {},
+    {},
+    {}
+  >({
+    url: "/api/v1/auth/complete-setup",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useAuthControllerCompleteSetup = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.TCompletedSetupResponse,
+      AuthControllerCompleteSetupError,
+      AuthControllerCompleteSetupVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.TCompletedSetupResponse,
+    AuthControllerCompleteSetupError,
+    AuthControllerCompleteSetupVariables
+  >({
+    mutationFn: (variables: AuthControllerCompleteSetupVariables) =>
+      fetchAuthControllerCompleteSetup(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
 export type StorageControllerUploadFileError = Fetcher.ErrorWrapper<undefined>;
 
 export type StorageControllerUploadFileVariables =
@@ -501,6 +547,175 @@ export const useItemControllerCreate = (
   });
 };
 
+export type SyncControllerPullQueryParams = {
+  lastPulledAt: string;
+};
+
+export type SyncControllerPullError = Fetcher.ErrorWrapper<undefined>;
+
+export type SyncControllerPullVariables = {
+  queryParams: SyncControllerPullQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchSyncControllerPull = (
+  variables: SyncControllerPullVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    undefined,
+    SyncControllerPullError,
+    undefined,
+    {},
+    SyncControllerPullQueryParams,
+    {}
+  >({ url: "/api/v1/sync/pull", method: "get", ...variables, signal });
+
+export function syncControllerPullQuery(
+  variables: SyncControllerPullVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<undefined>;
+};
+
+export function syncControllerPullQuery(
+  variables: SyncControllerPullVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<undefined>)
+    | reactQuery.SkipToken;
+};
+
+export function syncControllerPullQuery(
+  variables: SyncControllerPullVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/api/v1/sync/pull",
+      operationId: "syncControllerPull",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchSyncControllerPull(variables, signal),
+  };
+}
+
+export const useSuspenseSyncControllerPull = <TData = undefined,>(
+  variables: SyncControllerPullVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<undefined, SyncControllerPullError, TData>,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<undefined, SyncControllerPullError, TData>(
+    {
+      ...syncControllerPullQuery(deepMerge(fetcherOptions, variables)),
+      ...options,
+      ...queryOptions,
+    },
+  );
+};
+
+export const useSyncControllerPull = <TData = undefined,>(
+  variables: SyncControllerPullVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<undefined, SyncControllerPullError, TData>,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<undefined, SyncControllerPullError, TData>({
+    ...syncControllerPullQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type SyncControllerPushError = Fetcher.ErrorWrapper<undefined>;
+
+export type SyncControllerPushVariables = QueriesContext["fetcherOptions"];
+
+export const fetchSyncControllerPush = (
+  variables: SyncControllerPushVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<undefined, SyncControllerPushError, undefined, {}, {}, {}>({
+    url: "/api/v1/sync/push",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useSyncControllerPush = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      SyncControllerPushError,
+      SyncControllerPushVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    undefined,
+    SyncControllerPushError,
+    SyncControllerPushVariables
+  >({
+    mutationFn: (variables: SyncControllerPushVariables) =>
+      fetchSyncControllerPush(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
+export type CustomerControllerCreateUserError = Fetcher.ErrorWrapper<undefined>;
+
+export type CustomerControllerCreateUserVariables =
+  QueriesContext["fetcherOptions"];
+
+export const fetchCustomerControllerCreateUser = (
+  variables: CustomerControllerCreateUserVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    undefined,
+    CustomerControllerCreateUserError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/customer/create", method: "post", ...variables, signal });
+
+export const useCustomerControllerCreateUser = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      undefined,
+      CustomerControllerCreateUserError,
+      CustomerControllerCreateUserVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    undefined,
+    CustomerControllerCreateUserError,
+    CustomerControllerCreateUserVariables
+  >({
+    mutationFn: (variables: CustomerControllerCreateUserVariables) =>
+      fetchCustomerControllerCreateUser(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
 export type QueryOperation =
   | {
       path: "/api/v1/user/me";
@@ -511,4 +726,9 @@ export type QueryOperation =
       path: "/api/v1/sales/all";
       operationId: "salesControllerGetAllSales";
       variables: SalesControllerGetAllSalesVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/api/v1/sync/pull";
+      operationId: "syncControllerPull";
+      variables: SyncControllerPullVariables | reactQuery.SkipToken;
     };

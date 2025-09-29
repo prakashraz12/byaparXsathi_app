@@ -1,3 +1,4 @@
+
 import OnboardingScreen from "@/screen/onboarding/onboarding.screen";
 
 const OnboardingPage = () => {

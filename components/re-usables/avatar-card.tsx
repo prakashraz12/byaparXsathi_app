@@ -1,17 +1,22 @@
 import { View } from "react-native";
 import { Text } from "./text";
+import { COLORS } from "@/constants/Colors";
 
-const AvatarCard = ({ name }: { name: string }) => {
+interface IAvatarCard {
+    name: string;
+    size: number;
+}
+const AvatarCard = ({ name, size }: IAvatarCard) => {
   return (
     <View
       style={{
-        width: 40,
-        height: 40,
-        borderRadius: 32,
+        width: size || 50,
+        height: size || 50,
+        borderRadius: (size || 50) / 2,
         overflow: "hidden",
         borderWidth: 1,
-        borderColor: "#E5E5E5",
-        backgroundColor: "#fff",
+        borderColor: COLORS.border,
+        backgroundColor: COLORS.background,
         alignItems: "center",
         justifyContent: "center",
       }}
@@ -19,9 +24,9 @@ const AvatarCard = ({ name }: { name: string }) => {
       <Text
         style={{
           fontSize: 14,
-          color: "#1A1A1A",
+          color: COLORS.text,
           textAlign: "center",
-          fontFamily: "Poppins-Bold",
+          fontFamily: "Poppins-SemiBold",
           textAlignVertical: "center",
         }}
       >

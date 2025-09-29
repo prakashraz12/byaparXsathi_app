@@ -4,6 +4,7 @@ import HHeader from "@/components/re-usables/h-header";
 import Input from "@/components/re-usables/input";
 import { useCustomers } from "@/database/hooks/useCustomer";
 import PXWrapper from "@/layouts/px-wrapper";
+import { useUserStore } from "@/store/useUserStore";
 import { Search } from "lucide-react-native";
 import type React from "react";
 import { useState } from "react";
@@ -11,20 +12,21 @@ import { View } from "react-native";
 
 export const CustomerScreen: React.FC = () => {
   const [customerName, setCustomerName] = useState<string>("");
+
   const { customers, refresh } = useCustomers({
     search: customerName,
-    sortBy: "name",
-    limit: 10,
+    sortBy: "created_at",
+    limit: 20,
   });
+
+
   return (
     <PXWrapper
       floatingAction={<AddCustomerModal />}
       header={
         <>
           <HHeader title="Customer" />
-          <View style={{ marginBottom: 11 }}>
             <Input value={customerName} placeholder="Search customers" leftIcon={<Search />} onChangeText={setCustomerName} />
-          </View>
         </>
       }
       data={customers}

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import database from "../index";
 import Customer from "../model/customer.model";
 import { DB_COLLECTION } from "../collection";
+import { useUserStore } from "@/store/useUserStore";
 
 export function useCustomers({
   search = "",
@@ -13,11 +14,14 @@ export function useCustomers({
   sortBy?: keyof Omit<Customer, "table" | "createdAt" | "updatedAt">;
   limit?: number;
 }) {
+  const {activeShopId} = useUserStore();
+  console.log(activeShopId, "this is active shop")
+  
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const buildQuery = useCallback(() => {
-    let query = DB_COLLECTION.customer.query();
+    let query = DB_COLLECTION.customer.query(Q.where("shop_idx", activeShopId));
     
     if (search) {
       query = query.extend(
@@ -32,7 +36,7 @@ export function useCustomers({
     query = query.extend(Q.take(limit));
     
     return query;
-  }, [search, sortBy, limit]);
+  }, [search, sortBy, limit, activeShopId]);
 
   const loadCustomers = useCallback(async (isRefresh = false) => {
     if (isRefresh) setIsRefreshing(true);

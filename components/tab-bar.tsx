@@ -21,10 +21,7 @@ interface TabBarProps {
   navigation: any;
 }
 
-const TabBar = ({
-  state,
-  navigation,
-}: TabBarProps) => {
+const TabBar = ({ state, navigation }: TabBarProps) => {
   const insets = useSafeAreaInsets();
   const animatedValues = useRef(
     state.routes.map(() => new Animated.Value(1))
@@ -62,91 +59,76 @@ const TabBar = ({
   };
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.tabBar, { paddingBottom: insets.bottom }]}>
-        {state.routes.map((route: any, index: number) => {
-          const isFocused = state.index === index;
-          const IconComponent = icons[route.name];
+    <View style={[styles.tabBar, { paddingBottom: insets.bottom }]}>
+      {state.routes.map((route: any, index: number) => {
+        const isFocused = state.index === index;
+        const IconComponent = icons[route.name];
 
-          const onPress = () => {
-            animateTab(index);
+        const onPress = () => {
+          animateTab(index);
 
-            const event = navigation.emit({
-              type: "tabPress",
-              target: route.key,
-              canPreventDefault: true,
-            });
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true,
+          });
 
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name);
-            }
-          };
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
 
-          return (
-            <TouchableOpacity
-              key={route.key}
-              accessibilityRole="button"
-              accessibilityState={isFocused ? { selected: true } : {}}
-              onPress={onPress}
-              activeOpacity={0.7}
+        return (
+          <TouchableOpacity
+            key={route.key}
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            onPress={onPress}
+            activeOpacity={0.7}
+            style={[
+              styles.tabItem,
+              {
+                borderTopWidth: isFocused ? 2 : 0,
+                borderTopColor: isFocused ? COLORS.primary : "transparent",
+              },
+            ]}
+          >
+            <Animated.View
               style={[
-                styles.tabItem,
+                styles.tabContent,
                 {
-                  borderTopWidth: isFocused ? 2 : 0,
-                  borderTopColor: isFocused ? COLORS.primary : "transparent",
+                  transform: [{ scale: animatedValues[index] }],
                 },
               ]}
             >
-              <Animated.View
+              <IconComponent
+                size={22}
+                color={isFocused ? COLORS.primary : COLORS.textLight}
+              />
+              <Text
                 style={[
-                  styles.tabContent,
-                  {
-                    transform: [{ scale: animatedValues[index] }],
-                  },
+                  styles.tabLabel,
+                  { color: isFocused ? COLORS.primary : COLORS.textLight },
                 ]}
               >
-                <IconComponent
-                  size={20}
-                  color={isFocused ? COLORS.primary : COLORS.textLight}
-                />
-                <Text
-                  style={[
-                    styles.tabLabel,
-                    { color: isFocused ? COLORS.primary : COLORS.textLight },
-                  ]}
-                >
-                  {labels[route.name]}
-                </Text>
-              </Animated.View>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+                {labels[route.name]}
+              </Text>
+            </Animated.View>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
-  activeBar: {
-    height: 3,
-    backgroundColor: COLORS.primary,
-    width: "100%",
-  },
   tabBar: {
     flexDirection: "row",
     backgroundColor: "#FFFFFF",
-    paddingHorizontal: 8,
+    paddingHorizontal: 5,
     borderTopColor: COLORS.border,
     borderTopWidth: 1,
     elevation: 8,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
   },
   tabItem: {
     flex: 1,
@@ -160,9 +142,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   tabLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Poppins-Regular",
-    marginTop: 4,
+    marginTop: 6,
+    textAlign: "center",
+    textAlignVertical: "center",
   },
 });
 

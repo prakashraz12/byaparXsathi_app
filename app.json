@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.rzprakash.byaparsathi"
+      "bundleIdentifier": "com.rzprakash.byaparsathi",
+      "infoPlist": {
+        "NSContactsUsageDescription": "A message that tells the user why the app is requesting access to the user’s contacts."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -49,6 +52,12 @@
               }
             ]
           }
+        }
+      ],
+      [
+        "expo-contacts",{
+          "contactsPermission": "Allow Byapar Sathi to access your contacts."
+
         }
       ]
     ],

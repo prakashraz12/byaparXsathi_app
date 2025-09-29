@@ -21,6 +21,8 @@ export type LoginDto = {
   otp: string;
 };
 
+export type UserStage = "CREATED" | "SET_UP_COMPLETED";
+
 export type LoginWithOtpResponse = {
   fullName: string;
   email: string;
@@ -28,6 +30,7 @@ export type LoginWithOtpResponse = {
   id: number;
   phoneNumber: string;
   address: string;
+  stage: UserStage;
   country: Record<string, any>;
   isDeleted: boolean;
   requestDeleteOn: Record<string, any>;
@@ -54,6 +57,69 @@ export type TLoginWithOtpResponse = {
   message: string;
   isSuccess: boolean;
   data?: LoginWithOtpResponse | null;
+  pagination?: PaginationDto;
+};
+
+export type CompleteSetupDto = {
+  fullName: string;
+  phoneNumber: string;
+  address: string;
+  shopName: string;
+  shopType: string;
+  idx: string;
+};
+
+export type UserResponse = {
+  fullName: string;
+  email: string;
+  role: string;
+  id: number;
+  phoneNumber: string;
+  address: string;
+  stage: UserStage;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+  /**
+   * @format date-time
+   */
+  updatedAt: string;
+};
+
+export type ShopResponse = {
+  shopName: string;
+  shopAddress: string;
+  shopPhoneNumber: string;
+  shopEmail: string;
+  shopType: string;
+  idx: string;
+  measuringUnits: Record<string, any>[];
+  owner: UserResponse;
+  id: number;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+  /**
+   * @format date-time
+   */
+  updatedAt: string;
+};
+
+export type CompletedSetupResponse = {
+  user: UserResponse;
+  shop: ShopResponse | null;
+};
+
+export type TCompletedSetupResponse = {
+  statusCode: number;
+  message: string;
+  isSuccess: boolean;
+  /**
+   * Contains both user and shop information
+   */
+  data?: CompletedSetupResponse | null;
   pagination?: PaginationDto;
 };
 

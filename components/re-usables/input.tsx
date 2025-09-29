@@ -1,28 +1,49 @@
-import { COLORS } from "@/constants/Colors"
-import { AlertCircle } from "lucide-react-native"
-import type React from "react"
-import { Text, TextInput, View, type TextInputProps, type ViewStyle } from "react-native"
-
+import { COLORS } from "@/constants/Colors";
+import { AlertCircle } from "lucide-react-native";
+import type React from "react";
+import {
+  Text,
+  TextInput,
+  View,
+  type TextInputProps,
+  type ViewStyle,
+} from "react-native";
 
 interface CustomInputProps extends Omit<TextInputProps, "style"> {
-  leftIcon?: React.ReactNode
-  rightIcon?: React.ReactNode
-  error?: string
-  disabled?: boolean
-  containerStyle?: ViewStyle
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  error?: string;
+  label?: string;
+  disabled?: boolean;
+  containerStyle?: ViewStyle;
+  required?:boolean
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
   leftIcon,
   rightIcon,
   error,
+  label,
   disabled = false,
   containerStyle,
+  required= false,
   ...textInputProps
 }) => {
   return (
     <View>
-      <View style={[styles.inputContainer, error ? styles.inputError : {}, containerStyle]}>
+      {label && (
+        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 14, marginTop:10 }}>
+          {label}{" "}{required ? <Text style={{color:"red"}}>*</Text> :""}
+        </Text>
+      )}
+      <View
+        style={[
+          styles.inputContainer,
+          error ? styles.inputError : {},
+          containerStyle,
+          !leftIcon && { paddingHorizontal: 14 },
+        ]}
+      >
         {leftIcon && <View style={styles.iconContainer}>{leftIcon}</View>}
 
         <TextInput
@@ -42,8 +63,8 @@ const CustomInput: React.FC<CustomInputProps> = ({
         </View>
       ) : null}
     </View>
-  )
-}
+  );
+};
 
 const styles = {
   inputContainer: {
@@ -85,6 +106,6 @@ const styles = {
     marginLeft: 4,
     marginTop: 2,
   },
-}
+};
 
-export default CustomInput
+export default CustomInput;
