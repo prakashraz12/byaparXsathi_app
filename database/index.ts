@@ -6,6 +6,10 @@ import schema from './schema/schema'
 import migrations from './migrations'
 import Customer from './model/customer.model'
 import Shop from './model/shop.model'
+import Item from './model/item.model'
+import SalesItem from './model/sales-item.model'
+import Sales from './model/sales.model'
+import PaymentAccount from './model/payment-account.model'
 // import Post from './model/Post' // ⬅️ You'll import your Models here
 
 // First, create the adapter to the underlying database:
@@ -18,20 +22,22 @@ const adapter = new SQLiteAdapter({
   // (recommended option, should work flawlessly out of the box on iOS. On Android,
   // additional installation steps have to be taken - disable if you run into issues...)
   jsi: true, /* Platform.OS === 'ios' */
-  // (optional, but you should implement this method)
   onSetUpError: error => {
     console.error("Database setup error:", error);
-    // Database failed to load -- offer the user to reload the app or log out
+   
   }
 })
 
-// Then, make a Watermelon database from it!
+// Then, make a Watermelon database from it!c
 const database = new Database({
   adapter,
   modelClasses: [
-    // Post, // ⬅️ You'll add Models to Watermelon here
     Customer,
-    Shop
+    Shop,
+    Item,
+    Sales,
+    SalesItem,
+    PaymentAccount
   ],
 })
 export default database;

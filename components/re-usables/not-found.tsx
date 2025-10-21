@@ -29,7 +29,7 @@ const NotFound = ({
     >
       <Image
         source={NOT_FOUND}
-        style={{ width: 200, height: 200, objectFit: "contain" }}
+        style={{ width: 100, height: 100, objectFit: "contain" }}
       />
       <Text
         style={{

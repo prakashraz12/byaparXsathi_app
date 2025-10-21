@@ -74,7 +74,7 @@ const styles = {
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 7,
-    height: 59,
+    height: 54,
     marginBottom: 4,
   },
   inputError: {
@@ -88,9 +88,9 @@ const styles = {
   },
   input: {
     flex: 1,
-    height: 59,
+    height: 54,
     fontFamily: "Poppins-Regular",
-    fontSize: 14,
+    fontSize: 13,
     color: COLORS.text,
   },
   fieldErrorContainer: {

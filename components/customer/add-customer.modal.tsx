@@ -54,7 +54,7 @@ const AddCustomerModal = () => {
           phone: value.phone,
           email: value.email,
           address: value.address,
-          shop_idx: activeShopId?.toString(),
+          shopId: activeShopId?.toString(),
         })
         .then((res) => {
           if (res?.status === 201) {
@@ -79,7 +79,7 @@ const AddCustomerModal = () => {
     setFieldValue("email", contact?.emails?.[0]?.email);
     setFieldValue(
       "address",
-      `${contact?.addresses?.[0]?.street !== undefined ? contact?.addresses?.[0]?.street : ""}, ${contact?.addresses?.[0]?.city !== undefined ? contact?.addresses?.[0]?.city : ""} ${contact?.addresses?.[0]?.country !== undefined ? contact?.addresses?.[0]?.country : ""}`
+      `${contact?.addresses?.[0]?.street !== undefined ? contact?.addresses?.[0]?.street : ""} ${contact?.addresses?.[0]?.city !== undefined ? contact?.addresses?.[0]?.city : ""} ${contact?.addresses?.[0]?.country !== undefined ? contact?.addresses?.[0]?.country : ""}`
     );
     setModalType("ADD");
   };

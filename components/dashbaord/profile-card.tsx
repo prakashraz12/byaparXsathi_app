@@ -20,6 +20,7 @@ const ProfileCard = () => {
       if(!idx) return;
       setActiveShopId(idx);
     }
+
   return (
     <>
       <TouchableOpacity
@@ -61,7 +62,7 @@ const ProfileCard = () => {
         {!isLoading && shops?.map((item: Shop) => (
           <TouchableOpacity
             key={item?.id}
-            onPress={()=>{handleSwitch(item?.idx || "")}}
+            onPress={()=>{handleSwitch(item?.id || "")}}
             style={{
               flexDirection: "row",
               gap: 20,
@@ -81,7 +82,7 @@ const ProfileCard = () => {
                 </Text>
               </View>
             </View>
-           {activeShop?.idx === item?.idx && <Check size={18} color={COLORS.primary} />}
+           {activeShop?.id === item?.id && <Check size={18} color={COLORS.primary} />}
           </TouchableOpacity>
         ))}
       </SlideUpModal>

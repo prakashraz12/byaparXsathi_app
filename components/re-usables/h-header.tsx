@@ -1,10 +1,11 @@
 import { View } from "react-native"
 import { Text } from "./text"
-
+import { COLORS } from "@/constants/Colors";
+    
 const HHeader = ({title}: {title: string})=>{
     return(
         <View>
-            <Text variant="h5" style={{marginBottom: 16, fontFamily:"Poppins-Bold", fontSize:20}}>{title}</Text>
+            <Text variant="h6" style={{marginBottom: 10, color:COLORS.text, fontFamily:"Poppins-SemiBold", fontSize:18}}>{title}</Text>
         </View>
     )
 }

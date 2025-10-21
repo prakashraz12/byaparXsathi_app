@@ -3,24 +3,27 @@ import { DB_COLLECTION } from "../collection";
 import database from "../index";
 import Customer from "../model/customer.model";
 import { Q } from "@nozbe/watermelondb";
+import { idxGenerator } from "@/utils/idx.utils";
 
 export const customerService = {
-  create: async (data: Partial<Customer>) => {
-    console.log(data, "this is data");
-    if (!data.phone || !data.name || !data.address || !data?.shop_idx) return;
-  
+  create: async (data: Partial<Customer> & { id?: string }) => {
+    if (!data.phone || !data.name || !data.address || !data?.shopId) return;
+
     return database.write(async () => {
       // check if a customer already exists with this phone
       const existingUser = await DB_COLLECTION.customer
-        .query(Q.where("phone", data?.phone?.toString()!)).extend(Q.where("shop_idx", data?.shop_idx!))
+        .query(Q.where("phone", data?.phone?.toString()!))
+        .extend(Q.where("shopId", data?.shopId!))
         .fetch();
-  
+
       if (existingUser.length > 0) {
         Toast.error("Customer already exists");
         return;
       }
-  
+
+      const id = data?.id || idxGenerator();
       const customer = await DB_COLLECTION.customer.create((c) => {
+        c._raw.id = id;
         c.name = data.name!;
         c.email = data.email || "";
         c.phone = data.phone || "";
@@ -30,13 +33,13 @@ export const customerService = {
         c.status = data.status || "active";
         c.created_at = Date.now();
         c.updated_at = Date.now();
-        c.shop_idx = data.shop_idx;
+        c.shopId = data.shopId;
       });
-  
+
       return {
         customer,
         message: "Customer created successfully",
-        status:201,
+        status: 201,
         success: true,
       };
     });
@@ -46,7 +49,7 @@ export const customerService = {
     return DB_COLLECTION.customer.query().fetch();
   },
 
-  update: async (id: string, data: Partial<Customer>) => {
+  update: async (id: string, data: Partial<Customer> & { idx?: string }) => {
     const customer = await DB_COLLECTION.customer.find(id);
     return database.write(async () => {
       return customer.update((c) => {

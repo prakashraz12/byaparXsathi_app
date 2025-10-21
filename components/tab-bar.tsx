@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import {
   CircleArrowUp,
+  Feather,
   Home,
   LayoutGrid,
   User,
@@ -31,7 +32,7 @@ const TabBar = ({ state, navigation }: TabBarProps) => {
     index: Home,
     sales: CircleArrowUp,
     customer: User,
-    billing: Wallet,
+    items: Wallet,
     more: LayoutGrid,
   };
 
@@ -39,7 +40,7 @@ const TabBar = ({ state, navigation }: TabBarProps) => {
     index: "Home",
     sales: "Sales",
     customer: "Customer",
-    billing: "Billing",
+    items: "Items",
     more: "More",
   };
 

@@ -1,7 +1,7 @@
 import { BASE_API_URL } from "@/config/app.config";
 import { QueriesContext } from "./queries-context";
 import * as SecureStore from "expo-secure-store";
-const baseUrl = "http://192.168.43.60:3000"; // TODO add your baseUrl
+const baseUrl = BASE_API_URL; // TODO add your baseUrl
 
 export type ErrorWrapper<TError> =
   | TError

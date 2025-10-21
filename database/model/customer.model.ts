@@ -14,5 +14,5 @@ export default class Customer extends Model {
   @field("status") status?:string;
   @field("created_at") created_at?: number;
   @field("updated_at") updated_at?: number;
-  @field("shop_idx") shop_idx?:string;
+  @field("shopId") shopId?:string;
 }

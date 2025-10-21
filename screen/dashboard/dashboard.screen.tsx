@@ -6,6 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import {
   ArrowUp,
   Calculator,
+  CloudUpload,
   Feather,
   TruckIcon,
   UserPlus,
@@ -16,6 +17,8 @@ import { COLORS } from "@/constants/Colors";
 import UpgradeCard from "@/components/dashbaord/upgrade-card";
 import SalesOverviewChart from "@/components/dashbaord/sales-chart";
 import { useUserStore } from "@/store/useUserStore";
+import { router } from "expo-router";
+import SyncBanner from "@/components/sync-banner";
 
 const { width } = Dimensions.get("window");
 const CARD_MARGIN = 12;
@@ -50,7 +53,9 @@ export const ACTION_BUTTONS = [
     id: "5",
     title: "Items",
     icon: <Feather size={20} color={COLORS.accent} />,
-    onPress: () => {},
+    onPress: () => {
+      router.push("/(routes)/items");
+    },
   },
 ];
 
@@ -86,108 +91,115 @@ const cardData = [
 ];
 
 const DashboardScreen = () => {
-  const user = useUserStore()
+  const user = useUserStore();
   return (
-    <PXWrapper header={<DashBoardTop />}>
-      <View style={{ padding: 12, marginBottom: 6 }}>
-        <Text style={{ fontSize: 18, fontFamily: "Poppins-SemiBold" }}>
-          Hello, {user?.user?.fullName}
-        </Text>
-        <Text
-          style={{
-            fontSize: 16,
-            fontFamily: "Poppins-Regular",
-            color: COLORS.textLight,
-          }}
-        >
-          Here is your business insights.
-        </Text>
-      </View>
+    <>
+      <PXWrapper header={<DashBoardTop />}>
+       <SyncBanner/>
+        <View style={{ padding: 12, marginBottom: 6 }}>
+          <Text style={{ fontSize: 18, fontFamily: "Poppins-SemiBold" }}>
+            Hello, {user?.user?.fullName}
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: "Poppins-Regular",
+              color: COLORS.textLight,
+            }}
+          >
+            Here is your business insights.
+          </Text>
+        </View>
 
-      <UpgradeCard />
+        <UpgradeCard />
 
-      <View style={styles.container}>
-        {cardData.map((item) => (
-          <View key={item.id} style={styles.cardWrapper}>
-            <LinearGradient
-              colors={item.colors as any}
-              start={[0, 1]}
-              end={[0, 0]}
-              style={styles.card}
-            >
-              <View
-                style={[
-                  styles.circle,
-                  {
-                    backgroundColor: `${item.colors[1]}`,
-                    top: -30,
-                    right: -20,
-                  },
-                ]}
-              />
-              <View
-                style={[
-                  styles.circle,
-                  {
-                    backgroundColor: `${item.colors[0]}`,
-                    bottom: -20,
-                    left: -25,
-                    width: 60,
-                    height: 60,
-                  },
-                ]}
-              />
-
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
+        <View style={styles.container}>
+          {cardData.map((item) => (
+            <View key={item.id} style={styles.cardWrapper}>
+              <LinearGradient
+                colors={item.colors as any}
+                start={[0, 1]}
+                end={[0, 0]}
+                style={styles.card}
               >
-                <Text style={styles.cardTitle}>{item.title}</Text>
+                <View
+                  style={[
+                    styles.circle,
+                    {
+                      backgroundColor: `${item.colors[1]}`,
+                      top: -30,
+                      right: -20,
+                    },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.circle,
+                    {
+                      backgroundColor: `${item.colors[0]}`,
+                      bottom: -20,
+                      left: -25,
+                      width: 60,
+                      height: 60,
+                    },
+                  ]}
+                />
+
                 <View
                   style={{
-                    width: 34,
-                    height: 34,
-                    borderRadius: 25,
-                    backgroundColor: "#fff",
-                    justifyContent: "center",
+                    flexDirection: "row",
                     alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                 >
-                  {item.icon}
+                  <Text style={styles.cardTitle}>{item.title}</Text>
+                  <View
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: 25,
+                      backgroundColor: "#fff",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {item.icon}
+                  </View>
                 </View>
-              </View>
-              <Text style={styles.cardValue}>{item.value}</Text>
-            </LinearGradient>
-          </View>
-        ))}
-      </View>
+                <Text style={styles.cardValue}>{item.value}</Text>
+              </LinearGradient>
+            </View>
+          ))}
+        </View>
 
-      <View>
-        <Text
-          style={{ fontSize: 17, fontFamily: "Poppins-SemiBold", padding: 12 }}
-        >
-          Quick Actions
-        </Text>
         <View>
-          <View style={styles.quickActions}>
-            {ACTION_BUTTONS.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.quickActionCard}
-                onPress={item.onPress}
-              >
-                {item.icon}
-                <Text style={styles.quickActionText}>{item.title}</Text>
-              </TouchableOpacity>
-            ))}
+          <Text
+            style={{
+              fontSize: 17,
+              fontFamily: "Poppins-SemiBold",
+              padding: 12,
+            }}
+          >
+            Quick Actions
+          </Text>
+          <View>
+            <View style={styles.quickActions}>
+              {ACTION_BUTTONS.map((item) => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.quickActionCard}
+                  onPress={item.onPress}
+                >
+                  {item.icon}
+                  <Text style={styles.quickActionText}>{item.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         </View>
-      </View>
-      <SalesOverviewChart />
-    </PXWrapper>
+        <SalesOverviewChart />
+      </PXWrapper>
+    </>
   );
 };
 

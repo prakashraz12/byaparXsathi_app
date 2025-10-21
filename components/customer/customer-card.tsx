@@ -47,7 +47,7 @@ const CustomerCard = ({ customer }: { customer: Customer }) => {
             style={{ fontSize: 14, color: COLORS.error, marginLeft: 8 }}
             numberOfLines={1}
           >
-            Rs.0
+            Rs.0 
           </Text>
         </View>
 
@@ -57,7 +57,7 @@ const CustomerCard = ({ customer }: { customer: Customer }) => {
           numberOfLines={1}
           ellipsizeMode="tail"
         >
-          {customer.phone}
+          {/* {customer.phone} */} {customer?._raw?.id}
         </Text>
       </View>
     </View>

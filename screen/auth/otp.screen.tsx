@@ -2,12 +2,14 @@ import { Button } from "@/components/re-usables/button";
 import { Header } from "@/components/re-usables/header";
 import OTPInput from "@/components/re-usables/otp-input";
 import { Text } from "@/components/re-usables/text";
+import { syncDatabase } from "@/database/sync.service";
 import PXWrapper from "@/layouts/px-wrapper";
 import {
   useAuthControllerWithEmail,
   useAuthControllerWithOtpLogin,
 } from "@/service/queries-components";
 import { TLoginWithOtpResponse } from "@/service/types-schemas";
+import { useSyncStore } from "@/store/useSync";
 import { useUserStore } from "@/store/useUserStore";
 import { apiOptions } from "@/utils/api-options.util";
 import { router, useLocalSearchParams } from "expo-router";
@@ -20,18 +22,22 @@ const OtpScreen = () => {
   const { email } = useLocalSearchParams<{ email: string }>();
 
   const { setUser, setToken } = useUserStore();
+  const { setSyncing } = useSyncStore();
 
   const { mutateAsync: verifyOtp, isPending } = useAuthControllerWithOtpLogin(
-    apiOptions(undefined, (data: TLoginWithOtpResponse) => {
+    apiOptions(undefined, (data: TLoginWithOtpResponse["data"]) => {
       setOtp(new Array(4).fill(""));
-      setUser(data?.data);
-      console.log(data)
-      setToken(data?.data?.accessToken);
+      setUser(data);
+      console.log(data);
+      setToken(data?.accessToken);
 
-      if(data?.data?.stage === "CREATED"){ //if user is not create his first shop already navigate to create new one || else navigate to home
+      if (data?.stage === "CREATED") {
+        //if user is not create his first shop already navigate to create new one || else navigate to home
         router.replace("/(routes)/complete-setup");
-      }else{
-        router.replace("/(tabs)");
+      } else {
+        syncDatabase({ isFirstTime: true });
+        setSyncing(true);
+        router.replace("/syncing");
       }
     })
   );

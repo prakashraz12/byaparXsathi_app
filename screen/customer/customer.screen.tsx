@@ -3,12 +3,11 @@ import CustomerCard from "@/components/customer/customer-card";
 import HHeader from "@/components/re-usables/h-header";
 import Input from "@/components/re-usables/input";
 import { useCustomers } from "@/database/hooks/useCustomer";
+import Item from "@/database/model/item.model";
 import PXWrapper from "@/layouts/px-wrapper";
-import { useUserStore } from "@/store/useUserStore";
 import { Search } from "lucide-react-native";
 import type React from "react";
 import { useState } from "react";
-import { View } from "react-native";
 
 export const CustomerScreen: React.FC = () => {
   const [customerName, setCustomerName] = useState<string>("");
@@ -16,9 +15,7 @@ export const CustomerScreen: React.FC = () => {
   const { customers, refresh } = useCustomers({
     search: customerName,
     sortBy: "created_at",
-    limit: 20,
   });
-
 
   return (
     <PXWrapper
@@ -26,11 +23,16 @@ export const CustomerScreen: React.FC = () => {
       header={
         <>
           <HHeader title="Customer" />
-            <Input value={customerName} placeholder="Search customers" leftIcon={<Search />} onChangeText={setCustomerName} />
+          <Input
+            value={customerName}
+            placeholder="Search customers"
+            leftIcon={<Search />}
+            onChangeText={setCustomerName}
+          />
         </>
       }
       data={customers}
-      renderItem={({ item }) => <CustomerCard customer={item} />}
+      renderItem={({ item }:{item:Item}) => <CustomerCard customer={item} />}
     />
   );
 };

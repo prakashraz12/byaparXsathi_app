@@ -1,64 +1,140 @@
+import { Button } from "@/components/re-usables/button";
 import HHeader from "@/components/re-usables/h-header";
 import CustomInput from "@/components/re-usables/input";
-import database from "@/database";
+import { Text } from "@/components/re-usables/text";
+import SalesFilterSlideUp from "@/components/sales/sales-filter";
+import { COLORS } from "@/constants/Colors";
+import { useSales } from "@/database/hooks/useSales";
+import Sales from "@/database/model/sales.model";
 import PXWrapper from "@/layouts/px-wrapper";
-import { useSalesControllerGetAllSales } from "@/service/queries-components";
-import { Search } from "lucide-react-native";
-import { Button, Pressable, Text, View } from "react-native";
-import type Customer from "@/database/model/customer.model";
-import { useUserStore } from "@/store/useUserStore";
-import { syncDatabase } from "@/database/sync.service";
-
+import {
+  dateRangeProvider,
+  DEFAULT_DATE_RANGE_OPTIONS_ENUMS,
+} from "@/utils/date-range-provider";
+import { useRouter } from "expo-router";
+import { Filter, Plus, Search } from "lucide-react-native";
+import { useEffect, useState } from "react";
+import { TouchableOpacity, View } from "react-native";
+import SalesCard from "../../components/sales/sales-card";
 const SalesScreen = () => {
-  const {user} = useUserStore()
-  const {data} = useSalesControllerGetAllSales({
-   queryParams:{
-    page:1,
-    shopId:4,
-    size:10
-   },
-   
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<"asc" | "desc">("desc");
+  const [dateRangeOptions, setDateRangeOptions] = useState<
+    (typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS)[keyof typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS]
+  >(DEFAULT_DATE_RANGE_OPTIONS_ENUMS.ALL_TIME);
+
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
+  const [searchParams, setSearchParams] = useState("");
+
+  const { sales } = useSales({
+    searchParams,
+    sort: sortBy,
+    startDate: startDate
+      ? new Date(new Date(startDate).setHours(0, 0, 0, 0))
+      : undefined,
+    endDate: endDate
+      ? new Date(new Date(endDate).setHours(23, 59, 59, 999))
+      : undefined,
   });
 
-  async function fetchCustomers() {
-    const customers = await database.get<Customer>('customer').query().fetch()
-    console.log(customers.map(c => c.name))
-  }
-  
-  const handleAddCustomer = async()=>{
-    const cs = database.get("customer");
+  const router = useRouter();
 
-    await database.write(async () => {
-      await cs.create((customer:Customer) => {
-        customer.name = "John Doe";
-        customer.email = "john.doe@example.com";
-        customer.phone = 1234567890;
-        customer.address = "123 Main St";
-        customer.created_at = Date.now();
-        customer.updated_at = Date.now();
-      });
-    });
-  }
-  const sync =async()=>{
-    await syncDatabase()
-  }
-  return (
-    <PXWrapper
-      header={
-        <>
-          <HHeader title="Sales" />
-          <View>
-            <CustomInput placeholder="Enter Sales" leftIcon={<Search />} />
-          </View>
-        </>
+  useEffect(() => {
+    if (dateRangeOptions !== DEFAULT_DATE_RANGE_OPTIONS_ENUMS.CUSTOM_RNAGE) {
+      const options = dateRangeProvider(dateRangeOptions);
+      if (options) {
+        setStartDate(options.startDate);
+        setEndDate(options.endDate);
       }
-    >
-      <>
-    <Button title="Add customer" onPress={handleAddCustomer}/>
-    <Button title="Fetch Customer" onPress={fetchCustomers} />
-    <Button title="Sync" onPress={sync} />
-      </>
-    </PXWrapper>
+    }
+    if (dateRangeOptions === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.ALL_TIME) {
+      setStartDate(null);
+      setEndDate(null);
+    }
+  }, [dateRangeOptions]);
+
+  const isSalesApplied = dateRangeOptions !== "ALL_TIME";
+
+  return (
+    <>
+      <PXWrapper
+        data={sales}
+        floatingAction={
+          <Button
+            onPress={() => router.push("/sales/create")}
+            variant="primary"
+            leftIcon={<Plus size={24} color="#FFFFFF" />}
+            style={{
+              height: 50,
+              width: 50,
+            }}
+          />
+        }
+        renderItem={({ item }: { item: Sales }) => (
+          <SalesCard
+            invoiceNumber={item.invoiceNumber || ""}
+            invoiceDate={item.invoiceDate || 0}
+            grandTotalAmount={item.grandTotalAmount || 0}
+            paymentStatus={item?.status || ""}
+            paymentType={item?.paymentType || ""}
+            id={item.id}
+          />
+        )}
+        header={
+          <>
+            <HHeader title="Sales Transactions" />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                width: "100%",
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <CustomInput
+                  value={searchParams}
+                  onChangeText={setSearchParams}
+                  placeholder="Search Sales transactions"
+                  leftIcon={<Search />}
+                />
+              </View>
+              <TouchableOpacity
+                style={{
+                  width: 54,
+                  height: 54,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: COLORS.cardBackground,
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  borderColor: COLORS.border,
+                }}
+                onPress={() => setFilterOpen(true)}
+              >
+                <Text>
+                  <Filter size={20} color={COLORS.text} />
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        }
+      />
+      <SalesFilterSlideUp
+        visible={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        dateRangeOptions={dateRangeOptions}
+        setDateRangeOptions={setDateRangeOptions}
+        startDate={startDate}
+        endDate={endDate}
+        setStartDate={setStartDate}
+        setEndDate={setEndDate}
+      />
+    </>
   );
 };
 export default SalesScreen;

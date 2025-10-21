@@ -5,5 +5,5 @@ export const idxGenerator = (): string => {
   if (!id || typeof id !== "string") {
     throw new Error("UUID generation failed");
   }
-  return `idx-${id}`;
+  return `${id}`;
 };

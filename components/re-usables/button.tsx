@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
 
   // Disabled states
   disabled: {
-    opacity: 0.6,
+    opacity: 0.5,
     shadowOpacity: 0,
     elevation: 0,
   },

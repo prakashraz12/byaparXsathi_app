@@ -37,10 +37,11 @@ export const Header: React.FC<HeaderProps> = ({
       />
       <View style={[style]}>
         <View style={styles.content}>
-          <View style={styles.leftSection}>
+          <View style={{flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
+            <View style={styles.leftSection}>
             {showBackButton && (
               <TouchableOpacity style={styles.backButton} onPress={handleBackPress} activeOpacity={0.7}>
-                <Ionicons name="chevron-back" size={24} color={backButtonColor} />
+                <Ionicons name="arrow-back" size={24} color={backButtonColor} />
               </TouchableOpacity>
             )}
           </View>
@@ -50,6 +51,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Text style={[styles.title, { color: titleColor }]} numberOfLines={1} ellipsizeMode="tail">
               {title}
             </Text>
+          </View>
           </View>
 
           {/* Right Section - Custom Component */}
@@ -65,7 +67,8 @@ const styles = StyleSheet.create({
   content: {
     flexDirection: "row",
     alignItems: "center",
-    height: 56,
+    justifyContent:"space-between",
+    height: 50,
   },
   leftSection: {
     width: 32,
@@ -76,20 +79,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   rightSection: {
-    width: 40,
+   width: "auto",
+   alignItems:"center",
+   marginRight:16
   },
   backButton: {
     width: 36,
     height: 36,
-    borderRadius: 10,
-    backgroundColor: "#F8FAFC",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
   },
   title: {
-    fontSize: 18,
-    fontFamily: "Poppins-Regular",
+    fontSize: 19,
+    fontFamily: "Poppins-Medium",
   },
 })

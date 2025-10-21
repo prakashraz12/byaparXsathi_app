@@ -52,7 +52,7 @@ const CreateShopForm = () => {
         );
         if (response?.status === 201) {
           Toast.success("Shop Created");
-          setActiveShopId(response?.shop?.idx || "");
+          setActiveShopId(response?.shop?.id || "");
           router.replace("/(tabs)");
         }
       } catch (error) {

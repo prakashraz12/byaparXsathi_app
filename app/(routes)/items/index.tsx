@@ -1,3 +1,6 @@
+import ItemScreen from "@/screen/items/items.screen"
+
 const Items = () => {
-    return <View></View>
+    return <ItemScreen/>
 }
+export default Items

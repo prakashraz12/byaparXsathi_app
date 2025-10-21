@@ -14,7 +14,6 @@ export default class Shop extends Model {
     @text("userId") userId?: string;
     @text("shopType") shopType?: string;
     @text("shopPanNumber") shopPanNumber?: string;
-    @text("idx") idx?: string;
     @text("created_at") created_at?: number;
     @text("updated_at") updated_at?: number;
 }

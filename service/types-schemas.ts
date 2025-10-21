@@ -27,7 +27,7 @@ export type LoginWithOtpResponse = {
   fullName: string;
   email: string;
   role: string;
-  id: number;
+  id: string;
   phoneNumber: string;
   address: string;
   stage: UserStage;
@@ -66,14 +66,14 @@ export type CompleteSetupDto = {
   address: string;
   shopName: string;
   shopType: string;
-  idx: string;
+  id: string;
 };
 
 export type UserResponse = {
   fullName: string;
   email: string;
   role: string;
-  id: number;
+  id: string;
   phoneNumber: string;
   address: string;
   stage: UserStage;
@@ -93,10 +93,9 @@ export type ShopResponse = {
   shopPhoneNumber: string;
   shopEmail: string;
   shopType: string;
-  idx: string;
+  id: string;
   measuringUnits: Record<string, any>[];
   owner: UserResponse;
-  id: number;
   /**
    * @format date-time
    */
@@ -123,31 +122,16 @@ export type TCompletedSetupResponse = {
   pagination?: PaginationDto;
 };
 
-export type BillLayoutConfigDto = {
-  /**
-   * Date format to be used in bills
-   */
-  dateFormat: "AD" | "BS";
-  /**
-   * Default bill layout template
-   */
-  defaultBillLayout: "INVOICE" | "THERMAL";
-  /**
-   * Whether to show PAN number on the bill
-   */
-  showPanNumberOnBill: boolean;
-  /**
-   * Whether to show registration number on the bill
-   */
-  showRegNumberOnBill: boolean;
-  /**
-   * Enable QR code on the bill
-   */
-  enableQrOnBill: boolean;
-  /**
-   * Enable tax rate calculation on the bill
-   */
-  enableTaxRate: boolean;
+export type RevalidateTokenResponse = {
+  accessToken: string;
+};
+
+export type TRevalidateTokenResponse = {
+  statusCode: number;
+  message: string;
+  isSuccess: boolean;
+  data?: RevalidateTokenResponse;
+  pagination?: PaginationDto;
 };
 
 export type MeasuringUnitDto = {
@@ -200,14 +184,11 @@ export type CreateShopDto = {
    * Registration number of the shop
    */
   shopRegNumber?: string;
+  id?: string;
   /**
    * URL or path to the shop's payment QR code
    */
   shopPaymentQrCode?: string;
-  /**
-   * Configuration for bill layout
-   */
-  billLayoutConfig: BillLayoutConfigDto;
   /**
    * Status of the shop
    *
@@ -221,8 +202,8 @@ export type CreateShopDto = {
 };
 
 export type CreateSalesDto = {
-  shopId: number;
-  customerId: number;
+  shopId: string;
+  customerId: string;
   saleItems: string[];
   invoiceNumber: string;
   /**

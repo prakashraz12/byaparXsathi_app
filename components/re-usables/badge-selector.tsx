@@ -36,9 +36,9 @@ const BadgeSelector = ({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              paddingHorizontal: 12,
+              paddingHorizontal: 15,
               paddingVertical: 6,
-              borderRadius: 10,
+              borderRadius: 8,
               borderWidth: 1,
               borderColor: COLORS.border,
               backgroundColor:
@@ -49,7 +49,7 @@ const BadgeSelector = ({
           >
             {value === item?.value && (
               <Check 
-                size={16} 
+                size={15} 
                 color="white" 
                 style={{ marginRight: 4 }} 
               />
@@ -57,6 +57,7 @@ const BadgeSelector = ({
             <Text
               style={{
                 color: value === item?.value ? "white" : COLORS.text,
+                fontSize:15
               }}
             >
               {item.label}

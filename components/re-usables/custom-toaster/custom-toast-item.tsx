@@ -19,6 +19,7 @@ interface ToastItemProps {
 const { width: screenWidth } = Dimensions.get('window');
 
 export const ToastItem: React.FC<ToastItemProps> = ({ toast, onHide }) => {
+  const toastType = (toast && (toast as any).type) ? toast.type : 'info';
   const translateY = useRef(new Animated.Value(-100)).current;
   const translateX = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
@@ -119,7 +120,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({ toast, onHide }) => {
   ).current;
 
   const getToastStyle = () => {
-    switch (toast.type) {
+    switch (toastType) {
       case 'success':
         return styles.successToast;
       case 'error':
@@ -134,7 +135,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({ toast, onHide }) => {
   };
 
   const getIconEmoji = () => {
-    switch (toast.type) {
+    switch (toastType) {
       case 'success':
         return <CheckCircleIcon size={16} color="#FFFFFF" />;
       case 'error':
@@ -163,8 +164,8 @@ export const ToastItem: React.FC<ToastItemProps> = ({ toast, onHide }) => {
       <View style={styles.content}>
         <Text style={styles.icon}>{getIconEmoji()}</Text>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{toast.title}</Text>
-          {toast.message && <Text style={styles.message}>{toast.message}</Text>}
+          <Text style={styles.title}>{toast?.title ?? ''}</Text>
+          {toast?.message && <Text style={styles.message}>{toast.message}</Text>}
         </View>
         <TouchableOpacity
           style={styles.closeButton}
@@ -177,7 +178,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({ toast, onHide }) => {
         </TouchableOpacity>
       </View>
 
-      {toast.action && (
+      {toast?.action && (
         <TouchableOpacity
           style={styles.actionButton}
           onPress={() => {
@@ -204,7 +205,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    zIndex: 9999,
+    zIndex: 9999999999999999!,
   },
   content: {
     flexDirection: 'row',

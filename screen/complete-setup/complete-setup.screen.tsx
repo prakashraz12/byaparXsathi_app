@@ -1,11 +1,14 @@
 import { BANNER_LOGO } from "@/assets";
+import BadgeSelector from "@/components/re-usables/badge-selector";
 import { Button } from "@/components/re-usables/button";
 import { Toast } from "@/components/re-usables/custom-toaster/toast-service";
 import Dropdown from "@/components/re-usables/drop-down";
 import CustomInput from "@/components/re-usables/input";
 import { Text } from "@/components/re-usables/text";
 import { COLORS } from "@/constants/Colors";
+import { SHOP_TYPES_OPTIONS } from "@/constants/shop-types";
 import { shopService } from "@/database/services/shop.service";
+import { syncDatabase } from "@/database/sync.service";
 import {
   completeSchema,
   TCompleteSchema,
@@ -21,36 +24,31 @@ import { MapPin, Phone, Store, User } from "lucide-react-native";
 import { Image, Pressable, View } from "react-native";
 
 const CompleteSetUpScreen = () => {
-  const { clearUser, user, setUser } = useUserStore();
-  const { mutateAsync, isPending, isSuccess, isError, error } = useAuthControllerCompleteSetup(
-    apiOptions(undefined, async ({data}:{data:CompletedSetupResponse}) => {
-      const response = await shopService.createShop(
-        {
-          shopName: data.shop?.shopName,
-          shopEmail: data.shop?.shopEmail,
-          shopPhoneNumber: data.shop?.shopPhoneNumber,
-          shopType: data.shop?.shopType,
-          measuringUnits: JSON.stringify(data.shop?.measuringUnits),
-          idx: data.shop?.idx,
-        },
-        user?.id?.toString() || ""
-      );
-      await setUser({
-        fullName: data.user.fullName,
-        email: data.user.email,
-        role: data.user.role,
-        id: data.user.id.toString(),
-        phoneNumber: data.user.phoneNumber,
-        stage: data.user.stage,
-        country: "", 
-        isDeleted:  false, 
-        requestDeleteOn: "", 
-        createdAt: data.user.createdAt,
-        updatedAt: data.user.updatedAt,
-        shops: [],
-      });
-      router.replace("/(tabs)");
-    })
+  const { clearUser, setUser, setActiveShopId } = useUserStore();
+  const { mutateAsync, isPending } = useAuthControllerCompleteSetup(
+    apiOptions(
+      undefined,
+      async ({ data }: { data: CompletedSetupResponse }) => {
+        await syncDatabase({ isFirstTime: true });
+        await setUser({
+          fullName: data.user.fullName,
+          email: data.user.email,
+          role: data.user.role,
+          id: data.user.id.toString(),
+          phoneNumber: data.user.phoneNumber,
+          stage: data.user.stage,
+          country: "",
+          isDeleted: false,
+          requestDeleteOn: "",
+          createdAt: data.user.createdAt,
+          updatedAt: data.user.updatedAt,
+          shops: [],
+        });
+
+        setActiveShopId(data?.shop?.id || "");
+        router.replace("/(tabs)");
+      }
+    )
   );
 
   const form = useForm({
@@ -59,20 +57,20 @@ const CompleteSetUpScreen = () => {
       phoneNumber: "",
       address: "",
       shopName: "",
+      shopType: "",
     },
     validators: {
       onChangeAsync: completeSchema,
     },
-    onSubmit:  async({ value }: { value: TCompleteSchema }) => {
-      
+    onSubmit: async ({ value }: { value: TCompleteSchema }) => {
       await mutateAsync({
         body: {
           fullName: value.fullName,
           phoneNumber: value.phoneNumber,
           address: value.address,
           shopName: value.shopName,
-          shopType: "CAFE",
-          idx: `idx-kando-chaa`,
+          shopType: value.shopType,
+          id: "",
         },
       });
     },
@@ -191,14 +189,20 @@ const CompleteSetUpScreen = () => {
             );
           }}
         </form.Field>
-        <Dropdown
-          data={[
-            { label: "Option 1", value: "option1" },
-            { label: "Option 2", value: "option2" },
-          ]}
-          placeholder="Select an option"
-          onSelect={(item) => console.log(item)}
-        />
+        <Text style={{ marginTop: 10, marginBottom: 10 }} bold>
+          Shop Type
+        </Text>
+        <form.Field name="shopType">
+          {(field) => {
+            return (
+              <BadgeSelector
+                options={SHOP_TYPES_OPTIONS}
+                value={field.state.value}
+                onChange={(value) => field.handleChange(value)}
+              />
+            );
+          }}
+        </form.Field>
         <Button
           title="Continue"
           style={{ marginTop: 16 }}

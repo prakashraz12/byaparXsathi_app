@@ -1,0 +1,21 @@
+import { Model } from "@nozbe/watermelondb";
+import { SCHEMA_KEYS } from "../shema.keys";
+import { field, relation } from "@nozbe/watermelondb/decorators";
+
+export default class SalesItem extends Model {
+  static table = SCHEMA_KEYS.SALES_ITEM;
+  static associations = {
+    [SCHEMA_KEYS.SALES]: { type: 'belongs_to', key: 'salesId' },
+  } as const;
+
+  @field("itemId") itemId?: string;
+  @field("quantity") quantity?: number;
+  @field("price") price?: number;
+  @field("discountAmount") discountAmount?: number;
+  @field("createdAt") createdAt?: Date;
+  @field("updatedAt") updatedAt?: Date;
+  @field("itemName") itemName?: string;
+  @field("salesId") salesId?: string;
+
+  @relation(SCHEMA_KEYS.SALES, "salesId") sale!: any;
+}
