@@ -4,9 +4,7 @@ import { field, relation } from "@nozbe/watermelondb/decorators";
 
 export default class SalesItem extends Model {
   static table = SCHEMA_KEYS.SALES_ITEM;
-  static associations = {
-    [SCHEMA_KEYS.SALES]: { type: 'belongs_to', key: 'salesId' },
-  } as const;
+ 
 
   @field("itemId") itemId?: string;
   @field("quantity") quantity?: number;
@@ -16,6 +14,7 @@ export default class SalesItem extends Model {
   @field("updatedAt") updatedAt?: Date;
   @field("itemName") itemName?: string;
   @field("salesId") salesId?: string;
+  @field("created_at") created_at?: Date;
+  @field("updated_at") updated_at?: Date;
 
-  @relation(SCHEMA_KEYS.SALES, "salesId") sale!: any;
 }

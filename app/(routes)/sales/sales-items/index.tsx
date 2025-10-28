@@ -65,12 +65,14 @@ const SalesItem = () => {
           </View>
         }
       ></PXWrapper>
-      <AddItemsSlideup
-        visible={openSelectItemConfig}
-        onClose={() => setOpenSelectItemConfig(false)}
-        item={item}
-        onSave={() => router.back()}
-      />
+      {item !== null && (
+        <AddItemsSlideup
+          visible={openSelectItemConfig}
+          onClose={() => setOpenSelectItemConfig(false)}
+          item={item}
+          onSave={() => router.back()}
+        />
+      )}
     </>
   );
 };

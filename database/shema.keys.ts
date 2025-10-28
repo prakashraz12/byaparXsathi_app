@@ -5,4 +5,6 @@ export const SCHEMA_KEYS = {
   ITEM: "item",
   SALES_ITEM: "salesitem",
   PAYMENT_ACCOUNT: "paymentaccount",
+  EXPENSES:"expenses",
+  SAVING:"saving"
 };

@@ -2,7 +2,7 @@ import { appSchema, tableSchema } from "@nozbe/watermelondb";
 import { SCHEMA_KEYS } from "../shema.keys";
 
 export default appSchema({
-  version: 6,
+  version: 5,
   tables: [
     tableSchema({
       name: SCHEMA_KEYS.CUSTOMER,
@@ -84,8 +84,10 @@ export default appSchema({
         { name: "paidAmount", type: "number" },
         { name: "remarks", type: "string" },
         { name: "invoiceDate", type: "number" },
-        { name: "createdAt", type: "number" },
-        { name: "updatedAt", type: "number" },
+        { name: "customerId", type: "string" },
+        { name: "customerName", type: "string" },
+        { name: "created_at", type: "number" },
+        { name: "updated_at", type: "number" }
       ],
     }),
     tableSchema({
@@ -95,9 +97,31 @@ export default appSchema({
         { name: "isActive", type: "boolean" },
         { name: "shopId", type: "string" },
         { name: "name", type: "string" },
-        { name: "createdAt", type: "number" },
-        { name: "updatedAt", type: "number" },
+        { name: "created_at", type: "number" },
+        { name: "updated_at", type: "number" },
       ],
     }),
+    tableSchema({
+      name: SCHEMA_KEYS.EXPENSES,
+      columns: [
+        { name: "amount", type: "number" },
+        { name: "title", type: "string" },
+        { name: "remarks", type: "string" },
+        { name: "shopId", type: "string" },
+        { name: "created_at", type: "number" },
+        { name: "updated_at", type: "number" },
+      ]
+    }),
+    tableSchema({
+      name: SCHEMA_KEYS.SAVING,
+      columns: [
+        { name: "amount", type: "number" },
+        { name: "title", type: "string" },
+        { name: "remarks", type: "string" },
+        { name: "shopId", type: "string" },
+        { name: "createdAt", type: "number" },
+        { name: "updatedAt", type: "number" },
+      ]
+    })
   ],
 });

@@ -1,4 +1,4 @@
-import { FlatList, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, FlatList, TouchableOpacity, View } from "react-native";
 import { Text } from "../re-usables/text";
 import { IContact } from "@/types/common";
 import { COLORS } from "@/constants/Colors";
@@ -11,12 +11,14 @@ import NotFound from "../re-usables/not-found";
 interface IContactList {
   contacts: IContact[];
   onClickContact?: (contact: IContact) => void;
+  loading?: boolean;
 }
-const ContactList = ({ contacts, onClickContact }: IContactList) => {
+const ContactList = ({ contacts, onClickContact, loading }: IContactList) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchContact, setSearchContact] = useState<string>("");
   const filterContact = useMemo(() => {
-    return contacts.filter((contact) => {
-      return contact.name.toLowerCase().includes(searchContact.toLowerCase());
+    return contacts?.filter((contact) => {
+      return contact?.name?.toLowerCase()?.includes(searchContact?.toLowerCase() || "");
     });
   }, [contacts, searchContact]);
   return (
@@ -27,7 +29,9 @@ const ContactList = ({ contacts, onClickContact }: IContactList) => {
         placeholder="Search"
         leftIcon={<Search size={20} />}
       />
-        {filterContact?.length > 0 ?filterContact?.map((contact, index) => (
+        {loading ? <View style={{flex:1, height:400, justifyContent:"center", alignItems:"center"}}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View> : filterContact?.length > 0 ?filterContact?.filter((contact)=>contact?.phoneNumbers?.length > 0)?.map((contact, index) => (
           <TouchableOpacity
             onPress={()=>{
               onClickContact?.(contact)
@@ -43,12 +47,12 @@ const ContactList = ({ contacts, onClickContact }: IContactList) => {
               alignItems:"center",
               
             }}
-            key={contact?.name || index}
+            key={index}
           >
             <AvatarCard name={contact?.name || "UN"} size={55} />
             <View style={{flexDirection:"column", gap:4}}>
-                <Text>{contact.name}</Text>
-                <Text style={{color:COLORS.textLight, fontSize:12}}>{contact.phoneNumbers[0]?.number}</Text>
+                <Text>{contact?.name}</Text>
+                <Text style={{color:COLORS.textLight, fontSize:12}}>{contact?.phoneNumbers?.[0]?.number}</Text>
             </View>
           </TouchableOpacity>
         )):<NotFound

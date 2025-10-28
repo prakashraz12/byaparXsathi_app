@@ -5,6 +5,7 @@ import { Text } from "../re-usables/text";
 import Shop from "@/database/model/shop.model";
 import SalesItem from "@/database/model/sales-item.model";
 import { nepaliCalendar } from "../re-usables/date-picker/calender-config";
+import { formatNumberWithComma } from "@/utils/format-number";
 
 interface Customer {
   name: string;
@@ -16,7 +17,7 @@ interface ThermalBillProps {
   invoiceNumber: string;
   date: string;
   shop: Shop;
-  customer: Customer;
+  customer: string;
   salesItems: SalesItem[];
   paymentType: "cash" | "credit" | "partially_paid";
   subtotal: number;
@@ -25,6 +26,7 @@ interface ThermalBillProps {
   additionalCharges: number;
   remarks?: string;
   paidAmount?: number;
+  status?: string;
 }
 
 const DashedDivider = () => (
@@ -50,6 +52,7 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
   additionalCharges,
   remarks,
   paidAmount = 0,
+  status = "",
 }) => {
   const grandTotal = subtotal + tax + additionalCharges - cumulativeDiscount;
   const balanceAmount =
@@ -76,12 +79,10 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return `Rs.${amount.toFixed(2)}`;
-  };
+
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.billContainer}>
         {/* Header */}
         <View style={styles.header}>
@@ -117,23 +118,21 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
         </View>
 
         {/* Customer Details */}
-        {/* <View style={styles.customerSection}>
-          <Text style={styles.sectionTitle}>TO:</Text>
-          <Text style={styles.customerName}>{customer?.name}</Text>
-          {customer?.phone && <Text style={styles.customerDetail}>{customer.phone}</Text>}
-          {customer?.address && <Text style={styles.customerDetail}>{customer.address}</Text>}
-        </View> */}
+        <View style={styles.customerSection}>
+          <Text style={styles.sectionTitle}>TO : {customer}</Text>
+        
+        </View>
 
         <DashedDivider />
 
         {/* Items Header */}
         <View style={styles.itemsHeader}>
-          <Text style={[styles.itemHeaderText, styles.itemNameCol]}>Item</Text>
-          <Text style={[styles.itemHeaderText, styles.itemQtyCol]}>Qty</Text>
+          <Text style={[styles.itemHeaderText, styles.itemNameCol]}>ITEMS</Text>
+          <Text style={[styles.itemHeaderText, styles.itemQtyCol]}>QTY</Text>
           <Text style={[styles.itemHeaderText, styles.itemPriceCol]}>
-            Price
+            PRICE
           </Text>
-          <Text style={[styles.itemHeaderText, styles.itemAmountCol]}>Amt</Text>
+          <Text style={[styles.itemHeaderText, styles.itemAmountCol]}>AMOUNT</Text>
         </View>
 
         <DashedDivider />
@@ -150,10 +149,10 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
                     {item?.quantity} x
                   </Text>
                   <Text style={[styles.itemText, styles.itemPriceCol]}>
-                    {formatCurrency(Number(item?.price))}
+                    {formatNumberWithComma(Number(item?.price))}
                   </Text>
                   <Text style={[styles.itemText, styles.itemAmountCol]}>
-                    {formatCurrency(Number(item?.price) * Number(item?.quantity))}
+                    {formatNumberWithComma(Number(item?.price) * Number(item?.quantity))}
                   </Text>
                 </View>
                 {/* {item.discount && item.discount > 0 && (
@@ -173,14 +172,14 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
         <View style={styles.totalsSection}>
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Subtotal:</Text>
-            <Text style={styles.totalValue}>{formatCurrency(subtotal)}</Text>
+            <Text style={styles.totalValue}>{formatNumberWithComma(subtotal)}</Text>
           </View>
 
           {cumulativeDiscount > 0 && (
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Discount:</Text>
               <Text style={[styles.totalValue, styles.discountAmount]}>
-                -{formatCurrency(cumulativeDiscount)}
+                -{formatNumberWithComma(cumulativeDiscount)}
               </Text>
             </View>
           )}
@@ -189,14 +188,14 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Additional Charges:</Text>
               <Text style={styles.totalValue}>
-                +{formatCurrency(additionalCharges)}
+                +{formatNumberWithComma(additionalCharges)}
               </Text>
             </View>
           )}
 
           <View style={styles.totalRow}>
             <Text style={styles.totalLabel}>Tax:</Text>
-            <Text style={styles.totalValue}>{formatCurrency(tax)}</Text>
+            <Text style={styles.totalValue}>{formatNumberWithComma(tax)}</Text>
           </View>
 
           <DashedDivider />
@@ -204,16 +203,16 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
           <View style={styles.grandTotalRow}>
             <Text style={styles.grandTotalLabel}>GRAND TOTAL:</Text>
             <Text style={styles.grandTotalValue}>
-              {formatCurrency(grandTotal)}
+              {formatNumberWithComma(grandTotal)}
             </Text>
           </View>
 
-          {paymentType === "partially_paid" && (
+          {status === "PARTIALLY_PAID" && (
             <>
               <View style={styles.totalRow}>
                 <Text style={styles.totalLabel}>Paid Amount:</Text>
                 <Text style={styles.totalValue}>
-                  {formatCurrency(paidAmount)}
+                  {formatNumberWithComma(paidAmount)}
                 </Text>
               </View>
               <View style={styles.totalRow}>
@@ -221,7 +220,7 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
                   Balance Due:
                 </Text>
                 <Text style={[styles.totalValue, styles.balanceAmount]}>
-                  {formatCurrency(balanceAmount)}
+                  {formatNumberWithComma(balanceAmount)}
                 </Text>
               </View>
             </>
@@ -244,7 +243,7 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
           <Text style={{fontSize:10, color:"#888"}}>*This is electrical bill*</Text>
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -318,20 +317,10 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 14,
     marginBottom: 2,
   },
-  customerName: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 1,
-  },
-  customerDetail: {
-    fontSize: 16,
-    color: "#888",
-    marginBottom: 1,
-  },
+  
   itemsHeader: {
     flexDirection: "row",
     marginBottom: 2,

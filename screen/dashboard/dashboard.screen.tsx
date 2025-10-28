@@ -1,4 +1,4 @@
-import { View, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Dimensions, TouchableOpacity, useWindowDimensions } from "react-native";
 import { Text } from "@/components/re-usables/text";
 import PXWrapper from "@/layouts/px-wrapper";
 import DashBoardTop from "@/components/dashbaord/sticky-top";
@@ -19,6 +19,9 @@ import SalesOverviewChart from "@/components/dashbaord/sales-chart";
 import { useUserStore } from "@/store/useUserStore";
 import { router } from "expo-router";
 import SyncBanner from "@/components/sync-banner";
+import { Button } from "@/components/re-usables/button";
+import { syncDatabase } from "@/database/sync.service";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
 const CARD_MARGIN = 12;
@@ -29,13 +32,13 @@ export const ACTION_BUTTONS = [
     id: "1",
     title: "Customer",
     icon: <UserPlus size={20} color={COLORS.primary} />,
-    onPress: () => {},
+    href: "/(routes)/customer",
   },
   {
     id: "2",
     title: "Quick Sales",
     icon: <Calculator size={20} color={COLORS.success} />,
-    onPress: () => {},
+    href: "/(routes)/sales/create",
   },
   {
     id: "3",
@@ -47,15 +50,13 @@ export const ACTION_BUTTONS = [
     id: "4",
     title: "Expenses",
     icon: <Wallet size={20} color={COLORS.error} />,
-    onPress: () => {},
+    href: "/(routes)/finance/expenses",
   },
   {
     id: "5",
     title: "Items",
     icon: <Feather size={20} color={COLORS.accent} />,
-    onPress: () => {
-      router.push("/(routes)/items");
-    },
+    href: "/(routes)/items",
   },
 ];
 
@@ -65,28 +66,28 @@ const cardData = [
     title: "Sales",
     value: "Rs. 10,000",
     colors: ["#2AA63E", "#4CD964"],
-    icon: <ArrowUp size={20} color="#2AA63E" />,
+    icon: <ArrowUp size={18} color="#2AA63E" />,
   },
   {
     id: "2",
     title: "Purchases",
     value: "50",
     colors: ["#FF6B6B", "#FF8787"],
-    icon: <TruckIcon size={20} color="#FF6B6B" />,
+    icon: <TruckIcon size={18} color="#FF6B6B" />,
   },
   {
     id: "3",
     title: "Expenses",
     value: "120",
     colors: ["#4D96FF", "#6EB8FF"],
-    icon: <Wallet size={20} color="#4D96FF" />,
+    icon: <Wallet size={18} color="#4D96FF" />,
   },
   {
     id: "4",
     title: "Customers",
     value: "50",
     colors: ["#F3A712", "#FFD43B"],
-    icon: <Users size={20} color="#F3A712" />,
+    icon: <Users size={18} color="#F3A712" />,
   },
 ];
 
@@ -94,15 +95,19 @@ const DashboardScreen = () => {
   const user = useUserStore();
   return (
     <>
-      <PXWrapper header={<DashBoardTop />}>
-       <SyncBanner/>
+      <PXWrapper header={<DashBoardTop />} contentContainerStyle={{paddingHorizontal: 0}}>
+        {/* <Button
+          title="sync"
+          onPress={() => syncDatabase({ isFirstTime: false })}
+        /> */}
+        <SyncBanner />
         <View style={{ padding: 12, marginBottom: 6 }}>
-          <Text style={{ fontSize: 18, fontFamily: "Poppins-SemiBold" }}>
+          <Text style={{ fontSize: 15, fontFamily: "Poppins-SemiBold" }}>
             Hello, {user?.user?.fullName}
           </Text>
           <Text
             style={{
-              fontSize: 16,
+              fontSize: 14,
               fontFamily: "Poppins-Regular",
               color: COLORS.textLight,
             }}
@@ -155,8 +160,8 @@ const DashboardScreen = () => {
                   <Text style={styles.cardTitle}>{item.title}</Text>
                   <View
                     style={{
-                      width: 34,
-                      height: 34,
+                      width: 30,
+                      height: 30,
                       borderRadius: 25,
                       backgroundColor: "#fff",
                       justifyContent: "center",
@@ -175,7 +180,7 @@ const DashboardScreen = () => {
         <View>
           <Text
             style={{
-              fontSize: 17,
+              fontSize: 15,
               fontFamily: "Poppins-SemiBold",
               padding: 12,
             }}
@@ -188,7 +193,7 @@ const DashboardScreen = () => {
                 <TouchableOpacity
                   key={item.id}
                   style={styles.quickActionCard}
-                  onPress={item.onPress}
+                  onPress={() => router.push(item?.href || "")}
                 >
                   {item.icon}
                   <Text style={styles.quickActionText}>{item.title}</Text>
@@ -222,7 +227,6 @@ const styles = StyleSheet.create({
   },
   quickActionCard: {
     paddingVertical: 15,
-    paddingHorizontal: 16,
     borderRadius: 5,
     backgroundColor: COLORS.background,
     borderWidth: 1,
@@ -259,13 +263,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   cardTitle: {
-    fontSize: 15,
+    fontSize: 14,
     marginBottom: 6,
     color: "#fff",
     fontFamily: "Poppins-SemiBold",
   },
   cardValue: {
-    fontSize: 18,
+    fontSize: 15,
     color: "#fff",
     fontFamily: "Poppins-SemiBold",
   },

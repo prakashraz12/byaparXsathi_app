@@ -32,7 +32,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   return (
     <View>
       {label && (
-        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 14, marginTop:10 }}>
+        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, marginTop:10, marginLeft:4, color:COLORS.text }}>
           {label}{" "}{required ? <Text style={{color:"red"}}>*</Text> :""}
         </Text>
       )}
@@ -76,6 +76,7 @@ const styles = {
     borderRadius: 7,
     height: 54,
     marginBottom: 4,
+    marginTop: 4,
   },
   inputError: {
     borderColor: COLORS.error,
@@ -90,7 +91,7 @@ const styles = {
     flex: 1,
     height: 54,
     fontFamily: "Poppins-Regular",
-    fontSize: 13,
+    fontSize: 14,
     color: COLORS.text,
   },
   fieldErrorContainer: {

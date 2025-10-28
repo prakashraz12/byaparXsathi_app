@@ -13,7 +13,7 @@ import {
 
 interface ButtonProps extends Omit<TouchableOpacityProps, "style"> {
   title?: string
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive" | "success"
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive" | "success" | "destructiveOutline"
   size?: "small" | "medium" | "large" | "xl"
   loading?: boolean
   disabled?: boolean
@@ -92,7 +92,7 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: 6,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row"
@@ -129,6 +129,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#EF4444",
     borderWidth: 1,
     borderColor: "#EF4444",
+  },
+  destructiveOutline: {
+    backgroundColor: "transparent",
+    borderWidth: 1.5,
+    borderColor: COLORS.error,
   },
   success: {
     backgroundColor: "#10B981",
@@ -189,6 +194,9 @@ const styles = StyleSheet.create({
   destructiveText: {
     color: "#FFFFFF",
   },
+  destructiveOutlineText: {
+    color: COLORS.error,
+  },
   successText: {
     color: "#FFFFFF",
   },
@@ -230,6 +238,9 @@ const styles = StyleSheet.create({
   },
   ghostDisabled: {
     backgroundColor: "transparent",
+  },
+  destructiveOutlineDisabled: {
+    borderColor: "#FCA5A5",
   },
   destructiveDisabled: {
     backgroundColor: "#FCA5A5",

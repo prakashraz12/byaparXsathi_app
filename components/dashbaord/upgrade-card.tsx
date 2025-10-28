@@ -2,10 +2,12 @@ import { View, Pressable } from "react-native";
 import { Text } from "../re-usables/text";
 import { COLORS } from "@/constants/Colors";
 import { Crown } from "lucide-react-native";
+import { router } from "expo-router";
 
 const UpgradeCard = () => {
   return (
     <Pressable
+    onPress={()=>{router.push("/(routes)/shop/select")}}
       android_ripple={{ color: "rgba(0,0,255,0.1)" }} 
       style={{
         flexDirection: "row",
@@ -17,6 +19,7 @@ const UpgradeCard = () => {
         borderWidth: 1,
         borderColor: COLORS.border,
         marginHorizontal: 10,
+
       }}
     >
       {/* Circle background for icon */}
@@ -36,7 +39,7 @@ const UpgradeCard = () => {
       <View>
         <Text
           style={{
-            fontSize: 16,
+            fontSize: 14,
             fontFamily: "Poppins-SemiBold",
             color: COLORS.background,
           }}
@@ -45,7 +48,7 @@ const UpgradeCard = () => {
         </Text>
         <Text
           style={{
-            fontSize: 14,
+            fontSize: 12,
             fontFamily: "Poppins-Regular",
             color: COLORS.background,
           }}

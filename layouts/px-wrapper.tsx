@@ -1,7 +1,7 @@
 import NotFound from "@/components/re-usables/not-found";
 import { COLORS } from "@/constants/Colors";
 import type React from "react";
-import { FlatList, ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, ScrollView, StatusBar, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface PXWrapperProps {
@@ -14,6 +14,7 @@ interface PXWrapperProps {
   renderItem?: any;
   floatingAction?: React.ReactNode;
   footer?: React.ReactNode;
+  backgroundColor?: string;
 }
 
 const PXWrapper = ({
@@ -26,6 +27,7 @@ const PXWrapper = ({
   renderItem,
   floatingAction,
   footer,
+  backgroundColor,
 }: PXWrapperProps) => {
   const insets = useSafeAreaInsets();
   
@@ -33,9 +35,9 @@ const PXWrapper = ({
     <View
       style={[
         styles.safeArea,
-        { paddingTop: insets.top * 0.4 },
+        { paddingTop: insets.top * 0.6 },
         style,
-        { backgroundColor: "#F2F2F7" },
+        { backgroundColor: backgroundColor ? backgroundColor : "#F2F2F7" },
         floatingAction ? { position: "relative" } : {},
       ]}
     >
@@ -50,11 +52,16 @@ const PXWrapper = ({
           <FlatList
             data={data}
             renderItem={renderItem}
+            removeClippedSubviews={true}
+            maxToRenderPerBatch={10}
+            updateCellsBatchingPeriod={30}
+            initialNumToRender={10}
+            windowSize={21}
             keyExtractor={(item, index) => item?.id || index.toString()}
             contentContainerStyle={{ 
               paddingBottom: footer ? 90 : 80, 
               paddingHorizontal: 10, 
-              paddingTop: 16 
+              paddingTop: 10 
             }}
           />
         ) : data?.length === 0 ? (
@@ -79,7 +86,7 @@ const PXWrapper = ({
         <View 
           style={[
             styles.footer,
-            { paddingBottom: insets.bottom || 10 }
+            { paddingBottom: insets.bottom + 8 || 10 }
           ]}
         >
           {footer}
@@ -92,7 +99,6 @@ const PXWrapper = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor:COLORS.background,
     width:"100%",
     height:"100%"
   },
@@ -101,7 +107,6 @@ const styles = StyleSheet.create({
     height: "100%",
     paddingVertical: 2,
     paddingHorizontal: 8,
-    backgroundColor:"#F2F2F7"
   },
   contentContainer: {
     paddingHorizontal: 5,
@@ -109,7 +114,7 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 10,
-    paddingBottom: 5,
+    paddingBottom: 0,
     marginTop: 15,
   },
   noDataText: {
@@ -130,8 +135,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingTop: 10,
+    backgroundColor:"#F2F2F7"
    
   },
 });

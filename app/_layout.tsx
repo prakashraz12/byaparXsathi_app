@@ -15,6 +15,7 @@ import {
 
 import React, { useEffect, useState } from "react";
 import useBackgroundSync from "@/hooks/useBackgroundSync";
+import { StatusBar } from "react-native";
 
 const RootLayout = () => {
   const { updateAsync } = useBackgroundSync();
@@ -36,6 +37,7 @@ const RootLayout = () => {
   return (
     <TanstackProvider>
       <ToastProvider>
+        <StatusBar  barStyle="light-content" />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
           <Stack.Screen name="(routes)" />

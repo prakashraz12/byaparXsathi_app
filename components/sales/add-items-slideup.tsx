@@ -65,10 +65,13 @@ const AddItemsSlideup = ({ visible, onClose, item, onSave }: AddItemsSlideupProp
       price: Number(itemPrice),
       discountAmount: discountValue,
       itemName: item.itemName,
+      measurement: item?.measurementUnit || ""
     })
     onSave();
     onClose()
   }
+
+  const isButtonDisabled = !itemPrice || Number(itemPrice) <= 0 || !qantity || Number(qantity) <= 0 || Number(discountAmount) > (Number(itemPrice) * Number(qantity))
   return (
     <SlideUpModal
       visible={visible}
@@ -170,13 +173,14 @@ const AddItemsSlideup = ({ visible, onClose, item, onSave }: AddItemsSlideupProp
           <Button
             title="Cancel"
             onPress={onClose}
-            variant="outline"
+            variant="destructiveOutline"
             style={styles.cancelButton}
           />
           <Button
             title="Save"
             onPress={handleSave}
             style={styles.saveButton}
+            disabled={isButtonDisabled}
           />
         </View>
       </View>
@@ -187,11 +191,11 @@ const AddItemsSlideup = ({ visible, onClose, item, onSave }: AddItemsSlideupProp
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 2,
     gap: 15,
   },
   header: {
-    marginBottom: 8,
+    marginBottom: 2,
   },
   headerTitle: {
     fontSize: 20,
@@ -209,7 +213,8 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 16,
     color: COLORS.text,
-    marginBottom: 4,
+                  fontFamily: "Poppins-SemiBold",
+
   },
   itemCard: {
     flexDirection: "row",
@@ -353,7 +358,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     justifyContent: "flex-end",
-    marginTop: 8,
+    marginTop: 15,
   },
   cancelButton: {
     flex: 1,

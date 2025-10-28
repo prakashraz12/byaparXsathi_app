@@ -8,11 +8,15 @@ export function useSales({
   sort = "desc",
   startDate,
   endDate,
+  paymentType,
+  paymentStatus,
 }: {
   searchParams: string;
   sort: "asc" | "desc";
   startDate?: Date;
   endDate?: Date;
+  paymentType?: string;
+  paymentStatus?: string;
 }) {
   const { activeShopId } = useUserStore();
   const [sales, setSales] = useState<any[]>([]);
@@ -40,7 +44,7 @@ export function useSales({
       query = query.extend(Q.sortBy("invoiceDate", sort));
     }
 
-    if (startDate && endDate) {
+    if (startDate !== undefined && endDate !== undefined) {
       query = query.extend(
         Q.where(
           "invoiceDate",
@@ -49,8 +53,16 @@ export function useSales({
       );
     }
 
+    if (paymentType) {
+      query = query.extend(Q.where("paymentType", paymentType));
+    }
+
+    if (paymentStatus) {
+      query = query.extend(Q.where("status", paymentStatus));
+    }
+
     return query;
-  }, [activeShopId, searchParams, startDate, endDate, sort]);
+  }, [activeShopId, searchParams, startDate, endDate, sort, paymentType, paymentStatus]);
 
   const loadSales = useCallback(
     async (isRefresh = false) => {

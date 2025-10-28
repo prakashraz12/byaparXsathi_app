@@ -34,6 +34,7 @@ const AddCustomerModal = () => {
   const [modalType, setModalType] = useState<"ADD" | "IMPORT">("ADD");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [contacts, setContacts] = useState<IContact[]>([]);
+  const [importingContactLoading, setImportingContactLoading] = useState<boolean>(false);
 
   const { handleSubmit, Field, setFieldValue, reset } = useForm({
     defaultValues: {
@@ -99,7 +100,7 @@ const AddCustomerModal = () => {
         visible={visible}
         height={SCREEN_HEIGHT * (modalType === "ADD" ? 0.7 : 0.9)}
         onClose={() => setVisible(false)}
-        title="Add Customer"
+        title="Customer Details"
         stickyFooter={
           <View
             style={{
@@ -114,6 +115,8 @@ const AddCustomerModal = () => {
               mode={modalType}
               setMode={setModalType}
               setContacts={setContacts}
+              setImportingContactLoading={setImportingContactLoading}
+
             />
             <Button
               loading={isLoading}
@@ -128,18 +131,8 @@ const AddCustomerModal = () => {
         <>
           {modalType === "ADD" ? (
             <>
-              <Text
-                variant="h6"
-                style={{
-                  marginBottom: 16,
-                  fontSize: 16,
-                  fontFamily: "Poppins-SemiBold",
-                  color: COLORS.text,
-                }}
-              >
-                Customer Details
-              </Text>
-              <View style={{ flexDirection: "column", gap: 16 }}>
+             
+              <View style={{ flexDirection: "column", gap: 16,marginTop:10 }}>
                 <Field name="name">
                   {(field) => {
                     return (
@@ -206,6 +199,7 @@ const AddCustomerModal = () => {
           ) : (
             <ContactList
               contacts={contacts}
+              loading={importingContactLoading}
               onClickContact={handleImportContact}
             />
           )}

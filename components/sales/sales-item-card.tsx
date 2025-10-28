@@ -60,16 +60,16 @@ const SalesItemCard = ({
         }}
       >
         <Text size={13} style={{ color: "#666" }}>
-          {item.quantity} X {formatNumberWithComma(Number(item.price))}
+          {item.quantity} {item?.measurement} X {formatNumberWithComma(Number(item.price))}  {Number(item.discountAmount) > 0 ? `=12${formatNumberWithComma(Number(item.quantity) * Number(item.price))}` : ""}
         </Text>
         <Text size={15}>
-         {formatNumberWithComma(Number(item.quantity) * Number(item.price))}
+         {formatNumberWithComma(Number(item.quantity) * Number(item.price) - Number(item.discountAmount))}
         </Text>
-      </View>
-     {item.discountAmount && (
+      </View> 
+     {Number(item.discountAmount) > 0 && (
       <View style={{marginTop: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-        <Text size={12} style={{ color: "#666"}}>Discount</Text>
-        <Text size={13}>{formatNumberWithComma(Number(item.discountAmount))}</Text>
+        <Text size={12} style={{ color: COLORS.error}}>Discount</Text>
+        <Text size={13} style={{ color: COLORS.error}}>{formatNumberWithComma(Number(item.discountAmount))}</Text>
       </View>
      )}
       <EditSalesItem visible={updateOpen} onClose={()=>setUpdateOpen(false)} itemId={item.itemId} item={item} onSave={()=>setUpdateOpen(false)}/>

@@ -9,13 +9,8 @@ export default class PaymentAccount extends Model {
   @field("isActive") isActive?: boolean;
   @field("shopId") shopId?: string;
   @field("name") name?: string;
-  @field("createdAt") createdAt?: Date;
-  @field("updatedAt") updatedAt?: Date;
+  @field("created_at") created_at?: number;
+  @field("updated_at") updated_at?: number;
 
-  @writer async addAmount(amount: number) {
-    await this.update(account =>{
-      console.log("account", account, amount)
-      account.balance = (account.balance || 0)  + amount;
-    })
-  }
+
 }

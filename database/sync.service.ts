@@ -43,6 +43,7 @@ export async function syncDatabase({isFirstTime = false}:{isFirstTime?:boolean})
       },
 
       pushChanges: async ({ changes, lastPulledAt }) => {
+        console.log("pushing changes", changes)
         try {
           const response = await fetch(`${BASE_API_URL}/api/v1/sync/push`, {
             method: "POST",

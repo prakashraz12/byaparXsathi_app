@@ -9,12 +9,14 @@ interface IImportContact {
   mode: "ADD" | "IMPORT";
   setMode: (mode: "ADD" | "IMPORT") => void;
   setContacts: (contacts: any[]) => void;
+  setImportingContactLoading: (loading: boolean) => void;
 }
-const ImportContact = ({ mode, setMode, setContacts }: IImportContact) => {
+const ImportContact = ({ mode, setMode, setContacts, setImportingContactLoading }: IImportContact) => {
   //first check is user allow to contact permission//
   const getContacts = async () => {
     const { status } = await Contacts.requestPermissionsAsync();
     if (status === "granted") {
+      setImportingContactLoading(true)
       const { data } = await Contacts.getContactsAsync({
         fields: [Contacts.Fields.PhoneNumbers, Contacts.Fields.Emails, Contacts.Fields.Addresses],
       });
@@ -22,8 +24,10 @@ const ImportContact = ({ mode, setMode, setContacts }: IImportContact) => {
       if(data?.length>0){
         setContacts(data)
       }
+      setImportingContactLoading(false)
     } else {
       Toast.error("Permission denied")
+      setImportingContactLoading(false)
     }
   };
   return (

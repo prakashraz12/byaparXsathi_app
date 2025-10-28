@@ -16,7 +16,7 @@ export default class Item extends Model {
   @field("is_stock_enabled") isStockEnabled?: boolean;
   @field("is_active") isActive?: boolean;
   @field("image_url") imageUrl?: string | null;
-  @date("created_at") createdAt?: Date;
-  @date("updated_at") updatedAt?: Date;
+  @field("created_at") createdAt?: number;
+  @field("updated_at") updatedAt?: number;
   @field("shopId") shopId?: string;
 }

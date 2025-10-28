@@ -27,6 +27,9 @@ import { useSalesItemStore } from "@/store/useSalesItem";
 import PaymentModeSlideup from "../../components/sales/payment-mode-slideup";
 import PaymentSlideUp from "../../components/sales/payment-slide-up";
 import SalesItemCard from "../../components/sales/sales-item-card";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AddCustomerSlideup from "@/components/sales/add-customer-slideup";
+import Customer from "@/database/model/customer.model";
 
 // Types
 type SalesItemDraft = {
@@ -36,26 +39,20 @@ type SalesItemDraft = {
   itemName?: string;
 };
 
-type AdditionalCharge = {
-  id: string;
-  name: string;
-  amount: string;
-};
+
 
 // Utility functions
 const parseNumber = (value: string): number => Number.parseFloat(value) || 0;
 
-const calculateTotalAdditionalCharges = (
-  charges: AdditionalCharge[]
-): number => {
-  return charges.reduce((sum, charge) => sum + parseNumber(charge.amount), 0);
-};
+
 
 const CreateSalesScreen = () => {
   // Basic state
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [customer, setCustomer] = useState("Select Customer");
+  const [customer, setCustomer] = useState<Customer | null>(null);
   const [notes, setNotes] = useState("");
+  const {bottom} = useSafeAreaInsets()
+  const [showAddCustomerSlideup, setShowAddCustomerSlideup] = useState(false);
 
   // Payment state
   const [paymentType, setPaymentType] = useState<string | null>(null);
@@ -70,6 +67,7 @@ const CreateSalesScreen = () => {
   const [showAddItemsSlideup, setShowAddItemsSlideup] = useState(false);
   const [paymentSlideup, setPaymentSlideup] = useState(false);
   const [paymentModeSlideup, setPaymentModeSlideup] = useState(false);
+  const [itemShow, setItemShow] = useState(true)
 
   // Section visibility state
   const [showDiscountSection, setShowDiscountSection] = useState(false);
@@ -87,46 +85,17 @@ const CreateSalesScreen = () => {
   const [taxAmount, setTaxAmount] = useState("");
 
   // Additional charges state
-  const [additionalCharges, setAdditionalCharges] = useState<
-    AdditionalCharge[]
-  >([]);
+  const [additionalCharge, setAdditionalCharge] = useState("");
 
   const { activeShop } = useShops();
 
   // Handlers
   const handleCustomerPress = useCallback(() => {
-    console.log("Customer pressed");
+    setShowAddCustomerSlideup(true);
   }, []);
 
   const handleDeleteItem = useCallback((itemId: string) => {
-    console.log(itemId, "rhis is results");
     removeSalesItem(itemId);
-  }, []);
-
-  const handleAddAdditionalCharge = useCallback(() => {
-    setAdditionalCharges((prev) => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        name: "",
-        amount: "",
-      },
-    ]);
-  }, []);
-
-  const handleUpdateAdditionalCharge = useCallback(
-    (id: string, field: "name" | "amount", value: string) => {
-      setAdditionalCharges((prev) =>
-        prev.map((charge) =>
-          charge.id === id ? { ...charge, [field]: value } : charge
-        )
-      );
-    },
-    []
-  );
-
-  const handleRemoveAdditionalCharge = useCallback((id: string) => {
-    setAdditionalCharges((prev) => prev.filter((charge) => charge.id !== id));
   }, []);
 
   const toggleDiscountSection = useCallback(() => {
@@ -151,7 +120,10 @@ const CreateSalesScreen = () => {
   // Calculations
   const subtotal = useMemo(() => {
     return salesItems.reduce(
-      (total, item) => total + (item.quantity || 0) * (item.price || 0),
+      (total, item) =>
+        total +
+        (item.quantity || 0) * (item.price || 0) -
+        (item.discountAmount || 0),
       0
     );
   }, [salesItems]);
@@ -220,8 +192,6 @@ const CreateSalesScreen = () => {
     (value: string) => {
       setTaxPercentage(value);
       setLastEditedTax("percentage");
-
-      // Auto-calculate amount from percentage
       const amountAfterDiscount = subtotal - calculatedDiscountAmount;
       if (value && amountAfterDiscount > 0) {
         const calculatedAmount =
@@ -234,23 +204,6 @@ const CreateSalesScreen = () => {
     [subtotal, calculatedDiscountAmount]
   );
 
-  const handleTaxAmountChange = useCallback(
-    (value: string) => {
-      setTaxAmount(value);
-      setLastEditedTax("amount");
-
-      const amountAfterDiscount = subtotal - calculatedDiscountAmount;
-      if (value && amountAfterDiscount > 0) {
-        const calculatedPercentage =
-          (parseNumber(value) / amountAfterDiscount) * 100;
-        setTaxPercentage(calculatedPercentage.toFixed(2));
-      } else {
-        setTaxPercentage("");
-      }
-    },
-    [subtotal, calculatedDiscountAmount]
-  );
-
   const calculatedTaxAmount = useMemo(() => {
     if (!showTaxSection) return 0;
 
@@ -258,7 +211,6 @@ const CreateSalesScreen = () => {
     const percentValue = parseNumber(taxPercentage);
     const amountValue = parseNumber(taxAmount);
 
-    // Use the last edited field's value for calculation
     if (lastEditedTax === "percentage" && percentValue > 0) {
       return (amountAfterDiscount * percentValue) / 100;
     }
@@ -274,19 +226,17 @@ const CreateSalesScreen = () => {
   ]);
 
   const grandTotal = useMemo(() => {
-    const totalAdditionalCharges =
-      calculateTotalAdditionalCharges(additionalCharges);
     return (
       subtotal -
       calculatedDiscountAmount +
       calculatedTaxAmount +
-      totalAdditionalCharges
+      Number(additionalCharge)
     );
   }, [
     subtotal,
     calculatedDiscountAmount,
     calculatedTaxAmount,
-    additionalCharges,
+    additionalCharge,
   ]);
 
   const dueAmount = useMemo(() => {
@@ -306,8 +256,6 @@ const CreateSalesScreen = () => {
       return;
     }
 
-    const totalAdditionalCharges =
-      calculateTotalAdditionalCharges(additionalCharges);
     const calculatedPaidAmount =
       paymentStatus === "PAID"
         ? grandTotal
@@ -316,22 +264,24 @@ const CreateSalesScreen = () => {
           : 0;
 
     const response = await salesService.create(
+
       {
         invoiceDate: selectedDate.getTime(),
         grandTotalAmount: grandTotal,
         subTotalAmount: subtotal,
         discountAmount: calculatedDiscountAmount,
         taxAmount: calculatedTaxAmount,
-        additionalAmount: totalAdditionalCharges,
+        additionalAmount: Number(additionalCharge),
         oldDueAmount: 0,
         dueAmount: paymentStatus === "PARTIALLY_PAID" ? dueAmount : 0,
         paidAmount: calculatedPaidAmount,
         remarks: notes,
-        salesItems: salesItems,
         paymentType: paymentType,
         status: paymentStatus,
+        customerId: customer?.id || "",
       },
-      activeShop?.id || ""
+      activeShop?.id || "",
+      salesItems
     );
 
     if (response?.success) {
@@ -358,21 +308,26 @@ const CreateSalesScreen = () => {
     subtotal,
     calculatedDiscountAmount,
     calculatedTaxAmount,
-    additionalCharges,
+    additionalCharge,
     dueAmount,
     paidAmount,
     notes,
     salesItems,
     activeShop?.id,
+    customer?.id,
   ]);
 
   const isSalesButtonDisabled = grandTotal === 0 || salesItems.length === 0;
 
   return (
     <PXWrapper
-      header={<Header title="Add Sale" onBackPress={() => router.back()} />}
+      header={<Header title="Add Sale" onBackPress={() => {
+        useSalesItemStore.setState({ salesItems: [] });
+        router.back();
+      }} />}
       footer={
         <Button
+        style={{marginBottom:bottom *0.2}}
           disabled={isSalesButtonDisabled}
           title={`Proceed To Sale ${formatNumberWithComma(grandTotal)}`}
           onPress={handleSave}
@@ -386,9 +341,9 @@ const CreateSalesScreen = () => {
             onPress={handleCustomerPress}
             activeOpacity={0.7}
           >
-            <Text style={styles.label}>Customer</Text>
+            {customer?.outstanding ? <Text style={{fontSize:12, color:COLORS.error}}>{customer?.outstanding}</Text> : <Text style={styles.label}>Customer</Text>}
             <View style={styles.inputContent}>
-              <Text style={styles.inputValue}>{customer}</Text>
+              <Text style={styles.inputValue}>{customer?.name || "Select Customer"}</Text>
               <ChevronDown size={18} color="#666" />
             </View>
           </TouchableOpacity>
@@ -417,20 +372,20 @@ const CreateSalesScreen = () => {
           onPress={() => router.push("/(routes)/sales/sales-items")}
           activeOpacity={0.7}
         >
-          <PlusCircle size={20} color={COLORS.primary} />
+          <PlusCircle size={25} color={"white"}  fill={COLORS.primary}/>
           <Text style={styles.addItemsText}>Add Items</Text>
         </TouchableOpacity>
 
         <View>
           {salesItems?.length > 0 && (
             <View style={styles.itemsHeader}>
-              <Text size={16}>Items ({salesItems.length})</Text>
-              <TouchableOpacity>
-                <Minus size={20} color={COLORS.primary} />
+              <Text size={16} style={{fontFamily:"Poppins-Medium"}}>Items</Text>
+              <TouchableOpacity onPress={() => setItemShow(!itemShow)}>
+                {itemShow ? <Minus size={20} color={COLORS.primary} /> : <Plus size={20} color={COLORS.primary} />}
               </TouchableOpacity>
             </View>
           )}
-          <View>
+          <View style={{display: itemShow ? "flex" : "none" }}>
             {salesItems?.map((item, index) => (
               <SalesItemCard
                 key={`${item.itemId}-${index}`}
@@ -468,41 +423,27 @@ const CreateSalesScreen = () => {
             taxPercentage={taxPercentage}
             taxAmount={taxAmount}
             onTaxPercentageChange={handleTaxPercentageChange}
-            onTaxAmountChange={handleTaxAmountChange}
             onRemove={toggleTaxSection}
           />
         ) : (
           <AddSectionButton label="Add Tax" onPress={toggleTaxSection} />
         )}
 
-        {showAdditionalChargesSection && (
+        {showAdditionalChargesSection ? (
           <>
-            {additionalCharges.map((charge) => (
-              <AdditionalChargeRow
-                key={charge.id}
-                charge={charge}
-                onUpdate={handleUpdateAdditionalCharge}
-                onRemove={handleRemoveAdditionalCharge}
-              />
-            ))}
-            <AddSectionButton
-              label="Add More Charges"
-              onPress={handleAddAdditionalCharge}
+            <AdditionalChargeRow
+              charge={additionalCharge}
+              setCharge={setAdditionalCharge}
+              setShowAdditionalChargesSection={setShowAdditionalChargesSection}
             />
           </>
-        )}
-
-        {!showAdditionalChargesSection && (
+        ): (
           <AddSectionButton
-            label="Add Additional Charges"
-            onPress={() => {
-              setShowAdditionalChargesSection(true);
-              handleAddAdditionalCharge();
-            }}
+            label="Add Additional Charge"
+            onPress={() => setShowAdditionalChargesSection(true)}
           />
         )}
 
-        {/* Remarks Section */}
         {showRemarksSection ? (
           <RemarksSection
             notes={notes}
@@ -516,7 +457,6 @@ const CreateSalesScreen = () => {
           />
         )}
 
-        {/* Grand Total */}
         <View style={styles.grandTotalContainer}>
           <Text style={styles.grandTotalLabel}>Total Amount</Text>
           <Text style={styles.grandTotalValue}>
@@ -524,7 +464,6 @@ const CreateSalesScreen = () => {
           </Text>
         </View>
 
-        {/* Payment Status */}
         {paymentStatus && (
           <InfoRow
             label="Payment Status"
@@ -559,7 +498,6 @@ const CreateSalesScreen = () => {
           </>
         )}
 
-        {/* Payment Mode */}
         {paymentType && (
           <InfoRow
             label="Payment Mode"
@@ -582,6 +520,12 @@ const CreateSalesScreen = () => {
         onClose={() => setPaymentModeSlideup(false)}
         paymentType={paymentType || ""}
         setPaymentType={setPaymentType}
+      />
+      <AddCustomerSlideup
+        visible={showAddCustomerSlideup}
+        onClose={() => setShowAddCustomerSlideup(false)}
+        setCustomer={setCustomer}
+        selectedCustomer={customer}
       />
     </PXWrapper>
   );
@@ -636,24 +580,41 @@ const DiscountSection = ({
 
 const TaxSection = ({
   taxPercentage,
-  taxAmount,
   onTaxPercentageChange,
-  onTaxAmountChange,
   onRemove,
+  taxAmount,
 }: {
   taxPercentage: string;
-  taxAmount: string;
   onTaxPercentageChange: (value: string) => void;
-  onTaxAmountChange: (value: string) => void;
   onRemove: () => void;
+  taxAmount: string;
 }) => (
-  <View style={styles.sectionRow}>
-    <TouchableOpacity onPress={onRemove} activeOpacity={0.7}>
-      <Trash2 size={20} color="#ef4444" />
-    </TouchableOpacity>
-    <Text style={styles.sectionLabel}>Tax</Text>
-    <View style={styles.dualInputContainer}>
-      <View style={styles.inputWithUnit}>
+  <View
+    style={{
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      justifyContent: "space-between",
+    }}
+  >
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+      <TouchableOpacity onPress={onRemove} activeOpacity={0.7}>
+        <Trash2 size={20} color="#ef4444" />
+      </TouchableOpacity>
+      <Text style={styles.sectionLabel}>Tax</Text>
+    </View>
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 6,
+          width: 100,
+          borderBottomWidth: 1,
+          borderBottomColor: COLORS.primary,
+          padding: 5,
+        }}
+      >
         <TextInput
           style={styles.mediumInput}
           value={taxPercentage}
@@ -664,48 +625,41 @@ const TaxSection = ({
         />
         <Text style={styles.unitText}>%</Text>
       </View>
-      <Link2 size={18} color={COLORS.primary} />
-      <View style={styles.inputWithUnit}>
-        <Text style={styles.unitText}>Rs.</Text>
-        <TextInput
-          style={styles.mediumInput}
-          value={taxAmount}
-          onChangeText={onTaxAmountChange}
-          placeholder="0"
-          placeholderTextColor="#999"
-          keyboardType="numeric"
-        />
-      </View>
+      <Text style={styles.unitText}>
+        {formatNumberWithComma(Number(taxAmount))}
+      </Text>
     </View>
   </View>
 );
 
 const AdditionalChargeRow = ({
   charge,
-  onUpdate,
-  onRemove,
+  setCharge,
+  setShowAdditionalChargesSection,
 }: {
-  charge: AdditionalCharge;
-  onUpdate: (id: string, field: "name" | "amount", value: string) => void;
-  onRemove: (id: string) => void;
+  charge: string;
+  setCharge: (value: string) => void;
+  setShowAdditionalChargesSection: (value: boolean) => void;
 }) => (
   <View style={styles.sectionRow}>
-    <TouchableOpacity onPress={() => onRemove(charge.id)} activeOpacity={0.7}>
-      <Trash2 size={20} color="#ef4444" />
-    </TouchableOpacity>
-    <TextInput
-      style={styles.chargeNameInput}
-      value={charge.name}
-      onChangeText={(value) => onUpdate(charge.id, "name", value)}
-      placeholder="Charge Name"
-      placeholderTextColor="#999"
-    />
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+      <TouchableOpacity
+        onPress={() => {
+          setCharge("");
+          setShowAdditionalChargesSection(false);
+        }}
+        activeOpacity={0.7}
+      >
+        <Trash2 size={20} color="#ef4444" />
+      </TouchableOpacity>
+      <Text style={styles.sectionLabel}>Additional Charge</Text>
+    </View>
     <View style={styles.chargeAmountContainer}>
       <Text style={styles.unitText}>Rs.</Text>
       <TextInput
         style={styles.chargeAmountInput}
-        value={charge.amount}
-        onChangeText={(value) => onUpdate(charge.id, "amount", value)}
+        value={charge}
+        onChangeText={setCharge}
         placeholder="0"
         placeholderTextColor="#999"
         keyboardType="numeric"
@@ -826,11 +780,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: COLORS.border,
-    paddingVertical: 15,
+    paddingVertical: 10,
   },
   addItemsText: {
-    fontSize: 16,
+    fontSize: 14,
     color: COLORS.primary,
+    fontFamily:"Poppins-Medium",
+    marginTop:4
+
   },
   itemsHeader: {
     flexDirection: "row",
@@ -846,6 +803,7 @@ const styles = StyleSheet.create({
   subtotalLabel: {
     fontSize: 16,
     color: "#374151",
+    fontFamily:"Poppins-Medium"
   },
   subtotalValue: {
     fontSize: 16,
@@ -858,6 +816,7 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 8,
     paddingHorizontal: 6,
+    justifyContent: "space-between",
   },
   sectionLabel: {
     fontSize: 14,
@@ -883,7 +842,7 @@ const styles = StyleSheet.create({
   },
   mediumInput: {
     flex: 1,
-    fontSize: 14,
+    fontSize: 16,
     color: "#111827",
     padding: 0,
     minWidth: 40,
@@ -897,18 +856,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     color: "#111827",
-    borderWidth: 1,
-    borderColor: COLORS.border,
     padding: 10,
-    borderRadius: 5,
   },
   chargeAmountContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.primary,
     paddingHorizontal: 10,
   },
   chargeAmountInput: {
@@ -939,9 +894,11 @@ const styles = StyleSheet.create({
   },
   grandTotalLabel: {
     fontSize: 16,
+    fontFamily:"Poppins-Medium"
   },
   grandTotalValue: {
     fontSize: 16,
+    fontFamily:"Poppins-Medium"
   },
   remarksContainer: {
     gap: 8,
@@ -955,7 +912,7 @@ const styles = StyleSheet.create({
   remarksLabel: {
     fontSize: 14,
     color: "#374151",
-    fontWeight: "600",
+    fontFamily:"Poppins-Medium"
   },
   notesInput: {
     backgroundColor: "#fff",

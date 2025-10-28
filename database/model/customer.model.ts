@@ -15,4 +15,5 @@ export default class Customer extends Model {
   @field("created_at") created_at?: number;
   @field("updated_at") updated_at?: number;
   @field("shopId") shopId?:string;
+  
 }

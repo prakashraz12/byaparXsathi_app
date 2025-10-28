@@ -6,6 +6,7 @@ import { StyleSheet, TouchableOpacity, View, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import useShops from "@/database/hooks/useShops";
 import { COLORS } from "@/constants/Colors";
+import { formatNumberWithComma } from "@/utils/format-number";
 
 interface PaymentModeSlideupProps {
   visible: boolean;
@@ -31,6 +32,8 @@ const PaymentModeSlideup = ({
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+
         >
           <View style={styles.optionsList}>
             {currentPaymentAccount?.map((account) => (
@@ -78,7 +81,7 @@ const PaymentModeSlideup = ({
                   </View>
                   <Text style={styles.optionText}>{account.name}</Text>
                 </View>
-                <Text style={styles.balanceText}>{account.balance || 0}</Text>
+                <Text style={styles.balanceText}>{formatNumberWithComma(account?.balance || 0)}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -99,8 +102,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   title: {
-    fontSize: 18,
-    fontWeight: "600",
+    fontSize: 15,
+    fontFamily:"Poppins-Medium",
     marginBottom: 20,
   },
   scrollView: {
@@ -151,14 +154,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fce7f3",
   },
   optionText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#374151",
     flex: 1,
   },
   balanceText: {
     fontSize: 16,
-    fontWeight: "700",
-    color: "#1f2937",
+    color: COLORS.text,
+    fontFamily:"Poppins-Medium",
   },
   backButton: {
     padding: 8,

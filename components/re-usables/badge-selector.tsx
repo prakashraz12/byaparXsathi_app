@@ -12,6 +12,8 @@ interface BadgeSelectorProps {
   onChange: (value: string) => void;
   label?: string;
   required?:boolean
+  checkedUnchecked?:boolean
+  errorMessage?:string
 }
 
 const BadgeSelector = ({
@@ -19,11 +21,12 @@ const BadgeSelector = ({
   value,
   onChange,
   label,
-  required
+  required,
+  checkedUnchecked,
 }: BadgeSelectorProps) => {
   return (
     <View style={{ flex: 1, flexDirection: "column", gap: 8, marginTop: 5 }}>
-      {label && <Text style={{ fontSize: 14, marginBottom: 6, fontFamily: "Poppins-SemiBold" }}>{label}{" "}{required ? <Text style={{color:"red"}}>*</Text> :""}</Text>}
+      {label && <Text style={{ fontSize: 16, marginBottom: 4,marginLeft:4, fontFamily: "Poppins-Medium" }}>{label}{" "}{required ? <Text style={{color:"red"}}>*</Text> :""}</Text>}
       <View 
         style={{ 
           flexDirection: "row", 
@@ -42,10 +45,10 @@ const BadgeSelector = ({
               borderWidth: 1,
               borderColor: COLORS.border,
               backgroundColor:
-                value === item?.value ? COLORS.primary : "transparent",
+                value === item?.value ? COLORS.primary : "white",
             }}
             key={item.value}
-            onPress={() => onChange(item.value)}
+            onPress={() => value === item?.value && checkedUnchecked ? onChange("") : onChange(item.value)}
           >
             {value === item?.value && (
               <Check 
@@ -65,7 +68,7 @@ const BadgeSelector = ({
           </TouchableOpacity>
         ))}
       </View>
-    </View>
+          </View>
   );
 };
 

@@ -34,12 +34,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingVertical: 8,
   },
   switchLabel: {
-    fontSize: 17,
-    color: '#000',
-    fontFamily:"Poppins-semibold"
+    fontSize: 16,
+    color: COLORS.text,
+    fontFamily:"Poppins-Medium"
   },
   switch: {
     transform: [{ scaleX: 0.95 }, { scaleY: 0.95 }],

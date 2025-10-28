@@ -14,12 +14,15 @@ import useGetMeasuringUnits from "@/hooks/useGetMeasuringUnits";
 import PXWrapper from "@/layouts/px-wrapper";
 import { useForm } from "@tanstack/react-form";
 import { router } from "expo-router";
-import { Check, Package, DollarSign, Archive } from "lucide-react-native";
+import { Check } from "lucide-react-native";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const AddItemScreen = () => {
   const { activeShop } = useShops();
   const { measuringUnits } = useGetMeasuringUnits({});
+
+  const insets = useSafeAreaInsets();
 
   const form = useForm({
     defaultValues: {
@@ -51,43 +54,23 @@ const AddItemScreen = () => {
         },
         activeShop?.id || ""
       );
-      if(response?.statusCode === 201){
-        Toast.success(response?.message)
-        router.back()
+      if (response?.statusCode === 201) {
+        Toast.success(response?.message);
+        router.back();
       }
     },
-    
   });
 
   return (
     <PXWrapper
-      footer={
-        <View style={styles.footerContainer}>
-          <Button 
-            variant="ghost" 
-            title="Cancel" 
-            style={styles.cancelButton}
-            onPress={() => router.back()}
-          />
-          <Button 
-            title="Save Item" 
-            style={styles.saveButton} 
-            onPress={form.handleSubmit} 
-          />
-        </View>
-      }
+      header={<Header title="Add Item" onBackPress={() => router.back()} />}
     >
-      <Header title="Add Item" onBackPress={() => router.back()} />
-      
-      <View style={styles.content}>
-        <View style={styles.sectionHeader}>
-          <Package size={20} color={COLORS.primary} />
-          <Text style={styles.sectionTitle}>Basic Information</Text>
-        </View>
-        
+      <View style={[styles.content, { paddingBottom: insets.bottom + 0.8 }]}>
         <form.Field name="itemName">
           {(field) => (
             <CustomInput
+              label="Item Name"
+              required
               placeholder="Enter item name"
               value={field.state.value}
               onChangeText={field.handleChange}
@@ -104,6 +87,7 @@ const AddItemScreen = () => {
             <HoverSelector
               title="Measuring Units"
               value={field?.state.value}
+              required
               onChange={(d) => field.handleChange(d)}
               data={measuringUnits}
               placeholder="Select measuring unit"
@@ -117,9 +101,7 @@ const AddItemScreen = () => {
                     <AvatarCard name={item.shortForm} size={45} />
                     <View style={styles.unitText}>
                       <Text style={styles.unitLabel}>{item.label}</Text>
-                      <Text style={styles.unitShortForm}>
-                        {item.shortForm}
-                      </Text>
+                      <Text style={styles.unitShortForm}>{item.shortForm}</Text>
                     </View>
                   </View>
                   {field?.state.value === item?.shortForm && (
@@ -131,55 +113,38 @@ const AddItemScreen = () => {
           )}
         </form.Field>
 
-        {/* Pricing Section */}
-        <View style={styles.sectionHeader}>
-          <DollarSign size={20} color={COLORS.primary || "#007AFF"} />
-          <Text style={styles.sectionTitle}>Pricing</Text>
-        </View>
-        
-        <View style={styles.priceRow}>
-          <View style={styles.priceField}>
-            <Text style={styles.fieldLabel}>Cost Price</Text>
-            <form.Field name="costPrice">
-              {(field) => (
-                <CustomInput
-                  placeholder="0.00"
-                  value={field.state.value}
-                  onChangeText={field.handleChange}
-                  onBlur={field.handleBlur}
-                  keyboardType="numeric"
-                  error={field.state.meta.errors
-                    .map((err: any) => err.message || String(err))
-                    .join(", ")}
-                />
-              )}
-            </form.Field>
-          </View>
+        <form.Field name="costPrice">
+          {(field) => (
+            <CustomInput
+              label="Cost Price"
+              placeholder="0.00"
+              value={field.state.value}
+              onChangeText={field.handleChange}
+              onBlur={field.handleBlur}
+              keyboardType="numeric"
+              error={field.state.meta.errors
+                .map((err: any) => err.message || String(err))
+                .join(", ")}
+            />
+          )}
+        </form.Field>
 
-          <View style={styles.priceField}>
-            <Text style={styles.fieldLabel}>Selling Price</Text>
-            <form.Field name="sellingPrice">
-              {(field) => (
-                <CustomInput
-                  placeholder="0.00"
-                  value={field.state.value}
-                  onChangeText={field.handleChange}
-                  onBlur={field.handleBlur}
-                  keyboardType="numeric"
-                  error={field.state.meta.errors
-                    .map((err: any) => err.message || String(err))
-                    .join(", ")}
-                />
-              )}
-            </form.Field>
-          </View>
-        </View>
-
-        {/* Stock Management Section */}
-        <View style={styles.sectionHeader}>
-          <Archive size={20} color={COLORS.primary || "#007AFF"} />
-          <Text style={styles.sectionTitle}>Stock Management</Text>
-        </View>
+        <form.Field name="sellingPrice">
+          {(field) => (
+            <CustomInput
+              label="Selling Price"
+              required
+              placeholder="0.00"
+              value={field.state.value}
+              onChangeText={field.handleChange}
+              onBlur={field.handleBlur}
+              keyboardType="numeric"
+              error={field.state.meta.errors
+                .map((err: any) => err.message || String(err))
+                .join(", ")}
+            />
+          )}
+        </form.Field>
 
         <View style={styles.switchContainer}>
           <form.Field name="isStockEnabled">
@@ -200,66 +165,67 @@ const AddItemScreen = () => {
         >
           {(isStockEnabled) =>
             isStockEnabled && (
-              <View style={styles.stockFields}>
-                <View style={styles.stockRow}>
-                  <View style={styles.stockField}>
-                    <Text style={styles.fieldLabel}>Opening Stock</Text>
-                    <form.Field name="openingStock">
-                      {(field) => (
-                        <CustomInput
-                          placeholder="0"
-                          value={field.state.value}
-                          onChangeText={field.handleChange}
-                          onBlur={field.handleBlur}
-                          keyboardType="numeric"
-                          error={field.state.meta.errors
-                            .map((err: any) => err.message || String(err))
-                            .join(", ")}
-                        />
-                      )}
-                    </form.Field>
-                  </View>
+              <>
+                <form.Field name="openingStock">
+                  {(field) => (
+                    <CustomInput
+                      label="Opening Stock"
+                      placeholder="0"
+                      value={field.state.value}
+                      onChangeText={field.handleChange}
+                      onBlur={field.handleBlur}
+                      keyboardType="numeric"
+                      error={field.state.meta.errors
+                        .map((err: any) => err.message || String(err))
+                        .join(", ")}
+                    />
+                  )}
+                </form.Field>
 
-                  <View style={styles.stockField}>
-                    <Text style={styles.fieldLabel}>Current Stock</Text>
-                    <form.Field name="currentStock">
-                      {(field) => (
-                        <CustomInput
-                          placeholder="0"
-                          value={field.state.value}
-                          onChangeText={field.handleChange}
-                          onBlur={field.handleBlur}
-                          keyboardType="numeric"
-                          error={field.state.meta.errors
-                            .map((err: any) => err.message || String(err))
-                            .join(", ")}
-                        />
-                      )}
-                    </form.Field>
-                  </View>
-                </View>
+                <form.Field name="currentStock">
+                  {(field) => (
+                    <CustomInput
+                      label="Current Stock"
+                      placeholder="0"
+                      required
+                      value={field.state.value}
+                      onChangeText={field.handleChange}
+                      onBlur={field.handleBlur}
+                      keyboardType="numeric"
+                      error={field.state.meta.errors
+                        .map((err: any) => err.message || String(err))
+                        .join(", ")}
+                    />
+                  )}
+                </form.Field>
 
-                <View>
-                  <Text style={styles.fieldLabel}>Low Stock Alert</Text>
-                  <form.Field name="lowStockAlert">
-                    {(field) => (
-                      <CustomInput
-                        placeholder="Set minimum stock level"
-                        value={field.state.value}
-                        onChangeText={field.handleChange}
-                        onBlur={field.handleBlur}
-                        keyboardType="numeric"
-                        error={field.state.meta.errors
-                          .map((err: any) => err.message || String(err))
-                          .join(", ")}
-                      />
-                    )}
-                  </form.Field>
-                </View>
-              </View>
+                <form.Field name="lowStockAlert">
+                  {(field) => (
+                    <CustomInput
+                      label="Low Stock Alert"
+                      placeholder="0"
+                      required
+                      value={field.state.value}
+                      onChangeText={field.handleChange}
+                      onBlur={field.handleBlur}
+                      keyboardType="numeric"
+                      error={field.state.meta.errors
+                        .map((err: any) => err.message || String(err))
+                        .join(", ")}
+                    />
+                  )}
+                </form.Field>
+              </>
             )
           }
         </form.Subscribe>
+        <View style={styles.footerContainer}>
+          <Button
+            title="Save Item"
+            style={styles.saveButton}
+            onPress={form.handleSubmit}
+          />
+        </View>
       </View>
     </PXWrapper>
   );
@@ -267,8 +233,7 @@ const AddItemScreen = () => {
 
 const styles = StyleSheet.create({
   content: {
-    gap: 16,
-    paddingBottom: 20,
+    gap: 8,
   },
   sectionHeader: {
     flexDirection: "row",
@@ -289,7 +254,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   priceRow: {
-    flexDirection: "row",
+    flexDirection: "column",
     gap: 12,
   },
   priceField: {
@@ -300,11 +265,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     alignItems: "center",
-    marginTop: 12,
+    marginTop: 10,
     justifyContent: "space-between",
     borderWidth: 1,
     borderColor: COLORS.border || "#E5E5E5",
-    padding: 12,
+    padding: 10,
     borderRadius: 8,
     backgroundColor: "#FFF",
   },
@@ -327,14 +292,14 @@ const styles = StyleSheet.create({
     color: COLORS.textLight || "#888",
   },
   switchContainer: {
-    paddingVertical: 4,
+    paddingVertical: 0,
   },
   stockFields: {
-    gap: 16,
+    gap: 1,
   },
   stockRow: {
     flexDirection: "row",
-    gap: 12,
+    gap: 1,
   },
   stockField: {
     flex: 1,
@@ -343,7 +308,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    paddingHorizontal:10,
   },
   cancelButton: {
     flex: 0.4,

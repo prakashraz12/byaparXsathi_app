@@ -43,6 +43,8 @@ export const itemService = {
           c.openingStock = item.openingStock || 0;
           c.measurementUnit = item.measurementUnit || "";
           c.shopId = SHOPID;
+          c.currentStock = item.currentStock || 0;
+          c.lowStockAlert = item.lowStockAlert || 0;
         });
 
         return responseHandler({

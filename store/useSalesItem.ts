@@ -6,6 +6,7 @@ export type SalesItemDraft = {
   price?: number;
   itemName?: string;
   discountAmount?: number;
+  measurement?: string;
 };
 
 type SalesItemState = {

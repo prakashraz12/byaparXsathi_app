@@ -1,14 +1,16 @@
 "use client";
 
-import { View } from "react-native";
-import { SlideUpModal } from "../re-usables/modal/slide-up.modal";
-import { Text } from "../re-usables/text";
-import BadgeSelector from "../re-usables/badge-selector";
+import { PaymentStatusOptions } from "@/constants/payment-status";
 import {
   DEFAULT_DATE_RANGE_OPTIONS,
   DEFAULT_DATE_RANGE_OPTIONS_ENUMS,
 } from "@/utils/date-range-provider";
+import { View } from "react-native";
+import BadgeSelector from "../re-usables/badge-selector";
+import { Button } from "../re-usables/button";
 import DatePicker from "../re-usables/date-picker/date-picker";
+import { SlideUpModal } from "../re-usables/modal/slide-up.modal";
+import { Text } from "../re-usables/text";
 
 interface SalesFilterSlideUpProps {
   visible: boolean;
@@ -21,8 +23,12 @@ interface SalesFilterSlideUpProps {
   ) => void;
   startDate: Date | null;
   endDate: Date | null;
-  setStartDate: (date: Date) => void;
-  setEndDate: (date: Date) => void;
+  setStartDate: (date: Date | null) => void;
+  setEndDate: (date: Date | null) => void;
+  paymentType: string;
+  setPaymentType: (paymentType: string) => void;
+  paymentStatus: string;
+  setPaymentStatus: (paymentStatus: string) => void;
 }
 
 const SalesFilterSlideUp = ({
@@ -35,12 +41,41 @@ const SalesFilterSlideUp = ({
   startDate,
   endDate,
   setStartDate,
+  paymentType,
+  setPaymentType,
+  paymentStatus,
+  setPaymentStatus,
   setEndDate,
 }: SalesFilterSlideUpProps) => {
   return (
-    <SlideUpModal visible={visible} onClose={onClose}>
-      {/* Sort By Section */}
-      <View style={{ marginBottom: 24, marginTop: 10 }}>
+    <SlideUpModal
+      visible={visible}
+      onClose={onClose}
+      height={600 + (dateRangeOptions === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.CUSTOM_RNAGE ? 20 :0)}
+      stickyFooter={
+        <View style={{ flexDirection: "row", gap: 12 }}>
+          <Button
+            variant="destructiveOutline"
+            title="Close"
+            onPress={onClose}
+          />
+          <Button
+            style={{ flex: 1 }}
+            title="Reset"
+            onPress={() => {
+              setSortBy("asc");
+              setDateRangeOptions(DEFAULT_DATE_RANGE_OPTIONS_ENUMS.ALL_TIME);
+              setStartDate(null);
+              setEndDate(null);
+              setPaymentType("");
+              setPaymentStatus("");
+              onClose();
+            }}
+          />
+        </View>
+      }
+    >
+      <View style={{ marginBottom: 20, marginTop: 6 }}>
         <Text
           style={{
             fontSize: 16,
@@ -60,8 +95,7 @@ const SalesFilterSlideUp = ({
         />
       </View>
 
-      {/* Date Range Section */}
-      <View style={{ marginBottom: 24 }}>
+      <View style={{ marginBottom: 20 }}>
         <Text
           style={{
             fontSize: 16,
@@ -78,7 +112,7 @@ const SalesFilterSlideUp = ({
             setDateRangeOptions(
               value as (typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS)[keyof typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS]
             );
-            if (dateRangeOptions !== "CUSTOM_RANGE") {
+            if (dateRangeOptions === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.CUSTOM_RNAGE) {
               onClose();
             }
           }}
@@ -99,16 +133,7 @@ const SalesFilterSlideUp = ({
 
           <View style={{ flexDirection: "row", gap: 12 }}>
             <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: "500",
-                  marginBottom: 8,
-                  color: "#666",
-                }}
-              >
-                From
-              </Text>
+             
               <DatePicker
                 selectedDate={(startDate ?? new Date()) as Date}
                 onDateChange={(d) => setStartDate(d)}
@@ -134,6 +159,26 @@ const SalesFilterSlideUp = ({
           </View>
         </View>
       )}
+      <View style={{ marginBottom: 10, marginTop: 10 }}>
+        <Text
+          style={{
+            fontSize: 16,
+            marginBottom: 12,
+            fontFamily: "Poppins-SemiBold",
+          }}
+        >
+          Payment Status
+        </Text>
+        <BadgeSelector
+          options={PaymentStatusOptions}
+          value={paymentStatus}
+          onChange={(value) => {
+            setPaymentStatus(value);
+            onClose();
+          }}
+          checkedUnchecked={true}
+        />
+      </View>
     </SlideUpModal>
   );
 };

@@ -6,6 +6,8 @@ import { useSyncStore } from "@/store/useSync";
 
 const Home = () => {
   const user = useUserStore((state) => state.user);
+  const {activeShopId} = useUserStore()
+
   const [mounted, setMounted] = useState(false);
   const [checking, setChecking] = useState(true);
 
@@ -18,11 +20,13 @@ const Home = () => {
 
     if (user?.stage === "CREATED") {
       router.replace("/(routes)/complete-setup");
+    }else if(user?.stage === "SET_UP_COMPLETED" && !activeShopId){
+      router.replace("/(routes)/shop/select");
     } else if (user?.stage === "SET_UP_COMPLETED") {
       router.replace("/(tabs)");
     }
     setChecking(false);
-  }, [mounted, user]);
+  }, [mounted, user, activeShopId]);
 
   if (checking) {
     return null;

@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 14,
+    paddingVertical: 8,
     marginHorizontal: 2,
   },
   tabContent: {

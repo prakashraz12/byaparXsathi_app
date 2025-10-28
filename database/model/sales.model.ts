@@ -4,9 +4,7 @@ import { children, field } from "@nozbe/watermelondb/decorators";
 
 export default class Sales extends Model {
     static table = SCHEMA_KEYS.SALES;
-    static associations = {
-      [SCHEMA_KEYS.SALES_ITEM]: { type: 'has_many', foreignKey: 'salesId' },
-    } as const;
+   
   
     @field("invoiceNumber") invoiceNumber?: string;
     @field("shopId") shopId?: string;
@@ -22,9 +20,10 @@ export default class Sales extends Model {
     @field("paidAmount") paidAmount?: number;
     @field("remarks") remarks?: string;
     @field("invoiceDate") invoiceDate?: number;
-    @field("createdAt") createdAt?: Date;
-    @field("updatedAt") updatedAt?: Date;
-    @children(SCHEMA_KEYS.SALES_ITEM) salesItems!: any;
+    @field("customerId") customerId?: string;
+    @field("customerName") customerName?: string;
+    @field("created_at") created_at?: number;
+    @field("updated_at") updated_at?: number;
 
   }
   

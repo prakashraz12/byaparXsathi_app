@@ -1,13 +1,16 @@
 import { invoiceNumberGenerator } from "@/utils/invoice-number.util";
 import { Q } from "@nozbe/watermelondb";
-import database from "..";
+import database from "../index";
 import { DB_COLLECTION } from "../collection";
 import SalesItem from "../model/sales-item.model";
 import Sales from "../model/sales.model";
 import { responseHandler } from "../util/response-handler";
+import { normalizeToTimestamp } from "../util/normalizeToTimeStamp";
+import { idxGenerator } from "@/utils/idx.utils";
+import Customer from "../model/customer.model";
 
 export const salesService = {
-  create: async (salesData: Partial<Sales>, shopId: string) => {
+  create: async (salesData: Partial<Sales>, shopId: string, salesItems: Partial<SalesItem>[]) => {
     if (!salesData.invoiceDate || !salesData.status) {
       return responseHandler({
         message: "Invoice date is required",
@@ -16,25 +19,21 @@ export const salesService = {
       });
     }
     try {
-      const normalizeToTimestamp = (value: any): number => {
-        if (value instanceof Date) return value.getTime();
-        if (typeof value === "string") return new Date(value).getTime();
-        if (typeof value === "number") {
-          return value < 1e12 ? value * 1000 : value;
-        }
-        return Date.now();
-      };
+     
       const invoiceTimestamp = normalizeToTimestamp(
         (salesData as any).invoiceDate
       );
+
+      //if customer attached then need works
+      let customer:Customer | null = null;
+      if(salesData?.customerId){
+        customer = await DB_COLLECTION.customer.find(salesData?.customerId) as Customer || null
+      }
       const result = await database.write(async () => {
         const sales = await DB_COLLECTION.sales.create((s) => {
           s.invoiceNumber = salesData.invoiceNumber || invoiceNumberGenerator();
           s.shopId = shopId;
           s.invoiceDate = invoiceTimestamp as unknown as any;
-          s.createdAt = (salesData.createdAt
-            ? new Date(salesData.createdAt)
-            : Date.now()) as unknown as any;
           s.grandTotalAmount = salesData.grandTotalAmount || 0;
           s.subTotalAmount = salesData.subTotalAmount || 0;
           s.discountAmount = salesData.discountAmount || 0;
@@ -46,27 +45,24 @@ export const salesService = {
           s.remarks = salesData.remarks || "";
           s.status = salesData.status || "";
           s.paymentType = salesData.paymentType || "";
-
-          s.updatedAt = (salesData.updatedAt
-            ? new Date(salesData.updatedAt).getTime()
-            : Date.now()) as unknown as any;
+          s.customerId = customer?.id;
+          s.customerName = customer?.name
+         
         });
 
         if (
-          Array.isArray(salesData.salesItems) &&
-          salesData.salesItems.length
+          Array.isArray(salesItems) &&
+          salesItems.length
         ) {
           const salesItemCollection = DB_COLLECTION.salesItem;
-          for (const it of salesData.salesItems) {
-            await salesItemCollection.create((si: any) => {
+          for (const it of salesItems) {
+            await salesItemCollection.create((si: SalesItem) => {
               si.salesId = sales._raw.id;
               si.itemId = it.itemId;
               si.quantity = it.quantity;
               si.price = it.price || 0;
               si.discountAmount = it.discountAmount || 0;
               si.itemName = it.itemName;
-              si.createdAt = Date.now();
-              si.updatedAt = Date.now();
             });
           }
         }
@@ -81,8 +77,10 @@ export const salesService = {
               .fetch();
 
             if (paymentAccounts.length === 1) {
-              console.log("paymentAccounts", paymentAccounts);
-               paymentAccounts[0].addAmount(salesData.paidAmount || 0);
+              await paymentAccounts[0].update((pa) => {
+                pa.balance = Number(pa.balance) + Number(salesData.paidAmount);
+                pa.updated_at = Date.now();
+              });
             }
           } catch (error) {
             console.log("Failed to update payment account", error);
@@ -105,25 +103,84 @@ export const salesService = {
       });
     }
   },
+  updateSales: async (id: string, salesData: Partial<Sales>, newSalesItems: Partial<SalesItem>[]) => {
+    try {
+      const result = await database.write(async () => {
+        const sales = await DB_COLLECTION.sales.find(id);
+        if (!sales) {
+          return responseHandler({
+            message: "Sales not found",
+            statusCode: 404,
+            data: null,
+          });
+        }
+        await sales.update((s) => {
+          s.invoiceDate = salesData.invoiceDate || 0;
+          s.grandTotalAmount = salesData.grandTotalAmount || 0;
+          s.subTotalAmount = salesData.subTotalAmount || 0;
+          s.discountAmount = salesData.discountAmount || 0;
+          s.taxAmount = salesData.taxAmount || 0;
+          s.additionalAmount = salesData.additionalAmount || 0;
+          s.oldDueAmount = salesData.oldDueAmount || 0;
+          s.dueAmount = salesData.dueAmount || 0;
+          s.paidAmount = salesData.paidAmount || 0;
+          s.remarks = salesData.remarks || "";
+          s.status = salesData.status || "";
+          s.paymentType = salesData.paymentType || "";
+        });
+
+       
+        const salesItems = await DB_COLLECTION.salesItem.query(Q.where("salesId", sales._raw.id)).fetch();
+        for (const item of salesItems) {
+          await item.destroyPermanently();
+        }
+        if (Array.isArray(newSalesItems) && newSalesItems.length) {
+          const salesItemCollection = DB_COLLECTION.salesItem;
+          for (const it of newSalesItems) {
+            await salesItemCollection.create((si: SalesItem) => {
+              si.salesId = sales._raw.id;
+              si._raw.id = it.id || idxGenerator();
+              si.itemId = it.itemId;
+              si.quantity = it.quantity;
+              si.price = it.price || 0;
+              si.discountAmount = it.discountAmount || 0;
+              si.itemName = it.itemName;
+            });
+          }
+        }
+        return responseHandler({
+          message: "Sales updated successfully",
+          statusCode: 200,
+          data: null,
+        });
+      });
+      return result;
+    } catch (error) {
+      console.log("Failed to update sales", error);
+      return responseHandler({
+        message: "Failed to update sales",
+        statusCode: 500,
+        success: false,
+        data: null,
+      });
+    }
+  },
   getSalesById: async (id: string) => {
     try {
       const result = await database.read(async () => {
         const sales = await DB_COLLECTION.sales.find(id);
-        const salesItems = await sales.salesItems.fetch();
+        const salesItems = await DB_COLLECTION.salesItem.query(Q.where("salesId", id)).fetch();
         const shop = await DB_COLLECTION.shop.find(sales.shopId || "");
-        return responseHandler({
-          message: "Sales is fetched",
-          statusCode: 200,
-          data: { sales, salesItems, shop },
-        });
+        return { sales, salesItems, shop };
       });
+      console.log(result, "result")
       return responseHandler({
         data: {
-          sale: result.data?.sales?._raw,
-          salesItems: result.data?.salesItems?.map(
+          sale: result?.sales?._raw,
+          salesItems: result?.salesItems?.map(
             (item: SalesItem) => item._raw
           ),
-          shop: result.data?.shop?._raw,
+          shop: result?.shop?._raw,
         },
       });
     } catch (error) {
@@ -135,4 +192,28 @@ export const salesService = {
       });
     }
   },
+  deleteSalesById: async (id: string) => {
+    try {
+      const result = await database.write(async () => {
+        const sales = await DB_COLLECTION.sales.find(id);
+        await sales.markAsDeleted();
+        return responseHandler({
+          message: "Sales is deleted",
+          statusCode: 200,
+          data: null,
+        });
+      });
+      return result;
+    } catch (error) {
+      console.log("Failed to delete sales", error);
+      return responseHandler({
+        message: "Failed to delete sales",
+        statusCode: 500,
+        data: null,
+      });
+    }
+  },
+ 
+
+
 };

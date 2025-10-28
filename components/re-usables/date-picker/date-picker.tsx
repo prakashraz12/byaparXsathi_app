@@ -219,13 +219,16 @@ const  DatePicker = ({
           mode: calendarMode,
         })
       ) : (
-        <TouchableOpacity
+        <View>
+          <Text style={{fontSize:16, fontFamily:"Poppins-Medium", marginBottom:6, marginLeft:4, color:COLORS.text}}>Date</Text>
+          <TouchableOpacity
           style={styles.dateButton}
           onPress={() => setIsVisible(true)}
         >
           <Text style={styles.dateButtonText}>{formatDisplayDate()}</Text>
           <Calendar size={18} color="#666" />
         </TouchableOpacity>
+        </View>
       )}
 
       <Modal

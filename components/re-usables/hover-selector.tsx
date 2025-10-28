@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { COLORS } from "@/constants/Colors";
-import { FlatList, TouchableOpacity, View } from "react-native";
-import { Text } from "./text";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { ChevronDown } from "lucide-react-native";
 import { useState } from "react";
 import { SlideUpModal } from "./modal/slide-up.modal";
@@ -13,6 +12,7 @@ interface HoverSelectorProps {
   data: any[];
   renderItem: (item: any, onSelect: (item: any) => void, index: number) => React.ReactNode;
   placeholder?: string;
+  required?: boolean;
 }
 
 const HoverSelector = ({
@@ -22,6 +22,7 @@ const HoverSelector = ({
   data,
   renderItem,
   placeholder = "Select an option",
+  required = false,
 }: HoverSelectorProps) => {
   const [isActive, setIsActive] = useState(false);
 
@@ -31,7 +32,11 @@ const HoverSelector = ({
   };
 
   return (
-    <>
+    <View>
+    <View style={{flexDirection:"row", alignItems:"center", marginBottom:6, marginLeft:4, gap:4}}>
+    <Text style={{fontSize:16, fontFamily:"Poppins-Medium", color:COLORS.text}}>{title}</Text>
+    {required && <Text style={{color:COLORS.error}}>*</Text>} 
+    </View>
       <TouchableOpacity
         onPress={() => setIsActive(true)}
         style={{
@@ -40,15 +45,17 @@ const HoverSelector = ({
           justifyContent: "space-between",
           alignItems: "center",
           borderColor: COLORS.border,
-          borderRadius: 5,
+          borderRadius: 6,
           paddingHorizontal: 14,
           paddingVertical: 14,
+          backgroundColor:"white"
         }}
       >
         <Text
           style={{
             color: value ? COLORS.text : COLORS.textLight,
             fontSize: 14,
+            fontFamily:"Poppins-Regular"
           }}
         >
           {value || placeholder}
@@ -60,11 +67,11 @@ const HoverSelector = ({
         visible={isActive}
         onClose={() => setIsActive(false)}
         title={title}
-        height={800}
+        height={600}
       >
        {data?.map((item, index) => renderItem(item, handleSelect, index))}
       </SlideUpModal>
-    </>
+    </View>
   );
 };
 

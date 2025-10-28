@@ -1,5 +1,4 @@
 
-import { COLORS } from "@/constants/Colors"
 import { Ionicons } from "@expo/vector-icons"
 import type React from "react"
 import { useEffect, useRef } from "react"
@@ -147,7 +146,7 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
             )}
 
             <ScrollView style={styles.content}>{children}</ScrollView>
-            {stickyFooter ? <View style={[styles.stickyFooter, {paddingVertical: insets.bottom}]}>{stickyFooter}</View> : null }
+            {stickyFooter ? <View style={[styles.stickyFooter, {paddingVertical: insets.bottom * 0.2}]}>{stickyFooter}</View> : null }
           </Animated.View>
         </PanGestureHandler>
       </GestureHandlerRootView>
@@ -182,19 +181,14 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   titleContainer: {
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
-    marginBottom: 16,
+    paddingBottom: 3,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 10,
   },
   title: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1A1A1A",
+    fontSize: 16,
+   fontFamily:"Poppins-Medium",
     textAlign: "center",
   },
   stickyFooter: {

@@ -10,6 +10,8 @@ import Item from './model/item.model'
 import SalesItem from './model/sales-item.model'
 import Sales from './model/sales.model'
 import PaymentAccount from './model/payment-account.model'
+import Expenses from './model/expenses.model'
+import Saving from './model/saving.model'
 // import Post from './model/Post' // ⬅️ You'll import your Models here
 
 // First, create the adapter to the underlying database:
@@ -37,7 +39,9 @@ const database = new Database({
     Item,
     Sales,
     SalesItem,
-    PaymentAccount
+    PaymentAccount,
+    Expenses,
+    Saving
   ],
 })
 export default database;

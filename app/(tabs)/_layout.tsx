@@ -9,6 +9,7 @@ const TabLayout = () => {
       screenOptions={{
         headerShown: false,
         tabBarStyle: { display: 'flex' },
+        
       }}
       tabBar={(props) => <TabBar {...props} />}
     >
@@ -22,6 +23,7 @@ const TabLayout = () => {
         name="sales"
         options={{
           title: 'Sales'
+        
         }}
       />
       <Tabs.Screen 

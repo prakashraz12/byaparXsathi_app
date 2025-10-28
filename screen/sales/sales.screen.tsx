@@ -1,21 +1,21 @@
 import { Button } from "@/components/re-usables/button";
 import HHeader from "@/components/re-usables/h-header";
 import CustomInput from "@/components/re-usables/input";
-import { Text } from "@/components/re-usables/text";
 import SalesFilterSlideUp from "@/components/sales/sales-filter";
 import { COLORS } from "@/constants/Colors";
 import { useSales } from "@/database/hooks/useSales";
-import Sales from "@/database/model/sales.model";
+import type Sales from "@/database/model/sales.model";
 import PXWrapper from "@/layouts/px-wrapper";
 import {
   dateRangeProvider,
   DEFAULT_DATE_RANGE_OPTIONS_ENUMS,
 } from "@/utils/date-range-provider";
 import { useRouter } from "expo-router";
-import { Filter, Plus, Search } from "lucide-react-native";
+import { Dot, ListFilter, Plus, Search } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import SalesCard from "../../components/sales/sales-card";
+
 const SalesScreen = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState<"asc" | "desc">("desc");
@@ -27,6 +27,8 @@ const SalesScreen = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const [searchParams, setSearchParams] = useState("");
+  const [paymentType, setPaymentType] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState("");
 
   const { sales } = useSales({
     searchParams,
@@ -37,6 +39,8 @@ const SalesScreen = () => {
     endDate: endDate
       ? new Date(new Date(endDate).setHours(23, 59, 59, 999))
       : undefined,
+    paymentType,
+    paymentStatus,
   });
 
   const router = useRouter();
@@ -55,7 +59,8 @@ const SalesScreen = () => {
     }
   }, [dateRangeOptions]);
 
-  const isSalesApplied = dateRangeOptions !== "ALL_TIME";
+  const isSalesApplied =
+    dateRangeOptions !== "ALL_TIME" || paymentType || paymentStatus;
 
   return (
     <>
@@ -63,13 +68,11 @@ const SalesScreen = () => {
         data={sales}
         floatingAction={
           <Button
+           size="medium"
             onPress={() => router.push("/sales/create")}
             variant="primary"
-            leftIcon={<Plus size={24} color="#FFFFFF" />}
-            style={{
-              height: 50,
-              width: 50,
-            }}
+            leftIcon={<Plus size={20} color="#FFFFFF" />}
+           title="Add Sales"
           />
         }
         renderItem={({ item }: { item: Sales }) => (
@@ -114,9 +117,16 @@ const SalesScreen = () => {
                 }}
                 onPress={() => setFilterOpen(true)}
               >
-                <Text>
-                  <Filter size={20} color={COLORS.text} />
-                </Text>
+                <View style={{ position: "relative" }}>
+                  <ListFilter size={20} color={COLORS.text} />
+                  {isSalesApplied && (
+                    <Dot
+                      size={45}
+                      color={COLORS.primary}
+                      style={{ position: "absolute", top: -19, right: -19 }}
+                    />
+                  )}
+                </View>
               </TouchableOpacity>
             </View>
           </>
@@ -133,6 +143,10 @@ const SalesScreen = () => {
         endDate={endDate}
         setStartDate={setStartDate}
         setEndDate={setEndDate}
+        paymentType={paymentType}
+        setPaymentType={setPaymentType}
+        paymentStatus={paymentStatus}
+        setPaymentStatus={setPaymentStatus}
       />
     </>
   );

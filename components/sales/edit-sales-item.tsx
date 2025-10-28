@@ -67,7 +67,7 @@ const EditSalesItem = ({ visible, onClose, item, itemId, onSave }: AddItemsSlide
       itemId: item.itemId,
       quantity: Number(qantity),
       price: Number(itemPrice),
-      // discount: discountValue,
+      discountAmount: discountValue,
       itemName: item.itemName,
     })
     onSave();
@@ -84,9 +84,9 @@ const EditSalesItem = ({ visible, onClose, item, itemId, onSave }: AddItemsSlide
     >
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Add Item</Text>
+          <Text style={styles.headerTitle}>Edit Item</Text>
           <Text style={styles.headerSubtitle}>
-            Configure item details and discount
+            Edit item details and discount
           </Text>
         </View>
 
@@ -95,9 +95,9 @@ const EditSalesItem = ({ visible, onClose, item, itemId, onSave }: AddItemsSlide
             <View style={styles.itemContent}>
               <AvatarCard name={findItem?.itemName || ""} size={50} />
               <View style={styles.itemInfo}>
-                <Text style={styles.itemName}>{findItem?.itemName}</Text>
+                <Text style={styles.itemName}>{findItem?.itemName || ""}</Text>
                 <Text style={styles.itemPrice}>
-                  {formatNumberWithComma(Number(findItem?.sellingPrice))}
+                  {formatNumberWithComma(Number(findItem?.sellingPrice || "0"))}
                 </Text>
               </View>
             </View>
@@ -113,7 +113,7 @@ const EditSalesItem = ({ visible, onClose, item, itemId, onSave }: AddItemsSlide
               >
                 <Minus size={16} color={"white"} />
               </TouchableOpacity>
-              <Text style={styles.quantityText}>{qantity}</Text>
+              <Text style={styles.quantityText}>{qantity || "1"}</Text>
               <TouchableOpacity
                 style={styles.quantityButton}
                 onPress={() => setQuantity((prev) => `${Number(prev) + 1}`)}
@@ -176,13 +176,14 @@ const EditSalesItem = ({ visible, onClose, item, itemId, onSave }: AddItemsSlide
           <Button
             title="Cancel"
             onPress={onClose}
-            variant="outline"
+            variant="destructive"
             style={styles.cancelButton}
           />
           <Button
             title="Save"
             onPress={handleSave}
             style={styles.saveButton}
+            
           />
         </View>
       </View>
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: COLORS.text,
-    marginBottom: 4,
+    marginBottom: 1
   },
   headerSubtitle: {
     fontSize: 13,

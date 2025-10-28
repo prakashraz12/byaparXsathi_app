@@ -12,10 +12,10 @@ const SalesOverviewChart = () => {
       {/* Title */}
       <Text
         style={{
-          fontSize: 18,
+          fontSize: 16,
           fontFamily: "Poppins-SemiBold",
           marginLeft: 12,
-          marginBottom: 4,
+      
         }}
       >
         Sales Overview
@@ -24,7 +24,7 @@ const SalesOverviewChart = () => {
       {/* Subtitle */}
       <Text
         style={{
-          fontSize: 14,
+          fontSize: 13,
           fontFamily: "Poppins-Regular",
           color: COLORS.textLight,
           marginLeft: 12,
