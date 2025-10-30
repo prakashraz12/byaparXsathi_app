@@ -65,7 +65,7 @@ const AddItemsSlideup = ({ visible, onClose, item, onSave }: AddItemsSlideupProp
       price: Number(itemPrice),
       discountAmount: discountValue,
       itemName: item.itemName,
-      measurement: item?.measurementUnit || ""
+      measurementUnit: item?.measurementUnit || ""
     })
     onSave();
     onClose()

@@ -203,20 +203,20 @@ const styles = StyleSheet.create({
 
   // Text sizes
   smallText: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13,
+    lineHeight: 18,
   },
   mediumText: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 15,
+    lineHeight: 20,
   },
   largeText: {
-    fontSize: 18,
-    lineHeight: 28,
+    fontSize: 17,
+    lineHeight: 26,
   },
   xlText: {
-    fontSize: 20,
-    lineHeight: 32,
+    fontSize: 19,
+    lineHeight: 28,
   },
 
   // Disabled states

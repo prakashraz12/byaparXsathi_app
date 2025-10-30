@@ -146,7 +146,7 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
             )}
 
             <ScrollView style={styles.content}>{children}</ScrollView>
-            {stickyFooter ? <View style={[styles.stickyFooter, {paddingVertical: insets.bottom * 0.2}]}>{stickyFooter}</View> : null }
+            {stickyFooter ? <View style={[styles.stickyFooter, {paddingVertical: insets.bottom + 4}]}>{stickyFooter}</View> : null }
           </Animated.View>
         </PanGestureHandler>
       </GestureHandlerRootView>

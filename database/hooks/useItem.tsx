@@ -6,10 +6,12 @@ import Item from "../model/item.model";
 
 export function useItems({
   search = "",
-  sortBy = "",
+  sortBy = "asc",
+  sortByStock = "asc",
 }: {
   search?: string;
-  sortBy?: string;
+  sortBy?: "asc" | "desc";
+  sortByStock?: "asc" | "desc";
 }) {
   const { activeShopId } = useUserStore();
   const [items, setItems] = useState<Item[]>([]);
@@ -29,11 +31,14 @@ export function useItems({
     }
 
     if (sortBy) {
-      query = query.extend(Q.sortBy("item_name", Q.asc));
+      query = query.extend(Q.sortBy("item_name", sortBy === "asc" ? Q.asc : Q.desc));
+    }
+    if (sortByStock) {
+      query = query.extend(Q.sortBy("current_stock", sortByStock === "asc" ? Q.asc : Q.desc));
     }
 
     return query;
-  }, [search, sortBy, activeShopId]);
+  }, [search, sortBy, sortByStock, activeShopId]);
 
   const loadItems = useCallback(
     async (isRefresh = false) => {

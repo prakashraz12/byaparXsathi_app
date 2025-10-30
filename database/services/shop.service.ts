@@ -10,22 +10,21 @@ import { DEFAULT_PAYMENT_ACCOUNTS } from "@/constants/default-payment-account";
 
 export const shopService = {
   createShop: (
-    shopData: Partial<Shop> & { idx?: string },
-    userId: string,
+    shopData: Partial<Shop>,
     status?: "created" | "synced"
   ) => {
     return database.write(async () => {
       if (
         !shopData?.shopName ||
-        !userId ||
         !shopData?.shopType ||
-        !shopData?.measuringUnits
+        !shopData?.measuringUnits ||
+        !shopData?.userId
       ) {
         Toast.error("All fields are required");
         return;
       }
 
-      const idx = shopData.idx ? shopData.idx : idxGenerator();
+      const id = shopData?.id ? shopData.id : idxGenerator();
       const CREATED_AT = shopData?.created_at
         ? shopData.created_at
         : Date.now();
@@ -35,7 +34,7 @@ export const shopService = {
 
       const shop = await DB_COLLECTION.shop.create((s) => {
         s._raw._status = status || "created";
-        s._raw.id = idx;
+        s._raw.id = id;
         s.shopName = shopData.shopName!.trim();
         s.shopEmail = shopData?.shopEmail?.trim() || "";
         s.shopPhoneNumber = shopData?.shopPhoneNumber || "";
@@ -44,7 +43,7 @@ export const shopService = {
         s.registrationNumber = shopData?.registrationNumber?.trim() || "";
         s.created_at = CREATED_AT;
         s.updated_at = UPDATED_AT;
-        s.userId = userId;
+        s.userId = shopData?.userId;
         s.shopType = shopData.shopType;
         s.measuringUnits = shopData.measuringUnits;
       });

@@ -30,21 +30,11 @@ import SalesItemCard from "../../components/sales/sales-item-card";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AddCustomerSlideup from "@/components/sales/add-customer-slideup";
 import Customer from "@/database/model/customer.model";
-
-// Types
-type SalesItemDraft = {
-  itemId: string;
-  quantity: number;
-  price?: number;
-  itemName?: string;
-};
-
+import { useUserStore } from "@/store/useUserStore";
 
 
 // Utility functions
 const parseNumber = (value: string): number => Number.parseFloat(value) || 0;
-
-
 
 const CreateSalesScreen = () => {
   // Basic state
@@ -87,7 +77,7 @@ const CreateSalesScreen = () => {
   // Additional charges state
   const [additionalCharge, setAdditionalCharge] = useState("");
 
-  const { activeShop } = useShops();
+  const { activeShopId } = useUserStore();
 
   // Handlers
   const handleCustomerPress = useCallback(() => {
@@ -256,6 +246,10 @@ const CreateSalesScreen = () => {
       return;
     }
 
+    if(!activeShopId){
+      Toast.error("Please select a shop");
+      return;
+    }
     const calculatedPaidAmount =
       paymentStatus === "PAID"
         ? grandTotal
@@ -280,7 +274,7 @@ const CreateSalesScreen = () => {
         status: paymentStatus,
         customerId: customer?.id || "",
       },
-      activeShop?.id || "",
+      activeShopId,
       salesItems
     );
 
@@ -313,7 +307,7 @@ const CreateSalesScreen = () => {
     paidAmount,
     notes,
     salesItems,
-    activeShop?.id,
+    activeShopId,
     customer?.id,
   ]);
 

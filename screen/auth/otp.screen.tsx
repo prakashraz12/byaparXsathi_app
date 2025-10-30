@@ -2,13 +2,14 @@ import { Button } from "@/components/re-usables/button";
 import { Header } from "@/components/re-usables/header";
 import OTPInput from "@/components/re-usables/otp-input";
 import { Text } from "@/components/re-usables/text";
+import { shopService } from "@/database/services/shop.service";
 import { syncDatabase } from "@/database/sync.service";
 import PXWrapper from "@/layouts/px-wrapper";
 import {
   useAuthControllerWithEmail,
   useAuthControllerWithOtpLogin,
 } from "@/service/queries-components";
-import { TLoginWithOtpResponse } from "@/service/types-schemas";
+import { ShopResponse, TLoginWithOtpResponse } from "@/service/types-schemas";
 import { useSyncStore } from "@/store/useSync";
 import { useUserStore } from "@/store/useUserStore";
 import { apiOptions } from "@/utils/api-options.util";
@@ -22,22 +23,52 @@ const OtpScreen = () => {
   const { email } = useLocalSearchParams<{ email: string }>();
 
   const { setUser, setToken } = useUserStore();
-  const { setSyncing } = useSyncStore();
 
   const { mutateAsync: verifyOtp, isPending } = useAuthControllerWithOtpLogin(
-    apiOptions(undefined, (data: TLoginWithOtpResponse["data"]) => {
+    apiOptions(undefined, async (data: TLoginWithOtpResponse["data"]) => {
+      console.log(data, "data");
+      if (data) {
+        setUser({
+          id: data?.id,
+          fullName: data?.fullName,
+          email: data?.email,
+          role: data?.role,
+          stage: data?.stage,
+          phoneNumber: data?.phoneNumber,
+          country: data?.country,
+          isDeleted: data?.isDeleted,
+          createdAt: data?.createdAt,
+          updatedAt: data?.updatedAt,
+          requestDeleteOn: "",
+        });
+        setToken(data?.accessToken);
+        if(data?.shops?.length > 0){
+          Promise.all(
+            data?.shops?.map(async (shop: ShopResponse) => {
+              await shopService.createShop(
+                {
+                  shopName: shop.shopName,
+                  shopEmail: shop.shopEmail,
+                  shopPhoneNumber: shop.shopPhoneNumber,
+                  address: shop.shopAddress,
+                  userId: data?.id,
+                  shopType: shop.shopType,
+                  measuringUnits: JSON.stringify(shop.measuringUnits),
+                  id: shop.id,
+                },
+                "synced"
+              );
+            })
+          );
+        }
+      }
       setOtp(new Array(4).fill(""));
-      setUser(data);
-      console.log(data);
-      setToken(data?.accessToken);
 
       if (data?.stage === "CREATED") {
         //if user is not create his first shop already navigate to create new one || else navigate to home
         router.replace("/(routes)/complete-setup");
       } else {
-        syncDatabase({ isFirstTime: true });
-        setSyncing(true);
-        router.replace("/syncing");
+        router.replace("/(routes)/shop/select")
       }
     })
   );

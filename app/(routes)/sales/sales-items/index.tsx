@@ -1,10 +1,10 @@
+import ItemCard from "@/components/items/item-card";
 import CustomInput from "@/components/re-usables/input";
 import AddItemsSlideup from "@/components/sales/add-items-slideup";
 import { COLORS } from "@/constants/Colors";
 import { useItems } from "@/database/hooks/useItem";
 import Item from "@/database/model/item.model";
 import PXWrapper from "@/layouts/px-wrapper";
-import ItemCard from "@/screen/items/item-card";
 import { router } from "expo-router";
 import { ArrowLeft, Search } from "lucide-react-native";
 import { useState } from "react";
@@ -39,6 +39,7 @@ const SalesItem = () => {
               openingLevel={item.openingStock || 0}
               isActive={item.isActive || false}
               isStockEnable={item.isStockEnabled || false}
+              measurementUnit={item.measurementUnit || ""}
             />
           </TouchableOpacity>
         )}

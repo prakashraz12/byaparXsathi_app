@@ -456,49 +456,8 @@ export const useShopControllerGetAllShops = <TData = undefined,>(
   });
 };
 
-export type SalesControllerCreateError = Fetcher.ErrorWrapper<undefined>;
-
-export type SalesControllerCreateVariables = {
-  body: Schemas.CreateSalesDto;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchSalesControllerCreate = (
-  variables: SalesControllerCreateVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    undefined,
-    SalesControllerCreateError,
-    Schemas.CreateSalesDto,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/sales/create", method: "post", ...variables, signal });
-
-export const useSalesControllerCreate = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      undefined,
-      SalesControllerCreateError,
-      SalesControllerCreateVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    undefined,
-    SalesControllerCreateError,
-    SalesControllerCreateVariables
-  >({
-    mutationFn: (variables: SalesControllerCreateVariables) =>
-      fetchSalesControllerCreate(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
 export type SalesControllerGetAllSalesQueryParams = {
-  shopId: number;
+  shopId: string;
   invoiceNumber?: string;
   page: number;
   size: number;
@@ -604,44 +563,107 @@ export const useSalesControllerGetAllSales = <TData = undefined,>(
   );
 };
 
-export type ItemControllerCreateError = Fetcher.ErrorWrapper<undefined>;
+export type SalesControllerGetAllSalesItemsError =
+  Fetcher.ErrorWrapper<undefined>;
 
-export type ItemControllerCreateVariables = {
-  body: Schemas.CreateItemDto;
-} & QueriesContext["fetcherOptions"];
+export type SalesControllerGetAllSalesItemsVariables =
+  QueriesContext["fetcherOptions"];
 
-export const fetchItemControllerCreate = (
-  variables: ItemControllerCreateVariables,
+export const fetchSalesControllerGetAllSalesItems = (
+  variables: SalesControllerGetAllSalesItemsVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     undefined,
-    ItemControllerCreateError,
-    Schemas.CreateItemDto,
+    SalesControllerGetAllSalesItemsError,
+    undefined,
     {},
     {},
     {}
-  >({ url: "/api/v1/item/create", method: "post", ...variables, signal });
+  >({ url: "/api/v1/sales/all-items", method: "get", ...variables, signal });
 
-export const useItemControllerCreate = (
+export function salesControllerGetAllSalesItemsQuery(
+  variables: SalesControllerGetAllSalesItemsVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<undefined>;
+};
+
+export function salesControllerGetAllSalesItemsQuery(
+  variables: SalesControllerGetAllSalesItemsVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<undefined>)
+    | reactQuery.SkipToken;
+};
+
+export function salesControllerGetAllSalesItemsQuery(
+  variables: SalesControllerGetAllSalesItemsVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/api/v1/sales/all-items",
+      operationId: "salesControllerGetAllSalesItems",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchSalesControllerGetAllSalesItems(variables, signal),
+  };
+}
+
+export const useSuspenseSalesControllerGetAllSalesItems = <TData = undefined,>(
+  variables: SalesControllerGetAllSalesItemsVariables,
   options?: Omit<
-    reactQuery.UseMutationOptions<
+    reactQuery.UseQueryOptions<
       undefined,
-      ItemControllerCreateError,
-      ItemControllerCreateVariables
+      SalesControllerGetAllSalesItemsError,
+      TData
     >,
-    "mutationFn"
+    "queryKey" | "queryFn" | "initialData"
   >,
 ) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
     undefined,
-    ItemControllerCreateError,
-    ItemControllerCreateVariables
+    SalesControllerGetAllSalesItemsError,
+    TData
   >({
-    mutationFn: (variables: ItemControllerCreateVariables) =>
-      fetchItemControllerCreate(deepMerge(fetcherOptions, variables)),
+    ...salesControllerGetAllSalesItemsQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
     ...options,
+    ...queryOptions,
+  });
+};
+
+export const useSalesControllerGetAllSalesItems = <TData = undefined,>(
+  variables: SalesControllerGetAllSalesItemsVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      undefined,
+      SalesControllerGetAllSalesItemsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    undefined,
+    SalesControllerGetAllSalesItemsError,
+    TData
+  >({
+    ...salesControllerGetAllSalesItemsQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
   });
 };
 
@@ -1034,6 +1056,13 @@ export type QueryOperation =
       path: "/api/v1/sales/all";
       operationId: "salesControllerGetAllSales";
       variables: SalesControllerGetAllSalesVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/api/v1/sales/all-items";
+      operationId: "salesControllerGetAllSalesItems";
+      variables:
+        | SalesControllerGetAllSalesItemsVariables
+        | reactQuery.SkipToken;
     }
   | {
       path: "/api/v1/item/getAll";

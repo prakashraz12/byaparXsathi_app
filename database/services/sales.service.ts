@@ -57,13 +57,25 @@ export const salesService = {
           const salesItemCollection = DB_COLLECTION.salesItem;
           for (const it of salesItems) {
             await salesItemCollection.create((si: SalesItem) => {
+              
               si.salesId = sales._raw.id;
               si.itemId = it.itemId;
               si.quantity = it.quantity;
               si.price = it.price || 0;
               si.discountAmount = it.discountAmount || 0;
               si.itemName = it.itemName;
+              si.measurementUnit = it.measurementUnit;
+              si.created_at = Date.now();
+              si.updated_at = Date.now();
+
             });
+            const item = await DB_COLLECTION.item.find(it.itemId || "")
+            if(item && item?.isStockEnabled){
+              await item.update((i)=>{
+                i.currentStock = Number(i.currentStock) - Number(it.quantity);
+                i.updatedAt = Date.now();
+              })
+            }
           }
         }
 

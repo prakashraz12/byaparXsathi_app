@@ -1,56 +1,56 @@
-import * as BackgroundTask from "expo-background-task";
-import * as TaskManager from "expo-task-manager";
-import { useEffect, useState } from "react";
+// import * as BackgroundFetch from "expo-background-task";
+// import * as TaskManager from "expo-task-manager";
+// import { useEffect, useState } from "react";
 
-const BACKGROUND_TASK_IDENTIFIER = "background-task";
+// const BACKGROUND_TASK_IDENTIFIER = "background-fetch-task";
 
-TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
-  try {
-    const now = Date.now();
-    console.log(
-      `Got background task call at date: ${new Date(now).toISOString()}`
-    );
-  } catch (error) {
-    console.error("Failed to execute the background task:", error);
-    return BackgroundTask.BackgroundTaskResult.Failed;
-  }
-  return BackgroundTask.BackgroundTaskResult.Success;
-});
+// // Define background task
+// TaskManager.defineTask(BACKGROUND_TASK_IDENTIFIER, async () => {
+//   try {
+//     const now = new Date().toISOString();
+//     console.log(`⏰ Background task executed at: ${now}`);
 
-async function registerBackgroundTaskAsync() {
-  return BackgroundTask.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER, {
-    minimumInterval: 15,
-  });
-}
+//     // Perform your background logic here (e.g. API sync)
+//     // return BackgroundFetch.BackgroundFetchResult.NewData; // if new data fetched
+//     return BackgroundFetch.BackgroundTaskResult.NewData;
+//   } catch (error) {
+//     console.error("❌ Background task failed:", error);
+//     return BackgroundFetch.BackgroundTaskResult.Failed;
+//   }
+// });
 
-async function unregisterBackgroundTaskAsync() {
-  return BackgroundTask.unregisterTaskAsync(BACKGROUND_TASK_IDENTIFIER);
-}
+// // Hook to manage background task registration
+// const useBackgroundSync = () => {
+//   const [isRegistered, setIsRegistered] = useState(false);
+//   const [status, setStatus] = useState<BackgroundFetch.BackgroundTaskResult | null>(null);
 
-const useBackgroundSync = () => {
-  const [isRegistered, setIsRegistered] = useState<boolean>(false);
-  const [status, setStatus] =
-    useState<BackgroundTask.BackgroundTaskStatus | null>(null);
+//   const updateAsync = async () => {
+//     const status = await BackgroundFetch.getStatusAsync();
+//     setStatus(status);
 
-  const updateAsync = async () => {
-    const status = await BackgroundTask.getStatusAsync();
-    setStatus(status);
-    const isRegistered = await TaskManager.isTaskRegisteredAsync(
-      BACKGROUND_TASK_IDENTIFIER
-    );
-    setIsRegistered(isRegistered);
-  };
+//     const registered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_TASK_IDENTIFIER);
+//     setIsRegistered(registered);
+//   };
 
-  const onOffSync = async () => {
-    if (!isRegistered) {
-      await registerBackgroundTaskAsync();
-    } else {
-      await unregisterBackgroundTaskAsync();
-    }
-    await updateAsync();
-  };
+//   const registerTaskAsync = async () => {
+//     await BackgroundFetch.registerTaskAsync(BACKGROUND_TASK_IDENTIFIER, {
+//       minimumInterval: 60 * 15, // 15 minutes
+//       stopOnTerminate: false,   // Android only
+//       startOnBoot: true,        // Android only
+//     });
+//     await updateAsync();
+//   };
 
-  return { isRegistered, status, onOffSync, updateAsync };
-};
+//   const unregisterTaskAsync = async () => {
+//     await BackgroundFetch.unregisterTaskAsync(BACKGROUND_TASK_IDENTIFIER);
+//     await updateAsync();
+//   };
 
-export default useBackgroundSync;
+//   useEffect(() => {
+//     updateAsync();
+//   }, []);
+
+//   return { isRegistered, status, registerTaskAsync, unregisterTaskAsync };
+// };
+
+// export default useBackgroundSync;

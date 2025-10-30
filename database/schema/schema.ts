@@ -62,9 +62,10 @@ export default appSchema({
         { name: "quantity", type: "number" },
         { name: "price", type: "number" },
         { name: "discountAmount", type: "number" },
-        { name: "createdAt", type: "number" },
-        { name: "updatedAt", type: "number" },
+        { name: "created_at", type: "number" },
+        { name: "updated_at", type: "number" },
         { name: "itemName", type: "string" },
+        { name: "measurementUnit", type: "string" },
       ],
     }),
     tableSchema({
@@ -87,7 +88,7 @@ export default appSchema({
         { name: "customerId", type: "string" },
         { name: "customerName", type: "string" },
         { name: "created_at", type: "number" },
-        { name: "updated_at", type: "number" }
+        { name: "updated_at", type: "number" },
       ],
     }),
     tableSchema({
@@ -110,7 +111,7 @@ export default appSchema({
         { name: "shopId", type: "string" },
         { name: "created_at", type: "number" },
         { name: "updated_at", type: "number" },
-      ]
+      ],
     }),
     tableSchema({
       name: SCHEMA_KEYS.SAVING,
@@ -121,7 +122,7 @@ export default appSchema({
         { name: "shopId", type: "string" },
         { name: "createdAt", type: "number" },
         { name: "updatedAt", type: "number" },
-      ]
-    })
+      ],
+    }),
   ],
 });

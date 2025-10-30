@@ -3,8 +3,8 @@ export const SCHEMA_KEYS = {
   SALES: "sales",
   SHOP: "shop",
   ITEM: "item",
-  SALES_ITEM: "salesitem",
-  PAYMENT_ACCOUNT: "paymentaccount",
+  SALES_ITEM: "salesItems",
+  PAYMENT_ACCOUNT: "paymentAccount",
   EXPENSES:"expenses",
   SAVING:"saving"
 };

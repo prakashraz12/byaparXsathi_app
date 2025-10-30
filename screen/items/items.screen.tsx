@@ -1,18 +1,29 @@
-import HHeader from "@/components/re-usables/h-header";
-import PXWrapper from "@/layouts/px-wrapper";
-import Input from "@/components/re-usables/input";
-import { useState } from "react";
-import { Plus, Search } from "lucide-react-native";
 import { Button } from "@/components/re-usables/button";
-import { router } from "expo-router";
+import HHeader from "@/components/re-usables/h-header";
 import { useItems } from "@/database/hooks/useItem";
+import PXWrapper from "@/layouts/px-wrapper";
+import { router } from "expo-router";
+import { Dot, ListFilter, Plus, Search } from "lucide-react-native";
+import { useMemo, useState } from "react";
 
-import ItemCard from "./item-card";
 import Item from "@/database/model/item.model";
+import ItemCard from "../../components/items/item-card";
+
+import CustomInput from "@/components/re-usables/input";
+import { COLORS } from "@/constants/Colors";
+import { TouchableOpacity, View } from "react-native";
+import ItemFilterSlider from "@/components/items/item-filter-slider";
 
 const ItemScreen = () => {
   const [itemName, setItemName] = useState<string>("");
-  const { items } = useItems({});
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<"asc" | "desc">("asc");
+  const [sortStockBy, setSortStockBy] = useState<"asc" | "desc">("asc");
+  const { items } = useItems({ search: itemName, sortBy, sortByStock: sortStockBy });
+
+  const isFilterApplied = useMemo(()=>{
+    return sortBy !== "asc" || sortStockBy !== "asc";
+  },[sortBy,sortStockBy]);
 
   return (
     <PXWrapper
@@ -26,30 +37,70 @@ const ItemScreen = () => {
           isStockEnable={item.isStockEnabled || false}
           sellingPrice={item?.sellingPrice || 0}
           costPrice={item?.costPrice || 0}
+          measurementUnit={item.measurementUnit || ""}
         />
       )}
       floatingAction={
         <Button
-          iconOnly={true}
           variant="primary"
-          leftIcon={<Plus size={24} color="#FFFFFF" />}
-          style={{
-            height: 50,
-            width: 50,
-          }}
+          leftIcon={<Plus size={22} color="#FFFFFF" />}
+          title="Add Item"
           onPress={() => router.push("/(routes)/items/create")}
         />
       }
       header={
-        <>
+        <View>
           <HHeader title="Items" />
-          <Input
-            value={itemName}
-            placeholder="Search Items"
-            leftIcon={<Search />}
-            onChangeText={setItemName}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+              width: "100%",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomInput
+                value={itemName}
+                onChangeText={setItemName}
+                placeholder="Search Sales transactions"
+                leftIcon={<Search />}
+              />
+            </View>
+            <TouchableOpacity
+              style={{
+                width: 54,
+                height: 54,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: COLORS.cardBackground,
+                borderRadius: 5,
+                borderWidth: 1,
+                borderColor: COLORS.border,
+              }}
+              onPress={() => setFilterOpen(true)}
+            >
+              <View style={{ position: "relative" }}>
+                <ListFilter size={20} color={COLORS.text} />
+                {isFilterApplied && (
+                  <Dot
+                    size={45}
+                    color={COLORS.primary}
+                    style={{ position: "absolute", top: -19, right: -19 }}
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
+          </View>
+          <ItemFilterSlider
+            visible={filterOpen}
+            onClose={() => setFilterOpen(false)}
+            sortBy={sortBy as "asc" | "desc"}
+            setSortBy={(sortBy) => setSortBy(sortBy)}
+            sortStockBy={sortStockBy as "asc" | "desc"}
+            setSortStockBy={(sortStockBy) => setSortStockBy(sortStockBy)}
           />
-        </>
+        </View>
       }
     ></PXWrapper>
   );

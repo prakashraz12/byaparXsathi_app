@@ -1,7 +1,5 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import * as BackgroundTask from "expo-background-task";
-import * as TaskManager from "expo-task-manager";
 import "react-native-reanimated";
 
 import { ToastProvider } from "@/components/re-usables/custom-toaster/custom-provider";
@@ -14,11 +12,10 @@ import {
 } from "@expo-google-fonts/poppins";
 
 import React, { useEffect, useState } from "react";
-import useBackgroundSync from "@/hooks/useBackgroundSync";
-import { StatusBar } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
 const RootLayout = () => {
-  const { updateAsync } = useBackgroundSync();
+  // const { registerTaskAsync } = useBackgroundSync();
   const [fontsLoaded, fontError] = useFonts({
     "Poppins-Regular": Poppins_400Regular,
     "Poppins-Medium": Poppins_500Medium,
@@ -26,9 +23,12 @@ const RootLayout = () => {
     "Poppins-Bold": Poppins_700Bold,
   });
 
-  useEffect(() => {
-    updateAsync();
-  }, []);
+  // useEffect(() => {
+  //   const init = async () => {
+  //     await registerTaskAsync();
+  //   };
+  //   init();
+  // }, []);
 
   if (!fontsLoaded || fontError) {
     return null;
@@ -37,8 +37,8 @@ const RootLayout = () => {
   return (
     <TanstackProvider>
       <ToastProvider>
-        <StatusBar  barStyle="light-content" />
         <Stack screenOptions={{ headerShown: false }}>
+          <StatusBar style="light" />
           <Stack.Screen name="index" />
           <Stack.Screen name="(routes)" />
           <Stack.Screen name="(tabs)" />

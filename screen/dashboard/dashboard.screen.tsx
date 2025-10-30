@@ -3,6 +3,7 @@ import { Text } from "@/components/re-usables/text";
 import PXWrapper from "@/layouts/px-wrapper";
 import DashBoardTop from "@/components/dashbaord/sticky-top";
 import { LinearGradient } from "expo-linear-gradient";
+import * as BackgroundTask from "expo-background-task";
 import {
   ArrowUp,
   Calculator,
@@ -38,7 +39,7 @@ export const ACTION_BUTTONS = [
     id: "2",
     title: "Quick Sales",
     icon: <Calculator size={20} color={COLORS.success} />,
-    href: "/(routes)/sales/create",
+    href: "/(routes)/sales/quick",
   },
   {
     id: "3",
@@ -96,10 +97,10 @@ const DashboardScreen = () => {
   return (
     <>
       <PXWrapper header={<DashBoardTop />} contentContainerStyle={{paddingHorizontal: 0}}>
-        {/* <Button
+        <Button
           title="sync"
-          onPress={() => syncDatabase({ isFirstTime: false })}
-        /> */}
+          onPress={()=>syncDatabase({isFirstTime:false})}
+        />
         <SyncBanner />
         <View style={{ padding: 12, marginBottom: 6 }}>
           <Text style={{ fontSize: 15, fontFamily: "Poppins-SemiBold" }}>

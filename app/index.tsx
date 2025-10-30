@@ -8,6 +8,7 @@ const Home = () => {
   const user = useUserStore((state) => state.user);
   const {activeShopId} = useUserStore()
 
+
   const [mounted, setMounted] = useState(false);
   const [checking, setChecking] = useState(true);
 

@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
+import { UserStage } from "@/service/types-schemas";
 
 type User = {
   fullName: string;
@@ -10,13 +11,12 @@ type User = {
   role: string;
   id: string;
   phoneNumber: string;
-  country: string;
+  country: Record<string, any>;
   isDeleted?: boolean;
   requestDeleteOn: string;
   createdAt: string;
   updatedAt: string;
-  stage: any;
-  shops: string[];
+  stage: UserStage;
 };
 
 type UserState = {

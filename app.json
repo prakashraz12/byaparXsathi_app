@@ -4,7 +4,7 @@
     "slug": "byaparsathi",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/app/adaptive-icon.png",
     "scheme": "byaparsathi",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -12,12 +12,14 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.rzprakash.byaparsathi",
       "infoPlist": {
-        "NSContactsUsageDescription": "A message that tells the user why the app is requesting access to the user’s contacts."
-      }
+        "NSContactsUsageDescription": "A message that tells the user why the app is requesting access to the user's contacts.",
+        "UIBackgroundModes": ["fetch", "processing"]
+      },
+      "icon": "./assets/app/adaptive-icon.png"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/app/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
@@ -26,14 +28,14 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/app/adaptive-icon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/app/splash.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -55,11 +57,20 @@
         }
       ],
       [
-        "expo-contacts",{
+        "expo-contacts",
+        {
           "contactsPermission": "Allow Byapar Sathi to access your contacts."
-
         }
-      ]
+      ],
+      [
+        "expo-media-library",
+        {
+          "mediaLibraryPermission": "Allow Byapar Sathi to access your media library.",
+          "photosPermission": "Allow access to save PDFs to your photo library.",
+          "savePhotosPermission": "Allow saving PDFs to your photo library."
+        }
+      ],
+      "expo-background-task"
     ],
     "experiments": {
       "typedRoutes": true

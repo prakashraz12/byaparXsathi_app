@@ -54,11 +54,7 @@ const SalesFilterSlideUp = ({
       height={600 + (dateRangeOptions === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.CUSTOM_RNAGE ? 20 :0)}
       stickyFooter={
         <View style={{ flexDirection: "row", gap: 12 }}>
-          <Button
-            variant="destructiveOutline"
-            title="Close"
-            onPress={onClose}
-          />
+         
           <Button
             style={{ flex: 1 }}
             title="Reset"

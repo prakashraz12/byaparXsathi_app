@@ -42,7 +42,8 @@ export type LoginWithOtpResponse = {
    * @format date-time
    */
   updatedAt: string;
-  shops: string[];
+  accessToken: string;
+  shops: ShopResponse[];
 };
 
 export type PaginationDto = {
@@ -199,73 +200,4 @@ export type CreateShopDto = {
    * List of measuring units used in the shop
    */
   measuringUnits?: MeasuringUnitDto[];
-};
-
-export type CreateSalesDto = {
-  shopId: string;
-  customerId: string;
-  saleItems: string[];
-  invoiceNumber: string;
-  /**
-   * @format date-time
-   */
-  invoiceDate: string;
-  paymentType: string;
-  status: string;
-  discountAmount: number;
-  taxAmount: number;
-  subTotalAmount: number;
-  additionalAmount: number;
-  oldDueAmount: number;
-  dueAmount: number;
-  paidAmount: number;
-  remarks: string;
-  grandTotalAmount: number;
-};
-
-export type MeasurementUnitDto = {};
-
-export type CreateItemDto = {
-  /**
-   * Name of the item
-   */
-  itemName: string;
-  /**
-   * Cost price of the item
-   */
-  costPrice: number;
-  /**
-   * Selling price of the item
-   */
-  sellingPrice: number;
-  /**
-   * Measurement unit details
-   */
-  measurementUnit: MeasurementUnitDto;
-  /**
-   * Whether stock tracking is enabled for this item
-   */
-  isStockEnabled: boolean;
-  /**
-   * Alert when stock reaches this level
-   *
-   * @default 0
-   */
-  lowStockAlert?: number;
-  /**
-   * Current stock level
-   *
-   * @default 0
-   */
-  currentStock?: number;
-  /**
-   * Initial stock level
-   *
-   * @default 0
-   */
-  openingStock?: number;
-  /**
-   * ID of the shop this item belongs to
-   */
-  shopId: number;
 };

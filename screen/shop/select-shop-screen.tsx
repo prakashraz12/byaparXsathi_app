@@ -10,6 +10,7 @@ import { useState } from "react";
 import Shop from "@/database/model/shop.model";
 import { CheckCircleIcon } from "lucide-react-native";
 import { useUserStore } from "@/store/useUserStore";
+import { syncDatabase } from "@/database/sync.service";
 
 const SelectShopScreen = () => {
     const {shops} = useShops();
@@ -19,7 +20,9 @@ const SelectShopScreen = () => {
     const handleContinue = ()=>{
         if(selectedShop?.id){
             setActiveShopId(selectedShop?.id)
-            router.push("/(tabs)")
+            syncDatabase({isFirstTime:true,shopId:selectedShop?.id, fetchShops:false})
+            router.push("/syncing")
+
         }
     }
   return (

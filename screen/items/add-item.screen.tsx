@@ -12,6 +12,7 @@ import { itemService } from "@/database/services/item.service";
 import { itemSchema, TItemSchema } from "@/forms/schema/add-items.schema";
 import useGetMeasuringUnits from "@/hooks/useGetMeasuringUnits";
 import PXWrapper from "@/layouts/px-wrapper";
+import { useUserStore } from "@/store/useUserStore";
 import { useForm } from "@tanstack/react-form";
 import { router } from "expo-router";
 import { Check } from "lucide-react-native";
@@ -19,7 +20,8 @@ import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const AddItemScreen = () => {
-  const { activeShop } = useShops();
+  const {activeShopId} = useUserStore()
+  console.log(activeShopId)
   const { measuringUnits } = useGetMeasuringUnits({});
 
   const insets = useSafeAreaInsets();
@@ -40,6 +42,7 @@ const AddItemScreen = () => {
       onChangeAsync: itemSchema as any,
     },
     onSubmit: async ({ value }: { value: TItemSchema }) => {
+      if(!activeShopId) return;
       const response = await itemService.create(
         {
           itemName: value.itemName,
@@ -52,7 +55,7 @@ const AddItemScreen = () => {
           isStockEnabled: value.isStockEnabled,
           isActive: value.isActive,
         },
-        activeShop?.id || ""
+        activeShopId
       );
       if (response?.statusCode === 201) {
         Toast.success(response?.message);

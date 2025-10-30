@@ -20,6 +20,8 @@ import AlertModal from "@/components/re-usables/modal/alert-modal";
 import { useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import database from "@/database";
+import { useSyncStore } from "@/store/useSync";
+import { getDateFormat } from "@/utils/format-date";
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -58,6 +60,7 @@ interface Styles {
 export const MoreScreen = () => {
   const [logoutModal, setLogOutModal] = useState(false);
   const [isLogOuting, setIsLogOuting] = useState(false);
+  const {lastSynced} = useSyncStore()
 
   const { clearUser, clearToken } = useUserStore();
 
@@ -362,6 +365,7 @@ export const MoreScreen = () => {
                 <Text style={styles.legalText}>Terms of Service</Text>
               </TouchableOpacity>
             </View>
+            <Text>{lastSynced.toLocaleString()}</Text>
           </View>
         </View>
         <AlertModal

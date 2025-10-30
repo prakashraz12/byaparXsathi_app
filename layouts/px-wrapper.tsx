@@ -1,7 +1,8 @@
 import NotFound from "@/components/re-usables/not-found";
 import { COLORS } from "@/constants/Colors";
+import { StatusBar } from "expo-status-bar";
 import type React from "react";
-import { FlatList, ScrollView, StatusBar, StyleSheet, View } from "react-native";
+import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface PXWrapperProps {
@@ -41,6 +42,7 @@ const PXWrapper = ({
         floatingAction ? { position: "relative" } : {},
       ]}
     >
+      <StatusBar style="dark" />
       {header ? <View style={styles.header}>{header}</View> : null}
       
       {floatingAction && (

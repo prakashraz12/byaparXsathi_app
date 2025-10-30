@@ -10,11 +10,10 @@ export default class SalesItem extends Model {
   @field("quantity") quantity?: number;
   @field("price") price?: number;
   @field("discountAmount") discountAmount?: number;
-  @field("createdAt") createdAt?: Date;
-  @field("updatedAt") updatedAt?: Date;
   @field("itemName") itemName?: string;
   @field("salesId") salesId?: string;
-  @field("created_at") created_at?: Date;
-  @field("updated_at") updated_at?: Date;
+  @field("measurementUnit") measurementUnit?: string;
+  @field("created_at") created_at?: number;
+  @field("updated_at") updated_at?: number;
 
 }
