@@ -117,39 +117,23 @@ const SalesFilterSlideUp = ({
 
       {dateRangeOptions === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.CUSTOM_RNAGE && (
         <View>
-          <Text
-            style={{
-              fontSize: 16,
-              marginBottom: 16,
-              fontFamily: "Poppins-SemiBold",
-            }}
-          >
-            Custom Date Range
-          </Text>
-
+        
           <View style={{ flexDirection: "row", gap: 12 }}>
             <View style={{ flex: 1 }}>
              
               <DatePicker
                 selectedDate={(startDate ?? new Date()) as Date}
                 onDateChange={(d) => setStartDate(d)}
+                label="Start Date"
               />
             </View>
 
             <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: "500",
-                  marginBottom: 8,
-                  color: "#666",
-                }}
-              >
-                To
-              </Text>
+            
               <DatePicker
                 selectedDate={(endDate ?? new Date()) as Date}
                 onDateChange={(d) => setEndDate(d)}
+                label="End Date"
               />
             </View>
           </View>

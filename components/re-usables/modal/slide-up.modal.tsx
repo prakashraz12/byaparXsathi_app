@@ -1,24 +1,39 @@
+import { Ionicons } from "@expo/vector-icons";
+import type React from "react";
+import { useEffect, useRef } from "react";
+import {
+  Modal,
+  View,
+  Text,
+  Animated,
+  Dimensions,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import {
+  PanGestureHandler,
+  State,
+  GestureHandlerRootView,
+  ScrollView,
+} from "react-native-gesture-handler";
+import type { PanGestureHandlerGestureEvent } from "react-native-gesture-handler";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Ionicons } from "@expo/vector-icons"
-import type React from "react"
-import { useEffect, useRef } from "react"
-import { Modal, View, Text, Animated, Dimensions, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from "react-native"
-import { PanGestureHandler, State, GestureHandlerRootView, ScrollView } from "react-native-gesture-handler"
-import type { PanGestureHandlerGestureEvent } from "react-native-gesture-handler"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
-
-const { height: SCREEN_HEIGHT } = Dimensions.get("window")
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 interface SlideUpModalProps {
-  visible: boolean
-  onClose: () => void
-  children: React.ReactNode
-  title?: string
-  height?: number
-  showHandle?: boolean
-  backdropOpacity?: number
-  animationDuration?: number
-  stickyFooter?: React.ReactNode
+  visible: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  title?: string;
+  height?: number;
+  showHandle?: boolean;
+  backdropOpacity?: number;
+  animationDuration?: number;
+  stickyFooter?: React.ReactNode;
 }
 
 export const SlideUpModal: React.FC<SlideUpModalProps> = ({
@@ -32,9 +47,9 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
   animationDuration = 300,
   stickyFooter,
 }) => {
-  const insets = useSafeAreaInsets()
-  const translateY = useRef(new Animated.Value(height)).current
-  const backdropOpacityAnimated = useRef(new Animated.Value(0)).current
+  const insets = useSafeAreaInsets();
+  const translateY = useRef(new Animated.Value(height)).current;
+  const backdropOpacityAnimated = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (visible) {
@@ -50,7 +65,7 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
           duration: animationDuration,
           useNativeDriver: true,
         }),
-      ]).start()
+      ]).start();
     } else {
       // Slide down animation
       Animated.parallel([
@@ -64,28 +79,28 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
           duration: animationDuration,
           useNativeDriver: true,
         }),
-      ]).start()
+      ]).start();
     }
-  }, [visible])
+  }, [visible]);
 
   const handleGestureEvent = (event: PanGestureHandlerGestureEvent) => {
-    const { translationY } = event.nativeEvent
+    const { translationY } = event.nativeEvent;
 
     if (translationY > 0) {
-      translateY.setValue(translationY)
-      const opacity = backdropOpacity * (1 - translationY / height)
-      backdropOpacityAnimated.setValue(Math.max(0, opacity))
+      translateY.setValue(translationY);
+      const opacity = backdropOpacity * (1 - translationY / height);
+      backdropOpacityAnimated.setValue(Math.max(0, opacity));
     }
-  }
+  };
 
   const handleGestureStateChange = (event: PanGestureHandlerGestureEvent) => {
-    const { translationY, velocityY, state } = event.nativeEvent
+    const { translationY, velocityY, state } = event.nativeEvent;
 
     if (state === State.END) {
-      const shouldClose = translationY > height * 0.3 || velocityY > 500
+      const shouldClose = translationY > height * 0.3 || velocityY > 500;
 
       if (shouldClose) {
-        onClose()
+        onClose();
       } else {
         Animated.parallel([
           Animated.spring(translateY, {
@@ -97,17 +112,21 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
             duration: 500,
             useNativeDriver: true,
           }),
-        ]).start()
+        ]).start();
       }
     }
-  }
+  };
 
   const handleBackdropPress = () => {
-    onClose()
-  }
+    onClose();
+  };
 
   return (
-    <Modal visible={visible} transparent animationType="none" statusBarTranslucent>
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent
+    >
       <GestureHandlerRootView style={styles.container}>
         <TouchableWithoutFeedback onPress={handleBackdropPress}>
           <Animated.View
@@ -120,39 +139,58 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
           />
         </TouchableWithoutFeedback>
 
-        <PanGestureHandler onGestureEvent={handleGestureEvent} onHandlerStateChange={handleGestureStateChange}>
-          <Animated.View
-            style={[
-              styles.modalContainer,
-              {
-                height,
-                transform: [{ translateY }],
-              },
-            ]}
+        <PanGestureHandler
+          onGestureEvent={handleGestureEvent}
+          onHandlerStateChange={handleGestureStateChange}
+        >
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "height" : "padding"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
           >
-            {showHandle && (
-              <View style={styles.handleContainer}>
-                <View style={styles.handle} />
-              </View>
-            )}
+            <Animated.View
+              style={[
+                styles.modalContainer,
+                {
+                  height,
+                  transform: [{ translateY }],
+                },
+              ]}
+            >
+              {showHandle && (
+                <View style={styles.handleContainer}>
+                  <View style={styles.handle} />
+                </View>
+              )}
 
-            {title && (
-              <View style={styles.titleContainer}>
-                <Text style={styles.title}>{title}</Text>
-                <TouchableOpacity onPress={onClose}>
-                 <Ionicons name="close" size={24} color="#1A1A1A" />
-                </TouchableOpacity>
-              </View>
-            )}
+              {title && (
+                <View style={styles.titleContainer}>
+                  <Text style={styles.title}>{title}</Text>
+                  <TouchableOpacity onPress={onClose}>
+                    <Ionicons name="close" size={24} color="#1A1A1A" />
+                  </TouchableOpacity>
+                </View>
+              )}
 
-            <ScrollView style={styles.content}>{children}</ScrollView>
-            {stickyFooter ? <View style={[styles.stickyFooter, {paddingVertical: insets.bottom + 4}]}>{stickyFooter}</View> : null }
-          </Animated.View>
+              <ScrollView keyboardShouldPersistTaps="handled">
+                {children}
+              </ScrollView>
+              {stickyFooter ? (
+                <View
+                  style={[
+                    styles.stickyFooter,
+                    { paddingVertical: insets.bottom + 4 },
+                  ]}
+                >
+                  {stickyFooter}
+                </View>
+              ) : null}
+            </Animated.View>
+          </KeyboardAvoidingView>
         </PanGestureHandler>
       </GestureHandlerRootView>
     </Modal>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -188,7 +226,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-   fontFamily:"Poppins-Medium",
+    fontFamily: "Poppins-Medium",
     textAlign: "center",
   },
   stickyFooter: {
@@ -200,9 +238,5 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#F0F0F0",
     backgroundColor: "white",
-    
   },
-  content: {
-    flex: 1,
-  },
-})
+});

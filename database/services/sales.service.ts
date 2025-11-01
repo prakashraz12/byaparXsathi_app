@@ -8,26 +8,38 @@ import { responseHandler } from "../util/response-handler";
 import { normalizeToTimestamp } from "../util/normalizeToTimeStamp";
 import { idxGenerator } from "@/utils/idx.utils";
 import Customer from "../model/customer.model";
+import { PaymentStatus } from "@/constants/payment-status";
 
 export const salesService = {
-  create: async (salesData: Partial<Sales>, shopId: string, salesItems: Partial<SalesItem>[]) => {
-    if (!salesData.invoiceDate || !salesData.status) {
+  create: async (
+    salesData: Partial<Sales>,
+    shopId: string,
+    salesItems?: Partial<SalesItem>[]
+  ) => {
+    if (
+      !salesData.invoiceDate ||
+      !salesData.status ||
+      (salesData?.status !== PaymentStatus.UNPAID && !salesData?.paymentType)
+    ) {
       return responseHandler({
-        message: "Invoice date is required",
+        message: "Invoice date, payment status and payment type are required",
         statusCode: 400,
         data: null,
+        success: false,
       });
     }
     try {
-     
       const invoiceTimestamp = normalizeToTimestamp(
         (salesData as any).invoiceDate
       );
 
       //if customer attached then need works
-      let customer:Customer | null = null;
-      if(salesData?.customerId){
-        customer = await DB_COLLECTION.customer.find(salesData?.customerId) as Customer || null
+      let customer: Customer | null = null;
+      if (salesData?.customerId) {
+        customer =
+          ((await DB_COLLECTION.customer.find(
+            salesData?.customerId
+          )) as Customer) || null;
       }
       const result = await database.write(async () => {
         const sales = await DB_COLLECTION.sales.create((s) => {
@@ -46,18 +58,13 @@ export const salesService = {
           s.status = salesData.status || "";
           s.paymentType = salesData.paymentType || "";
           s.customerId = customer?.id;
-          s.customerName = customer?.name
-         
+          s.customerName = customer?.name;
         });
 
-        if (
-          Array.isArray(salesItems) &&
-          salesItems.length
-        ) {
+        if (Array.isArray(salesItems) && salesItems.length) {
           const salesItemCollection = DB_COLLECTION.salesItem;
           for (const it of salesItems) {
             await salesItemCollection.create((si: SalesItem) => {
-              
               si.salesId = sales._raw.id;
               si.itemId = it.itemId;
               si.quantity = it.quantity;
@@ -67,14 +74,13 @@ export const salesService = {
               si.measurementUnit = it.measurementUnit;
               si.created_at = Date.now();
               si.updated_at = Date.now();
-
             });
-            const item = await DB_COLLECTION.item.find(it.itemId || "")
-            if(item && item?.isStockEnabled){
-              await item.update((i)=>{
+            const item = await DB_COLLECTION.item.find(it.itemId || "");
+            if (item && item?.isStockEnabled) {
+              await item.update((i) => {
                 i.currentStock = Number(i.currentStock) - Number(it.quantity);
                 i.updatedAt = Date.now();
-              })
+              });
             }
           }
         }
@@ -99,6 +105,19 @@ export const salesService = {
           }
         }
 
+        if(customer && salesData.status === PaymentStatus.PARTIALLY_PAID){
+          await customer.update((c) => {
+            c.outstanding = Number(c.outstanding) + Number(salesData.paidAmount);
+            c.updated_at = Date.now();
+          });
+        }
+        if(customer && salesData.status === PaymentStatus.UNPAID){
+          await customer.update((c) => {
+            c.outstanding = Number(c.outstanding) + Number(salesData.grandTotalAmount);
+            c.updated_at = Date.now();
+          });
+        }
+        
         return responseHandler({
           message: "Sales is created",
           statusCode: 201,
@@ -115,7 +134,11 @@ export const salesService = {
       });
     }
   },
-  updateSales: async (id: string, salesData: Partial<Sales>, newSalesItems: Partial<SalesItem>[]) => {
+  updateSales: async (
+    id: string,
+    salesData: Partial<Sales>,
+    newSalesItems: Partial<SalesItem>[]
+  ) => {
     try {
       const result = await database.write(async () => {
         const sales = await DB_COLLECTION.sales.find(id);
@@ -141,8 +164,9 @@ export const salesService = {
           s.paymentType = salesData.paymentType || "";
         });
 
-       
-        const salesItems = await DB_COLLECTION.salesItem.query(Q.where("salesId", sales._raw.id)).fetch();
+        const salesItems = await DB_COLLECTION.salesItem
+          .query(Q.where("salesId", sales._raw.id))
+          .fetch();
         for (const item of salesItems) {
           await item.destroyPermanently();
         }
@@ -181,17 +205,17 @@ export const salesService = {
     try {
       const result = await database.read(async () => {
         const sales = await DB_COLLECTION.sales.find(id);
-        const salesItems = await DB_COLLECTION.salesItem.query(Q.where("salesId", id)).fetch();
+        const salesItems = await DB_COLLECTION.salesItem
+          .query(Q.where("salesId", id))
+          .fetch();
         const shop = await DB_COLLECTION.shop.find(sales.shopId || "");
         return { sales, salesItems, shop };
       });
-      console.log(result, "result")
+      console.log(result, "result");
       return responseHandler({
         data: {
           sale: result?.sales?._raw,
-          salesItems: result?.salesItems?.map(
-            (item: SalesItem) => item._raw
-          ),
+          salesItems: result?.salesItems?.map((item: SalesItem) => item._raw),
           shop: result?.shop?._raw,
         },
       });
@@ -225,7 +249,4 @@ export const salesService = {
       });
     }
   },
- 
-
-
 };

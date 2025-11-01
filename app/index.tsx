@@ -2,7 +2,6 @@ import { useUserStore } from "@/store/useUserStore";
 import OnboardingPage from "./(routes)/onboarding/index";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { useSyncStore } from "@/store/useSync";
 
 const Home = () => {
   const user = useUserStore((state) => state.user);

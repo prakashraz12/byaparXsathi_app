@@ -39,24 +39,24 @@ const CreateShopForm = () => {
     onSubmit: async ({ value }) => {
       try {
         const measuringUnits = MEASURING_UNITS[value.shopType as SHOP_TYPE];
-        const response = await shopService.createShop(
-          {
-            shopEmail: value.email,
-            shopName: value.shopName,
-            shopPhoneNumber: value.phoneNumber,
-            address: value.address,
-            panNumber: value.panNumber,
-            registrationNumber: value.registrationNumber,
-            shopType: value.shopType,
-            measuringUnits: JSON.stringify(measuringUnits),
-          },
-          user?.id?.toString() || ""
-        );
-        if (response?.status === 201) {
-          Toast.success("Shop Created");
-          setActiveShopId(response?.shop?.id || "");
-          router.replace("/(tabs)");
-        }
+        // const response = await shopService.createShop(
+        //   {
+        //     shopEmail: value.email,
+        //     shopName: value.shopName,
+        //     shopPhoneNumber: value.phoneNumber,
+        //     address: value.address,
+        //     panNumber: value.panNumber,
+        //     registrationNumber: value.registrationNumber,
+        //     shopType: value.shopType,
+        //     measuringUnits: JSON.stringify(measuringUnits),
+        //   },
+        //   user?.id?.toString() || ""
+        // );
+        // if (response?.status === 201) {
+        //   Toast.success("Shop Created");
+        //   setActiveShopId(response?.shop?.id || "");
+        //   router.replace("/(tabs)");
+        // }
       } catch (error) {
         console.log(error);
       }
@@ -65,7 +65,7 @@ const CreateShopForm = () => {
 
   return (
     <View
-      style={{  height: WINDOW_HEIGHT - 100 }}
+      
     >
       <Field name="shopName">
         {(field) => (
@@ -168,7 +168,7 @@ const CreateShopForm = () => {
         </Text>
       </TouchableOpacity>
       {!hideAddinationalFields && (
-        <View>
+        <View style={{ marginTop: 10 }}>
           <Field name="panNumber">
             {(field) => (
               <CustomInput

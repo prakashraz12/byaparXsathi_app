@@ -3,14 +3,15 @@ import { useCallback, useEffect, useState } from "react";
 import Expenses from "../model/expenses.model";
 import { DB_COLLECTION } from "../collection";
 import { Q } from "@nozbe/watermelondb";
+import Income from "../model/income.model";
 
-const useExpenses = ({searchParams}:{searchParams?:string}) => {
+const useIncome = ({searchParams}:{searchParams?:string}) => {
    const { activeShopId } = useUserStore();
-     const [expenses, setExpenses] = useState<Expenses[]>([]);
+     const [income, setIncome] = useState<Income[]>([]);
      const [isRefreshing, setIsRefreshing] = useState(false); 
 
      const buildQuery = useCallback(() => {
-        let query = DB_COLLECTION.expenses.query();
+        let query = DB_COLLECTION.income.query();
 
         if (activeShopId) {
           query = query.extend(Q.where("shopId", activeShopId));
@@ -35,9 +36,9 @@ const useExpenses = ({searchParams}:{searchParams?:string}) => {
           try {
             const query = buildQuery();
             const records = await query.fetch();
-            setExpenses(records?.map((record) => record?._raw as any));
+            setIncome(records?.map((record) => record?._raw as any));
           } catch (error) {
-            console.error("Error loading expenses:", error);
+            console.error("Error loading income:", error);
           } finally {
             if (isRefresh) setIsRefreshing(false);
           }
@@ -52,17 +53,17 @@ const useExpenses = ({searchParams}:{searchParams?:string}) => {
       useEffect(() => {
         const query = buildQuery();
         const subscription = query.observe().subscribe((records) => {
-          setExpenses(records?.map((record) => record?._raw as any));
+          setIncome(records?.map((record) => record?._raw as any));
         });
 
         return () => subscription.unsubscribe();
       }, [buildQuery]);
 
       return {
-        expenses,
+        income,
         reload: loadExpenses,
         refresh,
         isRefreshing,
       };
     }
-    export default useExpenses;
+    export default useIncome;

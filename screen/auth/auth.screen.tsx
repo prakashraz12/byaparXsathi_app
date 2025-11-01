@@ -7,12 +7,18 @@ import { withEmailSchema } from "@/forms/schema/with-email.schema";
 import PXWrapper from "@/layouts/px-wrapper";
 import { useAuthControllerWithEmail } from "@/service/queries-components";
 import { apiOptions } from "@/utils/api-options.util";
+import { getUserLocation } from "@/utils/get-user-info";
 import { useForm } from "@tanstack/react-form";
 import { router } from "expo-router";
 import { Mail } from "lucide-react-native";
+import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
 const AuthScreen = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+
+ 
   const form = useForm({
     defaultValues: {
       email: "",
@@ -20,23 +26,32 @@ const AuthScreen = () => {
     validators: {
       onChangeAsync: withEmailSchema,
     },
-    onSubmit: (data) => {
+    onSubmit: async (data) => {
+      setIsLoading(true);
+      const { country, city, region, timezone, latitude, longitude } =
+        await getUserLocation();
       login({
         body: {
           email: data?.value?.email,
+          country,
+          city,
+          region,
+          timezone,
+          latitude,
+          longitude,
         },
       });
+      setIsLoading(false);
     },
   });
   const { mutateAsync: login, isPending } = useAuthControllerWithEmail(
     apiOptions(undefined, () => {
       router.push({
         pathname: "/(routes)/otp",
-        params: { email: form.state.values.email }
+        params: { email: form.state.values.email },
       });
     })
   );
-
 
   return (
     <PXWrapper>
@@ -74,16 +89,14 @@ const AuthScreen = () => {
           />
         )}
       </form.Field>
-     
 
       <Button
         title="Continue"
         size="medium"
-        
         style={{ marginTop: 24 }}
         onPress={form.handleSubmit}
-        disabled={isPending}
-        loading={isPending}
+        disabled={isPending || isLoading}
+        loading={isPending || isLoading}
       />
 
       <View style={styles.dividerContainer}>
@@ -99,7 +112,7 @@ const AuthScreen = () => {
         style={styles.googleButton}
         textStyle={{ color: COLORS.textLight }}
       />
-       <View
+      <View
         style={{
           marginTop: 20,
           flexDirection: "row",

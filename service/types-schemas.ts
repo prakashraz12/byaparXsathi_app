@@ -8,6 +8,30 @@ export type WithEmailDto = {
    * @example prakashraz@gmail.com
    */
   email: string;
+  /**
+   * @example nepal
+   */
+  country: string;
+  /**
+   * @example city
+   */
+  city: string;
+  /**
+   * @example latitude
+   */
+  latitude: string;
+  /**
+   * @example longitude
+   */
+  longitude: string;
+  /**
+   * @example region
+   */
+  region: string;
+  /**
+   * @example timezone
+   */
+  timezone: string;
 };
 
 export type LoginDto = {
@@ -43,7 +67,7 @@ export type LoginWithOtpResponse = {
    */
   updatedAt: string;
   accessToken: string;
-  shops: ShopResponse[];
+  shops: string[];
 };
 
 export type PaginationDto = {
@@ -200,4 +224,102 @@ export type CreateShopDto = {
    * List of measuring units used in the shop
    */
   measuringUnits?: MeasuringUnitDto[];
+};
+
+export type SyncChangesDto = {
+  /**
+   * List of created, updated, and deleted customers
+   *
+   * @example {"created":[],"updated":[],"deleted":[]}
+   */
+  customer: Record<string, any>;
+  /**
+   * List of created, updated, and deleted shops
+   *
+   * @example {"created":[],"updated":[],"deleted":[]}
+   */
+  shop: Record<string, any>;
+  /**
+   * List of created, updated, and deleted items
+   *
+   * @example {"created":[],"updated":[],"deleted":[]}
+   */
+  item: Record<string, any>;
+  /**
+   * List of created, updated, and deleted payment accounts
+   *
+   * @example {"created":[],"updated":[],"deleted":[]}
+   */
+  paymentAccount: Record<string, any>;
+  /**
+   * List of created, updated, and deleted sales
+   *
+   * @example {"created":[],"updated":[],"deleted":[]}
+   */
+  sales: Record<string, any>;
+  /**
+   * List of created, updated, and deleted sales items
+   *
+   * @example {"created":[],"updated":[],"deleted":[]}
+   */
+  salesItems: Record<string, any>;
+  /**
+   * List of created, updated, and deleted income
+   *
+   * @example {"created":[],"updated":[],"deleted":[]}
+   */
+  income: Record<string, any>;
+  /**
+   * List of created, updated, and deleted expenses
+   *
+   * @example {"created":[],"updated":[],"deleted":[]}
+   */
+  expenses: Record<string, any>;
+};
+
+export type SyncResponseDto = {
+  /**
+   * All changes for sync
+   */
+  changes: SyncChangesDto;
+  /**
+   * Timestamp of the sync
+   *
+   * @example 1696291200000
+   */
+  timestamp: number;
+};
+
+export type SyncResponseWrapperDto = {
+  statusCode: number;
+  message: string;
+  isSuccess: boolean;
+  data?: SyncResponseDto;
+  pagination?: PaginationDto;
+};
+
+export type SynCreateCustomerDto = {};
+
+export type SyncCreateShopDto = {};
+
+export type SyncCreateItemDto = {};
+
+export type SyncCreateSalesDto = {};
+
+export type SyncCreateSalesItemDto = {};
+
+export type ChangesDto = {
+  customer: SynCreateCustomerDto[];
+  shop: SyncCreateShopDto[];
+  item: SyncCreateItemDto[];
+  sales: SyncCreateSalesDto[];
+  salesItems: SyncCreateSalesItemDto[];
+  paymentAccount?: Record<string, any>;
+  expenses?: Record<string, any>;
+  income?: Record<string, any>;
+};
+
+export type PushSyncDto = {
+  changes: ChangesDto;
+  lastPulledAt: number;
 };

@@ -4,7 +4,6 @@ import DatePicker from "@/components/re-usables/date-picker/date-picker";
 import { Header } from "@/components/re-usables/header";
 import { Text } from "@/components/re-usables/text";
 import { COLORS } from "@/constants/Colors";
-import useShops from "@/database/hooks/useShops";
 import { salesService } from "@/database/services/sales.service";
 import PXWrapper from "@/layouts/px-wrapper";
 import { PaymentStatusType } from "@/types/payment-status";
@@ -23,15 +22,14 @@ import {
 import { useCallback, useMemo, useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
-import { useSalesItemStore } from "@/store/useSalesItem";
-import PaymentModeSlideup from "../../components/sales/payment-mode-slideup";
-import PaymentSlideUp from "../../components/sales/payment-slide-up";
-import SalesItemCard from "../../components/sales/sales-item-card";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AddCustomerSlideup from "@/components/sales/add-customer-slideup";
 import Customer from "@/database/model/customer.model";
+import { useSalesItemStore } from "@/store/useSalesItem";
 import { useUserStore } from "@/store/useUserStore";
-
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import PaymentModeSlideup from "../../components/sales/payment-mode-slideup";
+import PaymentSlideUp from "../../components/sales/payment-status-slide-up";
+import SalesItemCard from "../../components/sales/sales-item-card";
 
 // Utility functions
 const parseNumber = (value: string): number => Number.parseFloat(value) || 0;
@@ -41,7 +39,7 @@ const CreateSalesScreen = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [notes, setNotes] = useState("");
-  const {bottom} = useSafeAreaInsets()
+  const { bottom } = useSafeAreaInsets();
   const [showAddCustomerSlideup, setShowAddCustomerSlideup] = useState(false);
 
   // Payment state
@@ -57,7 +55,7 @@ const CreateSalesScreen = () => {
   const [showAddItemsSlideup, setShowAddItemsSlideup] = useState(false);
   const [paymentSlideup, setPaymentSlideup] = useState(false);
   const [paymentModeSlideup, setPaymentModeSlideup] = useState(false);
-  const [itemShow, setItemShow] = useState(true)
+  const [itemShow, setItemShow] = useState(true);
 
   // Section visibility state
   const [showDiscountSection, setShowDiscountSection] = useState(false);
@@ -246,7 +244,7 @@ const CreateSalesScreen = () => {
       return;
     }
 
-    if(!activeShopId){
+    if (!activeShopId) {
       Toast.error("Please select a shop");
       return;
     }
@@ -258,7 +256,6 @@ const CreateSalesScreen = () => {
           : 0;
 
     const response = await salesService.create(
-
       {
         invoiceDate: selectedDate.getTime(),
         grandTotalAmount: grandTotal,
@@ -315,13 +312,18 @@ const CreateSalesScreen = () => {
 
   return (
     <PXWrapper
-      header={<Header title="Add Sale" onBackPress={() => {
-        useSalesItemStore.setState({ salesItems: [] });
-        router.back();
-      }} />}
+      header={
+        <Header
+          title="Add Sale"
+          onBackPress={() => {
+            useSalesItemStore.setState({ salesItems: [] });
+            router.back();
+          }}
+        />
+      }
       footer={
         <Button
-        style={{marginBottom:bottom *0.2}}
+          style={{ marginBottom: bottom * 0.2 }}
           disabled={isSalesButtonDisabled}
           title={`Proceed To Sale ${formatNumberWithComma(grandTotal)}`}
           onPress={handleSave}
@@ -335,9 +337,17 @@ const CreateSalesScreen = () => {
             onPress={handleCustomerPress}
             activeOpacity={0.7}
           >
-            {customer?.outstanding ? <Text style={{fontSize:12, color:COLORS.error}}>{customer?.outstanding}</Text> : <Text style={styles.label}>Customer</Text>}
+            {customer?.outstanding ? (
+              <Text style={{ fontSize: 12, color: COLORS.error }}>
+                {customer?.outstanding}
+              </Text>
+            ) : (
+              <Text style={styles.label}>Customer</Text>
+            )}
             <View style={styles.inputContent}>
-              <Text style={styles.inputValue}>{customer?.name || "Select Customer"}</Text>
+              <Text style={styles.inputValue}>
+                {customer?.name || "Select Customer"}
+              </Text>
               <ChevronDown size={18} color="#666" />
             </View>
           </TouchableOpacity>
@@ -366,20 +376,26 @@ const CreateSalesScreen = () => {
           onPress={() => router.push("/(routes)/sales/sales-items")}
           activeOpacity={0.7}
         >
-          <PlusCircle size={25} color={"white"}  fill={COLORS.primary}/>
+          <PlusCircle size={25} color={"white"} fill={COLORS.primary} />
           <Text style={styles.addItemsText}>Add Items</Text>
         </TouchableOpacity>
 
         <View>
           {salesItems?.length > 0 && (
             <View style={styles.itemsHeader}>
-              <Text size={16} style={{fontFamily:"Poppins-Medium"}}>Items</Text>
+              <Text size={16} style={{ fontFamily: "Poppins-Medium" }}>
+                Items
+              </Text>
               <TouchableOpacity onPress={() => setItemShow(!itemShow)}>
-                {itemShow ? <Minus size={20} color={COLORS.primary} /> : <Plus size={20} color={COLORS.primary} />}
+                {itemShow ? (
+                  <Minus size={20} color={COLORS.primary} />
+                ) : (
+                  <Plus size={20} color={COLORS.primary} />
+                )}
               </TouchableOpacity>
             </View>
           )}
-          <View style={{display: itemShow ? "flex" : "none" }}>
+          <View style={{ display: itemShow ? "flex" : "none" }}>
             {salesItems?.map((item, index) => (
               <SalesItemCard
                 key={`${item.itemId}-${index}`}
@@ -431,7 +447,7 @@ const CreateSalesScreen = () => {
               setShowAdditionalChargesSection={setShowAdditionalChargesSection}
             />
           </>
-        ): (
+        ) : (
           <AddSectionButton
             label="Add Additional Charge"
             onPress={() => setShowAdditionalChargesSection(true)}
@@ -779,9 +795,8 @@ const styles = StyleSheet.create({
   addItemsText: {
     fontSize: 14,
     color: COLORS.primary,
-    fontFamily:"Poppins-Medium",
-    marginTop:4
-
+    fontFamily: "Poppins-Medium",
+    marginTop: 4,
   },
   itemsHeader: {
     flexDirection: "row",
@@ -797,7 +812,7 @@ const styles = StyleSheet.create({
   subtotalLabel: {
     fontSize: 16,
     color: "#374151",
-    fontFamily:"Poppins-Medium"
+    fontFamily: "Poppins-Medium",
   },
   subtotalValue: {
     fontSize: 16,
@@ -888,11 +903,11 @@ const styles = StyleSheet.create({
   },
   grandTotalLabel: {
     fontSize: 16,
-    fontFamily:"Poppins-Medium"
+    fontFamily: "Poppins-Medium",
   },
   grandTotalValue: {
     fontSize: 16,
-    fontFamily:"Poppins-Medium"
+    fontFamily: "Poppins-Medium",
   },
   remarksContainer: {
     gap: 8,
@@ -906,7 +921,7 @@ const styles = StyleSheet.create({
   remarksLabel: {
     fontSize: 14,
     color: "#374151",
-    fontFamily:"Poppins-Medium"
+    fontFamily: "Poppins-Medium",
   },
   notesInput: {
     backgroundColor: "#fff",

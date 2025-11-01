@@ -27,6 +27,7 @@ interface DatePickerProps {
     close: () => void;
     mode: CalendarType;
   }) => React.ReactNode;
+  label?: string;
 }
 
 const  DatePicker = ({
@@ -34,8 +35,8 @@ const  DatePicker = ({
   onDateChange,
   mode = "nepali",
   renderCustomSelection,
+  label
 }: DatePickerProps) => {
-  const offSetMin = new Date().getTimezoneOffset();
   const [isVisible, setIsVisible] = useState(false);
   const [calendarMode, setCalendarMode] = useState<CalendarType>(mode);
   const [currentDate, setCurrentDate] = useState(selectedDate);
@@ -118,7 +119,6 @@ const  DatePicker = ({
         day
       );
 
-      console.log("this is ad date", newAdDate)
       setCurrentBsDate(newBsDate);
       setCurrentDate(newAdDate);
       onDateChange?.(newAdDate);
@@ -220,7 +220,7 @@ const  DatePicker = ({
         })
       ) : (
         <View>
-          <Text style={{fontSize:16, fontFamily:"Poppins-Medium", marginBottom:6, marginLeft:4, color:COLORS.text}}>Date</Text>
+          {label && <Text style={{fontSize:16, fontFamily:"Poppins-Medium", marginBottom:6, marginLeft:4, color:COLORS.text}}>{label}</Text>}
           <TouchableOpacity
           style={styles.dateButton}
           onPress={() => setIsVisible(true)}

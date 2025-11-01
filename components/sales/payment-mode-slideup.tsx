@@ -7,12 +7,17 @@ import { Ionicons } from "@expo/vector-icons";
 import useShops from "@/database/hooks/useShops";
 import { COLORS } from "@/constants/Colors";
 import { formatNumberWithComma } from "@/utils/format-number";
+import NotFound from "../re-usables/not-found";
+import { PaymentStatusType } from "@/types/payment-status";
 
 interface PaymentModeSlideupProps {
   visible: boolean;
   onClose: () => void;
-  paymentType: string;
-  setPaymentType: (paymentType: string) => void;
+  paymentType?: string | null;
+  setPaymentType?: (paymentType: string | null) => void;
+  setPaymentStatus?: (paymentStatus: PaymentStatusType | null) => void;
+  onClickAction?: (paymentType: string) => void;
+  setPaymentStatusOpen?: (paymentStatusOpen: boolean) => void;
 }
 
 const PaymentModeSlideup = ({
@@ -20,12 +25,23 @@ const PaymentModeSlideup = ({
   onClose,
   paymentType,
   setPaymentType,
+  setPaymentStatus,
+  onClickAction,
+  setPaymentStatusOpen
 }: PaymentModeSlideupProps) => {
   const { currentPaymentAccount } = useShops();
   return (
     <SlideUpModal visible={visible} onClose={onClose}>
       <View style={styles.container}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 20, marginBottom:20 }}>
+          <TouchableOpacity onPress={()=>{
+            onClose()
+            setPaymentType?.(null)
+            setPaymentStatus?.(null)
+            setPaymentStatusOpen?.(false)
+          }}>
+            <Ionicons name="arrow-back" size={25} color={COLORS.primary} />
+          </TouchableOpacity>
           <Text style={styles.title}>Select Payment Mode</Text>
         </View>
 
@@ -36,7 +52,10 @@ const PaymentModeSlideup = ({
 
         >
           <View style={styles.optionsList}>
-            {currentPaymentAccount?.map((account) => (
+
+            {
+              currentPaymentAccount?.length === 0 ? <NotFound title="No Payment Account Found!" description="No any payment  account found! create new one to go,"/>:
+            currentPaymentAccount?.map((account) => (
               <TouchableOpacity
                 key={account.id}
                 style={[
@@ -44,8 +63,10 @@ const PaymentModeSlideup = ({
                   paymentType === account.name && styles.selectedCard,
                 ]}
                 onPress={() => {
-                  setPaymentType(account.name as string);
+                  onClickAction?.(account?.name as string)
                   onClose();
+                  setPaymentStatus?.(null);
+                  setPaymentStatusOpen?.(false);
                 }}
               >
                 <View
@@ -104,7 +125,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 15,
     fontFamily:"Poppins-Medium",
-    marginBottom: 20,
   },
   scrollView: {
     flex: 1,

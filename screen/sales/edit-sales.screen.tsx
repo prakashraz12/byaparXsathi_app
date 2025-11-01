@@ -20,14 +20,13 @@ import {
   PlusCircle,
   Trash2,
 } from "lucide-react-native";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 import { useSalesItemStore } from "@/store/useSalesItem";
 import PaymentModeSlideup from "../../components/sales/payment-mode-slideup";
-import PaymentSlideUp from "../../components/sales/payment-slide-up";
+import PaymentSlideUp from "../../components/sales/payment-status-slide-up";
 import SalesItemCard from "../../components/sales/sales-item-card";
-import { customerService } from "@/database/services/customer.service";
 
 // Types
 type SalesItemDraft = {
@@ -40,20 +39,18 @@ type SalesItemDraft = {
 // Utility functions
 const parseNumber = (value: string): number => Number.parseFloat(value) || 0;
 
-const EditSalesScreen = ({
-  id,
-  salesData,
-}: {
-  id: string;
-  salesData: any;
-}) => {
+const EditSalesScreen = ({ id, salesData }: { id: string; salesData: any }) => {
   // Basic state
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date(salesData.invoiceDate) || new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    new Date(salesData.invoiceDate) || new Date()
+  );
   const [customer, setCustomer] = useState("Select Customer");
   const [notes, setNotes] = useState(salesData.notes || "");
 
   // Payment state
-  const [paymentType, setPaymentType] = useState<string | null>(salesData.paymentType || null);
+  const [paymentType, setPaymentType] = useState<string | null>(
+    salesData.paymentType || null
+  );
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatusType | null>(
     salesData.paymentStatus || null
   );
@@ -67,22 +64,32 @@ const EditSalesScreen = ({
   const [paymentModeSlideup, setPaymentModeSlideup] = useState(false);
 
   // Section visibility state
-  const [showDiscountSection, setShowDiscountSection] = useState(salesData.discountAmount > 0 ? true : false);
-  const [showTaxSection, setShowTaxSection] = useState(salesData.taxAmount > 0 ? true : false);
+  const [showDiscountSection, setShowDiscountSection] = useState(
+    salesData.discountAmount > 0 ? true : false
+  );
+  const [showTaxSection, setShowTaxSection] = useState(
+    salesData.taxAmount > 0 ? true : false
+  );
   const [showAdditionalChargesSection, setShowAdditionalChargesSection] =
     useState(salesData.additionalAmount > 0 ? true : false);
-  const [showRemarksSection, setShowRemarksSection] = useState(salesData.notes ? true : false);
+  const [showRemarksSection, setShowRemarksSection] = useState(
+    salesData.notes ? true : false
+  );
 
   // Discount state
   const [discountPercentage, setDiscountPercentage] = useState("");
-  const [discountAmount, setDiscountAmount] = useState( salesData.discountAmount || "");
+  const [discountAmount, setDiscountAmount] = useState(
+    salesData.discountAmount || ""
+  );
 
   // Tax state
   const [taxPercentage, setTaxPercentage] = useState("");
-  const [taxAmount, setTaxAmount] = useState( salesData.taxAmount || "");
+  const [taxAmount, setTaxAmount] = useState(salesData.taxAmount || "");
 
   // Additional charges state
-  const [additionalCharge, setAdditionalCharge] = useState(salesData.additionalAmount || "");
+  const [additionalCharge, setAdditionalCharge] = useState(
+    salesData.additionalAmount || ""
+  );
 
   const { activeShop } = useShops();
 
@@ -220,7 +227,6 @@ const EditSalesScreen = ({
     subtotal,
     calculatedDiscountAmount,
     lastEditedTax,
-    
   ]);
 
   const grandTotal = useMemo(() => {
@@ -315,13 +321,17 @@ const EditSalesScreen = ({
 
   const isSalesButtonDisabled = grandTotal === 0 || salesItems.length === 0;
 
-
   return (
     <PXWrapper
-      header={<Header title="Edit Sale" onBackPress={() => {
-        router.back()
-        useSalesItemStore.setState({ salesItems: [] });
-      }} />}
+      header={
+        <Header
+          title="Edit Sale"
+          onBackPress={() => {
+            router.back();
+            useSalesItemStore.setState({ salesItems: [] });
+          }}
+        />
+      }
       footer={
         <Button
           disabled={isSalesButtonDisabled}
@@ -368,7 +378,7 @@ const EditSalesScreen = ({
           onPress={() => router.push("/(routes)/sales/sales-items")}
           activeOpacity={0.7}
         >
-          <PlusCircle size={18} color={COLORS.primary}  />
+          <PlusCircle size={18} color={COLORS.primary} />
           <Text style={styles.addItemsText}>Add Items</Text>
         </TouchableOpacity>
 

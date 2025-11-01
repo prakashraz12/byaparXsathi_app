@@ -74,4 +74,17 @@ export const dateRangeProvider = (
       endDate,
     };
   }
+
+  if(range === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.THIS_MONTH){
+    const startDate = new Date(today);
+    startDate.setMonth(today.getMonth() - 1);
+
+    const endDate = new Date(today);
+    endDate.setHours(23, 59, 59, 999);
+
+    return {
+      startDate,
+      endDate,
+    };
+  }
 };

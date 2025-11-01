@@ -3,6 +3,7 @@ import database from ".."
 import { DB_COLLECTION } from "../collection"
 import Expenses from "../model/expenses.model"
 import { responseHandler } from "../util/response-handler"
+import Income from "../model/income.model"
 
 export const financeService = {
     createExpenses: async (data: Partial<Expenses> & { shopId: string }) => {
@@ -108,7 +109,6 @@ export const financeService = {
                 updatedExpense = expense
             })
 
-            console.log("Updated Expense:", updatedExpense)
 
             return responseHandler({
                 data: updatedExpense,
@@ -117,7 +117,6 @@ export const financeService = {
                 statusCode: 200,
             })
         } catch (error: any) {
-            console.log("Error updating expense:", error)
 
             if (
                 typeof error?.message === "string" &&
@@ -169,5 +168,153 @@ export const financeService = {
         }
     },
 
-    createSaving: async () => { },
+    createIncome: async (data: Partial<Income> & { shopId: string }) => {
+        console.log("data", data, "shopId", data.shopId)
+        if (!data.amount || !data.incomeSource || !data.shopId) {
+            return responseHandler({
+                data: null,
+                success: false,
+                message: "Missing required fields",
+                statusCode: 400,
+            })
+        }
+
+        try {
+            const id = idxGenerator()
+            let createdIncome = null
+
+            await database.write(async () => {
+                createdIncome = await DB_COLLECTION.income.create((income) => {
+                    income._raw.id = id
+                    income.amount = data.amount!
+                    income.incomeSource = data.incomeSource!
+                    income.remarks = data.remarks || ""
+                    income.shopId = data.shopId
+                    income.created_at = data.created_at
+                    income.updated_at = data.created_at
+                })
+            })
+
+
+            return responseHandler({
+                data: createdIncome,
+                success: true,
+                message: "Income created successfully",
+                statusCode: 201,
+            })
+        } catch (error) {
+            console.log("error", error)
+            return responseHandler({
+                data: null,
+                success: false,
+                message: "Something went wrong",
+                statusCode: 500,
+            })
+        }
+    },
+    updateIncome: async (id: string, data: Partial<Income>) => {
+        try {
+            if (!id || data.amount === undefined || data.incomeSource === undefined) {
+                return responseHandler({
+                    data: null,
+                    success: false,
+                    message: "Missing required fields",
+                    statusCode: 400,
+                })
+            }
+
+            let updatedIncome: any = null
+
+            await database.write(async () => {
+                const income = await DB_COLLECTION.income.find(id)
+                if (!income) {
+                    return responseHandler({
+                        data: null,
+                        success: false,
+                        message: "Income not found",
+                        statusCode: 404,
+                    })
+                }
+                await income.update((i) => {
+                    if (data.amount !== undefined) i.amount = data.amount!
+                    if (data.incomeSource !== undefined) i.incomeSource = data.incomeSource!
+                    if (data.remarks !== undefined) i.remarks = data.remarks!
+                    if (data.created_at !== undefined) i.created_at = data.created_at!
+                    i.updated_at = Date.now()
+                })
+                updatedIncome = income
+            })
+
+            return responseHandler({
+                data: updatedIncome,
+                success: true,
+                message: "Saving updated successfully",
+                statusCode: 200,
+            })
+        }catch (error) {
+            return responseHandler({
+                data: null,
+                success: false,
+                message: "Something went wrong",
+                statusCode: 500,
+            })
+        }
+    },
+    deleteIncome: async (id: string) => {
+        try {
+            await database.write(async () => {
+                const income = await DB_COLLECTION.income.find(id)
+                if (!income) {
+                    return responseHandler({
+                        data: null,
+                        success: false,
+                        message: "Income not found",
+                        statusCode: 404,
+                    })
+                }
+                await income.markAsDeleted()
+            })
+            return responseHandler({
+                data: null,
+                success: true,
+                message: "Income deleted successfully",
+                statusCode: 200,
+            })
+        }catch (error) {
+            return responseHandler({
+                data: null,
+                success: false,
+                message: "Something went wrong",
+                statusCode: 500,
+            })
+        }
+    },
+    getSingleIncome: async (id: string) => {
+        try {
+            const income = await DB_COLLECTION.income.find(id)
+            if (!income) {
+                return responseHandler({
+                    data: null,
+                    success: false,
+                    message: "Income not found",
+                    statusCode: 404,
+                })
+            }
+            return responseHandler({
+                data: income,
+                success: true,
+                message: "Income fetched successfully",
+                statusCode: 200,
+            })
+        }catch (error) {
+            return responseHandler({
+                data: null,
+                success: false,
+                message: "Something went wrong",
+                statusCode: 500,
+            })
+        }
+    },
 }
+
+

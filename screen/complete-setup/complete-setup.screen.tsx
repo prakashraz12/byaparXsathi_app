@@ -20,8 +20,8 @@ import { useUserStore } from "@/store/useUserStore";
 import { apiOptions } from "@/utils/api-options.util";
 import { useForm } from "@tanstack/react-form";
 import { router } from "expo-router";
-import { MapPin, Phone, Store, User } from "lucide-react-native";
-import { Image, Pressable, View } from "react-native";
+import { MapPin, Phone, Store, User, Sparkles } from "lucide-react-native";
+import { Image, Pressable, View, ScrollView, StyleSheet } from "react-native";
 
 const CompleteSetUpScreen = () => {
   const { clearUser, setUser, setActiveShopId } = useUserStore();
@@ -29,7 +29,7 @@ const CompleteSetUpScreen = () => {
     apiOptions(
       undefined,
       async ({ data }: { data: CompletedSetupResponse }) => {
-        await syncDatabase({ isFirstTime: true });
+        await syncDatabase({ isFirstTime: true, fetchShops:true });
         await setUser({
           fullName: data.user.fullName,
           email: data.user.email,
@@ -82,60 +82,63 @@ const CompleteSetUpScreen = () => {
   };
 
   return (
-    <PXWrapper>
-      <View
-        style={{
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          flex: 1,
-          paddingVertical: 30,
-        }}
-      >
-        <Image
-          source={BANNER_LOGO}
-          style={{ width: 150, height: 60 }}
-          resizeMode="contain"
-        />
-        <Text style={{ fontSize: 24, fontFamily: "Poppins-SemiBold" }}>
-          Hey, You almost there!
-        </Text>
-        <Text
-          style={{ fontSize: 16, marginTop: 9, fontFamily: "Poppins-Regular" }}
-        >
-          Complete your setup to get started!
-        </Text>
-      </View>
-      <View>
-        <form.Field name="fullName">
-          {(field) => {
-            return (
+   
+      <PXWrapper>
+        {/* Header Section with Gradient Background */}
+        <View style={styles.headerContainer}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={BANNER_LOGO}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </View>
+          
+          <View style={styles.welcomeCard}>
+            <View style={styles.sparkleIconContainer}>
+              <Sparkles size={32} color={COLORS.primary} strokeWidth={2} />
+            </View>
+            <Text style={styles.title}>Almost There!</Text>
+            <Text style={styles.subtitle}>
+              Complete your profile to unlock your shop experience
+            </Text>
+          </View>
+        </View>
+
+        {/* Form Section */}
+        <View style={styles.formContainer}>
+          <View style={styles.sectionHeader}>
+            <View style={styles.sectionIndicator} />
+            <Text style={styles.sectionTitle}>Personal Information</Text>
+          </View>
+
+          <form.Field name="fullName">
+            {(field) => (
               <CustomInput
-                containerStyle={{ marginTop: 16 }}
+                containerStyle={styles.inputSpacing}
                 inputMode="text"
                 placeholder="Full Name"
-                leftIcon={<User />}
+                leftIcon={<User size={20} color={COLORS.primary} />}
                 value={field.state.value}
                 onChangeText={field.handleChange}
                 onBlur={field.handleBlur}
-                autoCapitalize="none"
+                autoCapitalize="words"
+                
                 autoCorrect={false}
                 error={field.state.meta.errors
                   .map((err: any) => err.message || String(err))
                   .join(", ")}
               />
-            );
-          }}
-        </form.Field>
+            )}
+          </form.Field>
 
-        <form.Field name="phoneNumber">
-          {(field) => {
-            return (
+          <form.Field name="phoneNumber">
+            {(field) => (
               <CustomInput
-                containerStyle={{ marginTop: 10 }}
+                containerStyle={styles.inputSpacing}
                 inputMode="tel"
                 placeholder="Phone Number"
-                leftIcon={<Phone size={22} />}
+                leftIcon={<Phone size={20} color={COLORS.primary} />}
                 value={field.state.value}
                 onChangeText={field.handleChange}
                 onBlur={field.handleBlur}
@@ -146,91 +149,180 @@ const CompleteSetUpScreen = () => {
                   .map((err: any) => err.message || String(err))
                   .join(", ")}
               />
-            );
-          }}
-        </form.Field>
-        <form.Field name="address">
-          {(field) => {
-            return (
+            )}
+          </form.Field>
+
+          <form.Field name="address">
+            {(field) => (
               <CustomInput
-                containerStyle={{ marginTop: 10 }}
+                containerStyle={styles.inputSpacing}
                 inputMode="text"
                 placeholder="Address"
-                leftIcon={<MapPin />}
+                leftIcon={<MapPin size={20} color={COLORS.primary} />}
                 value={field.state.value}
                 onChangeText={field.handleChange}
                 onBlur={field.handleBlur}
-                autoCapitalize="none"
+                autoCapitalize="words"
                 autoCorrect={false}
                 error={field.state.meta.errors
                   .map((err: any) => err.message || String(err))
                   .join(", ")}
               />
-            );
-          }}
-        </form.Field>
-        <form.Field name="shopName">
-          {(field) => {
-            return (
+            )}
+          </form.Field>
+
+
+          <form.Field name="shopName">
+            {(field) => (
               <CustomInput
-                containerStyle={{ marginTop: 10 }}
+                containerStyle={styles.inputSpacing}
                 inputMode="text"
                 placeholder="Shop Name"
-                leftIcon={<Store />}
+                leftIcon={<Store size={20} color={COLORS.primary} />}
                 value={field.state.value}
                 onChangeText={field.handleChange}
                 onBlur={field.handleBlur}
-                autoCapitalize="none"
+                autoCapitalize="words"
                 autoCorrect={false}
                 error={field.state.meta.errors
                   .map((err: any) => err.message || String(err))
                   .join(", ")}
               />
-            );
-          }}
-        </form.Field>
-        <Text style={{ marginTop: 10, marginBottom: 10 }} bold>
-          Shop Type
-        </Text>
-        <form.Field name="shopType">
-          {(field) => {
-            return (
+            )}
+          </form.Field>
+
+          <View style={styles.sectionHeader}>
+            <View style={styles.sectionIndicator} />
+            <Text style={styles.sectionTitle}>Shop Type</Text>
+          </View>
+
+          <form.Field name="shopType">
+            {(field) => (
               <BadgeSelector
                 options={SHOP_TYPES_OPTIONS}
                 value={field.state.value}
                 onChange={(value) => field.handleChange(value)}
               />
-            );
-          }}
-        </form.Field>
-        <Button
-          title="Continue"
-          style={{ marginTop: 16 }}
-          onPress={form.handleSubmit}
-          disabled={isPending}
-          loading={isPending}
-        />
+            )}
+          </form.Field>
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginTop: 16,
-          }}
-        >
-          <Text>Not now?</Text>
-          <Pressable
-            onPress={() => {
-              handleLogout();
-            }}
-          >
-            <Text style={{ color: COLORS.primary, marginLeft: 10 }}>
-              Logout
-            </Text>
-          </Pressable>
+          <Button
+            title="Complete Setup"
+            style={styles.submitButton}
+            onPress={form.handleSubmit}
+            disabled={isPending}
+            loading={isPending}
+          />
+
+          <View style={styles.logoutContainer}>
+            <Text style={styles.logoutText}>Not ready yet?</Text>
+            <Pressable onPress={handleLogout} style={styles.logoutButton}>
+              <Text style={styles.logoutButtonText}>Logout</Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
-    </PXWrapper>
+      </PXWrapper>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  headerContainer: {
+    alignItems: "center",
+    paddingTop: 40,
+    paddingBottom: 30,
+  },
+  logoContainer: {
+    marginBottom: 24,
+  },
+  logo: {
+    width: 140,
+    height: 56,
+  },
+  welcomeCard: {
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  sparkleIconContainer: {
+    marginBottom: 12,
+  },
+  title: {
+    fontSize: 28,
+    fontFamily: "Poppins-Bold",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 15,
+    fontFamily: "Poppins-Regular",
+    textAlign: "center",
+    opacity: 0.7,
+    lineHeight: 22,
+    maxWidth: 280,
+  },
+  formContainer: {
+    paddingTop: 8,
+    paddingBottom: 40,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  sectionIndicator: {
+    width: 4,
+    height: 20,
+    backgroundColor: COLORS.primary,
+    borderRadius: 2,
+    marginRight: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontFamily: "Poppins-SemiBold",
+  },
+  inputSpacing: {
+    marginBottom: 14,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.border || "#E5E7EB",
+    marginVertical: 20,
+    opacity: 0.3,
+  },
+  fieldLabel: {
+    fontSize: 14,
+    fontFamily: "Poppins-Medium",
+    marginBottom: 12,
+    marginTop: 4,
+  },
+  submitButton: {
+    marginTop: 32,
+    height: 52,
+  },
+  logoutContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 24,
+    paddingVertical: 8,
+  },
+  logoutText: {
+    fontSize: 14,
+    fontFamily: "Poppins-Regular",
+    opacity: 0.6,
+  },
+  logoutButton: {
+    marginLeft: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  logoutButtonText: {
+    fontSize: 14,
+    fontFamily: "Poppins-SemiBold",
+    color: COLORS.primary,
+  },
+});
+
 export default CompleteSetUpScreen;

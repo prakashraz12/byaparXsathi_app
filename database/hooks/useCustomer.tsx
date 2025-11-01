@@ -16,6 +16,7 @@ export function useCustomers({
 
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const buildQuery = useCallback(() => {
     let query = DB_COLLECTION.customer.query(Q.where("shopId", activeShopId));
@@ -38,6 +39,7 @@ export function useCustomers({
       if (isRefresh) setIsRefreshing(true);
 
       try {
+        setLoading(true)
         const query = buildQuery();
         const records = await query.fetch();
         setCustomers(records);
@@ -45,6 +47,7 @@ export function useCustomers({
         console.error("Error loading customers:", error);
       } finally {
         if (isRefresh) setIsRefreshing(false);
+        setLoading(false)
       }
     },
     [buildQuery]
@@ -68,5 +71,6 @@ export function useCustomers({
     reload: loadCustomers,
     refresh,
     isRefreshing,
+    loading,
   };
 }

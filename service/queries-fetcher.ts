@@ -68,7 +68,6 @@ export async function queriesFetch<
     let response = await makeRequest();
 
     if (response.status === 401) {
-      console.log("hey hey hey");
       //revalidate token
       const tokenResponse = await fetch(
         `${baseUrl}/api/v1/auth/revalidate-token`,

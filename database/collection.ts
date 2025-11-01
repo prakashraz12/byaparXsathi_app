@@ -7,7 +7,7 @@ import Sales from "./model/sales.model";
 import SalesItem from "./model/sales-item.model";
 import PaymentAccount from "./model/payment-account.model";
 import Expenses from "./model/expenses.model";
-import Saving from "./model/saving.model";
+import Income from "./model/income.model";
 
 export const DB_COLLECTION = {
   customer: database.collections.get<Customer>(SCHEMA_KEYS.CUSTOMER),
@@ -17,5 +17,5 @@ export const DB_COLLECTION = {
   salesItem:database.collections.get<SalesItem>(SCHEMA_KEYS.SALES_ITEM),
   paymentAccount:database.collections.get<PaymentAccount>(SCHEMA_KEYS.PAYMENT_ACCOUNT),
   expenses:database.collections.get<Expenses>(SCHEMA_KEYS.EXPENSES),
-  saving:database.collections.get<Saving>(SCHEMA_KEYS.SAVING),
+  income:database.collections.get<Income>(SCHEMA_KEYS.INCOME),
 };

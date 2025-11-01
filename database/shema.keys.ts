@@ -6,5 +6,5 @@ export const SCHEMA_KEYS = {
   SALES_ITEM: "salesItems",
   PAYMENT_ACCOUNT: "paymentAccount",
   EXPENSES:"expenses",
-  SAVING:"saving"
+  INCOME:"income"
 };

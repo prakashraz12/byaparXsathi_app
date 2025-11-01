@@ -114,14 +114,14 @@ export default appSchema({
       ],
     }),
     tableSchema({
-      name: SCHEMA_KEYS.SAVING,
+      name: SCHEMA_KEYS.INCOME,
       columns: [
         { name: "amount", type: "number" },
-        { name: "title", type: "string" },
         { name: "remarks", type: "string" },
+        {name:"incomeSource", type:"string"},
         { name: "shopId", type: "string" },
-        { name: "createdAt", type: "number" },
-        { name: "updatedAt", type: "number" },
+        { name: "created_at", type: "number" },
+        { name: "updated_at", type: "number" },
       ],
     }),
   ],

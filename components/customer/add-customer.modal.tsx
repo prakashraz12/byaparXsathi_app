@@ -6,12 +6,10 @@ import {
 import { useForm } from "@tanstack/react-form";
 import {
   Mail,
-  Map,
   MapPin,
   Phone,
   Plus,
   User,
-  UserPlus,
 } from "lucide-react-native";
 import { useState } from "react";
 import { Dimensions, View } from "react-native";
@@ -98,7 +96,7 @@ const AddCustomerModal = () => {
       />
       <SlideUpModal
         visible={visible}
-        height={SCREEN_HEIGHT * (modalType === "ADD" ? 0.7 : 0.9)}
+        height={SCREEN_HEIGHT * (modalType === "ADD" ? 0.6 : 0.9)}
         onClose={() => setVisible(false)}
         title="Customer Details"
         stickyFooter={
@@ -139,6 +137,8 @@ const AddCustomerModal = () => {
                       <Input
                         placeholder="Name"
                         leftIcon={<User />}
+                        autoFocus
+                        focusable
                         value={field.state.value}
                         onChangeText={field.setValue}
                         onBlur={field.handleBlur}
@@ -155,6 +155,7 @@ const AddCustomerModal = () => {
                       placeholder="Phone"
                       leftIcon={<Phone />}
                       value={field.state.value}
+                      keyboardType="numeric"
                       onChangeText={field.handleChange}
                       onBlur={field.handleBlur}
                       error={field.state.meta.errors

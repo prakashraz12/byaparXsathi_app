@@ -2,7 +2,7 @@ import NotFound from "@/components/re-usables/not-found";
 import { COLORS } from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import type React from "react";
-import { FlatList, ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface PXWrapperProps {
@@ -49,7 +49,8 @@ const PXWrapper = ({
         <View style={styles.floatingButtonContainer}>{floatingAction}</View>
       )}
       
-      <View style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}>
+        <View style={{ flex: 1 }}>
         {data?.length > 0 && renderItem ? (
           <FlatList
             data={data}
@@ -83,6 +84,7 @@ const PXWrapper = ({
           </ScrollView>
         )}
       </View>
+      </KeyboardAvoidingView>
       
       {footer && (
         <View 
