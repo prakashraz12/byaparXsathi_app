@@ -9,7 +9,14 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "generate:api": "openapi-codegen --config ./openapi-codegen.config.ts"
+    "generate:api": "openapi-codegen --config ./openapi-codegen.config.ts",
+    "prepare": "husky"
+  },
+   "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@expo-google-fonts/poppins": "^0.4.0",
@@ -73,12 +80,13 @@
     "@types/react-native-pdf-lib": "^0.2.3",
     "@typescript-eslint/eslint-plugin": "^8.41.0",
     "@typescript-eslint/parser": "^8.41.0",
-    "eslint": "^9.34.0",
+    "eslint": "^9.39.0",
     "eslint-config-expo": "~9.2.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-unused-imports": "^4.3.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.5",
+    "lint-staged": "^16.2.6",
     "openapi-codegen-typescript": "^0.1.29",
     "prettier": "^3.6.2",
     "typescript": "~5.8.3"
