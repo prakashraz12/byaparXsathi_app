@@ -5,7 +5,7 @@ import PXWrapper from "@/layouts/px-wrapper";
 import { PaymentStatusType } from "@/types/payment-status";
 import { router } from "expo-router";
 import { Calendar, ChevronRight } from "lucide-react-native";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -44,7 +44,7 @@ const QuickSaleScreen = () => {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [paymentType, setPaymentType] = useState<string | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatusType | null>(
-    null
+    null,
   );
   const [invoiceDate, setInvoiceDate] = useState<Date>(new Date());
   const [partiallyPaidAmount, setPartiallyPaidAmount] = useState<string>("");
@@ -56,17 +56,20 @@ const QuickSaleScreen = () => {
     useState<boolean>(false);
   const [paymentStatusOpen, setPaymentStatusOpen] = useState<boolean>(false);
 
-  const calculateResult = (expr: string) => {
-    try {
-      if (!expr) return "0";
-      let cleanExpr = expr.replace(/[+\-×÷]$/, "");
-      cleanExpr = cleanExpr.replace(/×/g, "*").replace(/÷/g, "/");
-      const calculated = eval(cleanExpr);
-      return calculated.toString();
-    } catch (error) {
-      return "0";
-    }
-  };
+  const calculateResult = useMemo(
+    () => (expr: string) => {
+      try {
+        if (!expr) return "0";
+        let cleanExpr = expr.replace(/[+\-×÷]$/, "");
+        cleanExpr = cleanExpr.replace(/×/g, "*").replace(/÷/g, "/");
+        const calculated = eval(cleanExpr);
+        return calculated.toString();
+      } catch (error) {
+        return "0";
+      }
+    },
+    [expression],
+  );
 
   const handleNumberPress = (num: string) => {
     const newExpression = expression + num;
@@ -97,8 +100,7 @@ const QuickSaleScreen = () => {
     setExpression(newExpression);
     setResult(calculateResult(newExpression));
   };
-
-  const handleEquals = () => {
+  const handleEquals = () => () => {
     if (expression) {
       const finalResult = calculateResult(expression);
       setExpression(finalResult);
@@ -106,11 +108,13 @@ const QuickSaleScreen = () => {
     }
   };
 
-  const createQuickSales = async (propsToPaymentType: string) => {
-    console.log("iam clicked",propsToPaymentType)
+  const createQuickSales = async (propsToPaymentType?: string) => {
     if (paymentStatus === null) {
       return setPaymentStatusOpen(true);
-    } else if (propsToPaymentType === null) {
+    } else if (
+      propsToPaymentType === null &&
+      paymentStatus !== PaymentStatus.UNPAID
+    ) {
       return setPaymentModeSelectionOpen(true);
     } else if (!activeShopId) return;
 
@@ -123,9 +127,14 @@ const QuickSaleScreen = () => {
         customerName: customer?.name || "",
         paymentType: propsToPaymentType || paymentType,
         status: paymentStatus,
-        paidAmount: paymentStatus === PaymentStatus.PARTIALLY_PAID ? Number(partiallyPaidAmount) :  PaymentStatus.PAID ? Number(result) : 0,
+        paidAmount:
+          paymentStatus === PaymentStatus.PARTIALLY_PAID
+            ? Number(partiallyPaidAmount)
+            : PaymentStatus.PAID
+              ? Number(result)
+              : 0,
       },
-      activeShopId || ""
+      activeShopId || "",
     );
 
     if (response?.success) {
@@ -155,11 +164,11 @@ const QuickSaleScreen = () => {
       <PXWrapper
         footer={
           <OGButton
-          size="large"
+            size="large"
             title="Record Sales"
-            onPress={()=>createQuickSales(paymentType as string)}
+            onPress={() => createQuickSales(paymentType as string)}
             disabled={Number(result) === 0}
-            style={{marginBottom:10}}
+            style={{ marginBottom: 10 }}
           />
         }
         header={
@@ -220,10 +229,18 @@ const QuickSaleScreen = () => {
             </View>
 
             <View style={styles.display}>
-              <Text style={styles.expression} numberOfLines={2} adjustsFontSizeToFit>
+              <Text
+                style={styles.expression}
+                numberOfLines={2}
+                adjustsFontSizeToFit
+              >
                 {expression || "0"}
               </Text>
-              <Text style={styles.result} numberOfLines={1} adjustsFontSizeToFit>
+              <Text
+                style={styles.result}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+              >
                 = {formatNumberWithComma(result)}
               </Text>
             </View>
@@ -308,19 +325,25 @@ const QuickSaleScreen = () => {
         visible={paymentModeSelectionOpen}
         onClose={() => {
           setPaymentModeSelectionOpen(false);
+          setPaymentType(null);
+          setPartiallyPaidAmount("0");
+          setPaymentStatus(null);
         }}
         paymentType={paymentType}
         setPaymentType={setPaymentType}
         setPaymentStatus={setPaymentStatus}
-        onClickAction={(paymentType)=>createQuickSales(paymentType as string)}
+        onClickAction={(paymentType) => createQuickSales(paymentType as string)}
         setPaymentStatusOpen={setPaymentStatusOpen}
+        setPaymentMode={setPaymentModeSelectionOpen}
       />
       <PaymentStatusSlideUp
         visible={paymentStatusOpen}
-        customerSelected={customer ? true : false}
+        customerSelected={customer || undefined}
+        setCustomer={setCustomer}
         mode="quick-sale"
         onClose={() => {
           setPaymentStatusOpen(false);
+          setPaymentStatus(null);
         }}
         paymentType={paymentType}
         paymentStatus={paymentStatus}
@@ -329,11 +352,18 @@ const QuickSaleScreen = () => {
         setPartiallyPaidAmount={setPartiallyPaidAmount}
         partiallyPaidAmount={partiallyPaidAmount}
         totalAmount={result}
+        setCustomerSelectionOpen={setCustomerSelectionOpen}
       />
       <AddCustomerSlideup
         visible={customerSelectionOpen}
         onClose={() => {
           setCustomerSelectionOpen(false);
+          setPartiallyPaidAmount("0");
+          setPaymentStatus(null);
+        }}
+        onSelectCustomer={() => {
+          setCustomerSelectionOpen(false);
+          Number(result) !== 0 && createQuickSales();
         }}
         selectedCustomer={customer}
         setCustomer={setCustomer}
@@ -349,13 +379,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 16,
     flexDirection: "column",
-    
-    
   },
   topSection: {
     flex: 1,
     flexDirection: "column",
-    marginBottom:10
+    marginBottom: 10,
   },
   cashSaleButton: {
     backgroundColor: "#fff",
@@ -363,8 +391,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E5E5E5",
     flexShrink: 0,
-    marginBottom:isSmallDevice ? 10 : 15,
-    marginTop:isSmallDevice ? 10 : 15
+    marginBottom: isSmallDevice ? 10 : 15,
+    marginTop: isSmallDevice ? 10 : 15,
   },
   cashSaleContent: {
     flexDirection: "row",
@@ -377,18 +405,17 @@ const styles = StyleSheet.create({
     borderRightColor: COLORS.border,
     padding: isSmallDevice ? 12 : 16,
     justifyContent: "center",
-    width:"50%"
+    width: "50%",
   },
   customerInfo: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-
   },
   customerName: {
     fontSize: isSmallDevice ? 14 : 15,
     fontWeight: "500",
-    flex:1
+    flex: 1,
   },
   customerDue: {
     fontSize: isSmallDevice ? 14 : 15,
@@ -428,7 +455,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: DISPLAY_MIN_HEIGHT + 60,
     borderColor: "#E5E5E5",
-    marginBottom:5
+    marginBottom: 5,
   },
   expression: {
     fontSize: isSmallDevice ? 20 : isMediumDevice ? 22 : 24,
@@ -458,7 +485,6 @@ const styles = StyleSheet.create({
     height: BUTTON_HEIGHT,
     alignItems: "center",
     justifyContent: "center",
-   
   },
   buttonText: {
     fontSize: isSmallDevice ? 20 : isMediumDevice ? 22 : 24,

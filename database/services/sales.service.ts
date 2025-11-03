@@ -9,12 +9,13 @@ import { normalizeToTimestamp } from "../util/normalizeToTimeStamp";
 import { idxGenerator } from "@/utils/idx.utils";
 import Customer from "../model/customer.model";
 import { PaymentStatus } from "@/constants/payment-status";
+import { activityService } from "./activity.service";
 
 export const salesService = {
   create: async (
     salesData: Partial<Sales>,
     shopId: string,
-    salesItems?: Partial<SalesItem>[]
+    salesItems?: Partial<SalesItem>[],
   ) => {
     if (
       !salesData.invoiceDate ||
@@ -30,7 +31,7 @@ export const salesService = {
     }
     try {
       const invoiceTimestamp = normalizeToTimestamp(
-        (salesData as any).invoiceDate
+        (salesData as any).invoiceDate,
       );
 
       //if customer attached then need works
@@ -38,7 +39,7 @@ export const salesService = {
       if (salesData?.customerId) {
         customer =
           ((await DB_COLLECTION.customer.find(
-            salesData?.customerId
+            salesData?.customerId,
           )) as Customer) || null;
       }
       const result = await database.write(async () => {
@@ -90,7 +91,7 @@ export const salesService = {
             const paymentAccounts = await DB_COLLECTION.paymentAccount
               .query(
                 Q.where("shopId", shopId),
-                Q.where("name", salesData.paymentType || "")
+                Q.where("name", salesData.paymentType || ""),
               )
               .fetch();
 
@@ -105,19 +106,28 @@ export const salesService = {
           }
         }
 
-        if(customer && salesData.status === PaymentStatus.PARTIALLY_PAID){
+        if (customer && salesData.status === PaymentStatus.PARTIALLY_PAID) {
           await customer.update((c) => {
-            c.outstanding = Number(c.outstanding) + Number(salesData.paidAmount);
+            c.outstanding =
+              Number(c.outstanding) + Number(salesData.paidAmount);
             c.updated_at = Date.now();
           });
         }
-        if(customer && salesData.status === PaymentStatus.UNPAID){
+        if (customer && salesData.status === PaymentStatus.UNPAID) {
           await customer.update((c) => {
-            c.outstanding = Number(c.outstanding) + Number(salesData.grandTotalAmount);
+            c.outstanding =
+              Number(c.outstanding) + Number(salesData.grandTotalAmount);
             c.updated_at = Date.now();
           });
         }
-        
+
+        activityService.create({
+          title: "Sales",
+          description: `${salesData?.status === PaymentStatus.PAID ? `Sales made worth ${salesData.grandTotalAmount}` : `Sales Created amount ${salesData.grandTotalAmount}`}`,
+          type: "Sales",
+          shopId: shopId,
+          platform: "Web",
+        });
         return responseHandler({
           message: "Sales is created",
           statusCode: 201,
@@ -137,7 +147,7 @@ export const salesService = {
   updateSales: async (
     id: string,
     salesData: Partial<Sales>,
-    newSalesItems: Partial<SalesItem>[]
+    newSalesItems: Partial<SalesItem>[],
   ) => {
     try {
       const result = await database.write(async () => {

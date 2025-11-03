@@ -5,23 +5,23 @@ import { Text } from "@/components/re-usables/text";
 import { COLORS } from "@/constants/Colors";
 import { WINDOW_WIDTH } from "@/config/app.config";
 import { observeSalesAnalytics } from "@/database/services/analaytics.service";
+import { getDateFormat } from "@/utils/format-date";
+import RTabs from "../re-usables/tabs";
 
 const SalesOverviewChart = () => {
-  const salesData = [200, 450, 280, 800, 990, 430, 700];
-  const maxValue = Math.max(...salesData);
-  const totalSales = salesData.reduce((a, b) => a + b, 0);
-
-   const [chartData, setChartData] = useState<{ label: string; value: number }[]>([]);
+  const [chartData, setChartData] = useState<
+    { label: string; value: number }[]
+  >([]);
 
   useEffect(() => {
-    const sub = observeSalesAnalytics({ dateRangePreset: "THIS_MONTH" }).subscribe(setChartData);
+    const sub = observeSalesAnalytics({
+      dateRangePreset: "THIS_MONTH",
+    }).subscribe(setChartData);
     return () => sub.unsubscribe();
   }, []);
 
-
-
-  if(chartData.length === 0){
-    return null
+  if (chartData.length === 0) {
+    return null;
   }
   return (
     <View style={styles.container}>
@@ -29,73 +29,73 @@ const SalesOverviewChart = () => {
       <View style={styles.header}>
         <View>
           <Text style={styles.title}>Sales Overview</Text>
-          <Text style={styles.subtitle}>
-            Weekly performance (Sun – Sat)
-          </Text>
+          <Text style={styles.subtitle}>Monthly Performance</Text>
         </View>
-       
       </View>
 
       <View style={styles.chartContainer}>
-        {chartData.length && <LineChart
-          data={{
-            labels: chartData.map((item) => item.label),
-            datasets: [
-              {
-                data: chartData.map((item) => Number(item.value?.toFixed(2))),
-                color: (opacity = 1) => COLORS.primary, // Gradient line color
-                strokeWidth: 3,
+        {chartData.length && (
+          <LineChart
+            data={{
+              labels: chartData.map((item) =>
+                getDateFormat(Number(new Date(item.label)), "BS", false, false),
+              ),
+              datasets: [
+                {
+                  data: chartData.map((item) => Number(item.value?.toFixed(2))),
+                  color: (opacity = 1) => COLORS.primary, // Gradient line color
+                  strokeWidth: 3,
+                },
+              ],
+            }}
+            width={WINDOW_WIDTH - 48}
+            height={240}
+            yAxisLabel="Rs "
+            yAxisSuffix=""
+            chartConfig={{
+              backgroundColor: "#ffffff",
+              backgroundGradientFrom: "#ffffff",
+              backgroundGradientTo: "#ffffff",
+              decimalPlaces: 0,
+              color: (opacity = 1) =>
+                `rgba(${hexToRgb(COLORS.primary)}, ${opacity})`,
+              labelColor: (opacity = 1) => COLORS.textLight || "#666",
+              style: {
+                borderRadius: 16,
               },
-            ],
-          }}
-          width={WINDOW_WIDTH - 48}
-          height={240}
-          yAxisLabel="Rs "
-          yAxisSuffix=""
-          chartConfig={{
-            backgroundColor: "#ffffff",
-            backgroundGradientFrom: "#ffffff",
-            backgroundGradientTo: "#ffffff",
-            decimalPlaces: 0,
-            color: (opacity = 1) => `rgba(${hexToRgb(COLORS.primary)}, ${opacity})`,
-            labelColor: (opacity = 1) => COLORS.textLight || "#666",
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: "5",
-              strokeWidth: "2",
-              stroke: COLORS.primary,
-              fill: "#fff",
-            },
-            propsForBackgroundLines: {
-              strokeDasharray: "4", // solid lines
-              stroke: "#ebe9e9ff",
-              strokeWidth: 1,
-            },
-            propsForLabels: {
-              fontSize: 11,
-              fontFamily: "Poppins-Regular",
-            },
-          }}
-          bezier
-          style={styles.chart}
-          withInnerLines={true}
-          withOuterLines={true}
-          withVerticalLines={false}
-          withHorizontalLines={true}
-          withVerticalLabels={true}
-          withHorizontalLabels={true}
-          fromZero
-        />}
+              propsForDots: {
+                r: "5",
+                strokeWidth: "2",
+                stroke: COLORS.primary,
+                fill: "#fff",
+              },
+              propsForBackgroundLines: {
+                strokeDasharray: "4", // solid lines
+                stroke: "#ebe9e9ff",
+                strokeWidth: 1,
+              },
+              propsForLabels: {
+                fontSize: 11,
+                fontFamily: "Poppins-Regular",
+              },
+            }}
+            bezier
+            style={styles.chart}
+            withInnerLines={true}
+            withOuterLines={true}
+            withVerticalLines={false}
+            withHorizontalLines={true}
+            withVerticalLabels={true}
+            withHorizontalLabels={true}
+            fromZero
+          />
+        )}
       </View>
-
-     
     </View>
   );
 };
 
-const hexToRgb = (hex:string) => {
+const hexToRgb = (hex: string) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
@@ -146,9 +146,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 8,
     paddingHorizontal: 1,
-    paddingTop:20
-
-   
+    paddingTop: 20,
   },
   chart: {
     borderRadius: 8,

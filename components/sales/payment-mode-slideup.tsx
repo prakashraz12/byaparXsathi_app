@@ -18,6 +18,7 @@ interface PaymentModeSlideupProps {
   setPaymentStatus?: (paymentStatus: PaymentStatusType | null) => void;
   onClickAction?: (paymentType: string) => void;
   setPaymentStatusOpen?: (paymentStatusOpen: boolean) => void;
+  setPaymentMode?: (paymentMode: boolean) => void;
 }
 
 const PaymentModeSlideup = ({
@@ -27,19 +28,28 @@ const PaymentModeSlideup = ({
   setPaymentType,
   setPaymentStatus,
   onClickAction,
-  setPaymentStatusOpen
+  setPaymentStatusOpen,
+  setPaymentMode,
 }: PaymentModeSlideupProps) => {
   const { currentPaymentAccount } = useShops();
   return (
     <SlideUpModal visible={visible} onClose={onClose}>
       <View style={styles.container}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 20, marginBottom:20 }}>
-          <TouchableOpacity onPress={()=>{
-            onClose()
-            setPaymentType?.(null)
-            setPaymentStatus?.(null)
-            setPaymentStatusOpen?.(false)
-          }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 20,
+            marginBottom: 20,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              console.log("paymentType", paymentType);
+              setPaymentType?.(null);
+              setPaymentMode?.(false);
+            }}
+          >
             <Ionicons name="arrow-back" size={25} color={COLORS.primary} />
           </TouchableOpacity>
           <Text style={styles.title}>Select Payment Mode</Text>
@@ -49,62 +59,67 @@ const PaymentModeSlideup = ({
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-
         >
           <View style={styles.optionsList}>
-
-            {
-              currentPaymentAccount?.length === 0 ? <NotFound title="No Payment Account Found!" description="No any payment  account found! create new one to go,"/>:
-            currentPaymentAccount?.map((account) => (
-              <TouchableOpacity
-                key={account.id}
-                style={[
-                  styles.optionCard,
-                  paymentType === account.name && styles.selectedCard,
-                ]}
-                onPress={() => {
-                  onClickAction?.(account?.name as string)
-                  onClose();
-                  setPaymentStatus?.(null);
-                  setPaymentStatusOpen?.(false);
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                    flex: 1,
+            {currentPaymentAccount?.length === 0 ? (
+              <NotFound
+                title="No Payment Account Found!"
+                description="No any payment  account found! create new one to go,"
+              />
+            ) : (
+              currentPaymentAccount?.map((account) => (
+                <TouchableOpacity
+                  key={account.id}
+                  style={[
+                    styles.optionCard,
+                    paymentType === account.name && styles.selectedCard,
+                  ]}
+                  onPress={() => {
+                    onClickAction?.(account?.name as string);
+                    onClose();
+                    setPaymentStatus?.(null);
+                    setPaymentStatusOpen?.(false);
                   }}
                 >
-                  <View style={[styles.iconContainer]}>
-                    <Ionicons
-                      name={
-                        account.name === "Bank"
-                          ? "business"
-                          : account.name === "Cash"
-                            ? "cash"
-                            : account?.name === "Online Wallet"
-                              ? "wallet"
-                              : "newspaper"
-                      }
-                      size={24}
-                      color={
-                        account.name === "Bank"
-                          ? "#3b82f6"
-                          : account.name === "Cash"
-                            ? "#10b981"
-                            : account?.name === "Online Wallet"
-                              ? "#f59e0b"
-                              : "#ef4444"
-                      }
-                    />
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                      flex: 1,
+                    }}
+                  >
+                    <View style={[styles.iconContainer]}>
+                      <Ionicons
+                        name={
+                          account.name === "Bank"
+                            ? "business"
+                            : account.name === "Cash"
+                              ? "cash"
+                              : account?.name === "Online Wallet"
+                                ? "wallet"
+                                : "newspaper"
+                        }
+                        size={24}
+                        color={
+                          account.name === "Bank"
+                            ? "#3b82f6"
+                            : account.name === "Cash"
+                              ? "#10b981"
+                              : account?.name === "Online Wallet"
+                                ? "#f59e0b"
+                                : "#ef4444"
+                        }
+                      />
+                    </View>
+                    <Text style={styles.optionText}>{account.name}</Text>
                   </View>
-                  <Text style={styles.optionText}>{account.name}</Text>
-                </View>
-                <Text style={styles.balanceText}>{formatNumberWithComma(account?.balance || 0)}</Text>
-              </TouchableOpacity>
-            ))}
+                  <Text style={styles.balanceText}>
+                    {formatNumberWithComma(account?.balance || 0)}
+                  </Text>
+                </TouchableOpacity>
+              ))
+            )}
           </View>
         </ScrollView>
 
@@ -124,7 +139,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 15,
-    fontFamily:"Poppins-Medium",
+    fontFamily: "Poppins-Medium",
   },
   scrollView: {
     flex: 1,
@@ -181,7 +196,7 @@ const styles = StyleSheet.create({
   balanceText: {
     fontSize: 16,
     color: COLORS.text,
-    fontFamily:"Poppins-Medium",
+    fontFamily: "Poppins-Medium",
   },
   backButton: {
     padding: 8,

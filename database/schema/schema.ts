@@ -118,10 +118,22 @@ export default appSchema({
       columns: [
         { name: "amount", type: "number" },
         { name: "remarks", type: "string" },
-        {name:"incomeSource", type:"string"},
+        { name: "incomeSource", type: "string" },
         { name: "shopId", type: "string" },
         { name: "created_at", type: "number" },
         { name: "updated_at", type: "number" },
+      ],
+    }),
+    tableSchema({
+      name: SCHEMA_KEYS.ACTIVITY,
+      columns: [
+        { name: "title", type: "string" },
+        { name: "description", type: "string" },
+        { name: "type", type: "string" },
+        { name: "created_at", type: "number" },
+        { name: "updated_at", type: "number" },
+        { name: "shopId", type: "string" },
+        { name: "platform", type: "string" },
       ],
     }),
   ],

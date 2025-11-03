@@ -1,25 +1,26 @@
-import { ActivityIndicator, Dimensions, View } from "react-native";
-import { SlideUpModal } from "../re-usables/modal/slide-up.modal";
-import { useState } from "react";
 import { useCustomers } from "@/database/hooks/useCustomer";
+import Customer from "@/database/model/customer.model";
+import { Search } from "lucide-react-native";
+import { useState } from "react";
+import { ActivityIndicator, Dimensions, View } from "react-native";
 import CustomerCard from "../customer/customer-card";
 import CustomInput from "../re-usables/input";
-import { Search } from "lucide-react-native";
-import Customer from "@/database/model/customer.model";
+import { SlideUpModal } from "../re-usables/modal/slide-up.modal";
 import NotFound from "../re-usables/not-found";
-import { Button } from "../re-usables/button";
 
 interface AddCustomerSlideupProps {
   visible: boolean;
   onClose: () => void;
   setCustomer: (customer: Customer) => void;
   selectedCustomer: Customer | null;
+  onSelectCustomer?: () => void;
 }
 const AddCustomerSlideup = ({
   visible,
   onClose,
   setCustomer,
   selectedCustomer,
+  onSelectCustomer,
 }: AddCustomerSlideupProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { customers, loading } = useCustomers({ search: searchQuery });
@@ -40,26 +41,39 @@ const AddCustomerSlideup = ({
           />
         </View>
         {loading ? (
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center", height:WINDOW_HEIGHT-80 }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              height: WINDOW_HEIGHT - 80,
+            }}
+          >
             <ActivityIndicator />
           </View>
         ) : !loading && customers?.length === 0 ? (
-          <NotFound title="No Customer Found!" description="You haven't added customer yet!" renderButton={{buttonTitle:"Add Customer",onPress:()=>{
-            
-          }}}/>
+          <NotFound
+            title="No Customer Found!"
+            description="You haven't added customer yet!"
+            renderButton={{ buttonTitle: "Add Customer", onPress: () => {} }}
+          />
         ) : (
-         (
           customers?.map((customer) => (
             <CustomerCard
               key={customer.id}
               customer={customer}
               onPress={() => {
                 setCustomer(customer);
-              onClose();
-            }}
-            selected={selectedCustomer?.id === customer.id}
-          />
-        ))))}
+                if (onSelectCustomer) {
+                  onSelectCustomer();
+                } else {
+                  onClose();
+                }
+              }}
+              selected={selectedCustomer?.id === customer.id}
+            />
+          ))
+        )}
       </View>
     </SlideUpModal>
   );
