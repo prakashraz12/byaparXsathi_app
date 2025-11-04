@@ -1,8 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "@/components/re-usables/text";
 import PXWrapper from "@/layouts/px-wrapper";
 import DashBoardTop from "@/components/dashbaord/sticky-top";
@@ -31,6 +27,9 @@ import { syncDatabase } from "@/database/sync.service";
 import DashBoardAnalaytics from "@/components/dashbaord/analaytics-card";
 import { useSyncStore } from "@/store/useSync";
 import { useSync } from "@/database/hooks/useSync";
+import SalesSummary from "@/components/dashbaord/sales-summary";
+import SalesBreakdownByMethod from "@/components/dashbaord/sales-breakdownby-method";
+import TopSalesItems from "@/components/dashbaord/top-sales-items";
 
 const CARD_MARGIN = 12;
 
@@ -66,23 +65,18 @@ export const ACTION_BUTTONS = [
     icon: <ArrowDownCircle size={20} color={COLORS.success} />,
     href: "/(routes)/finance/extra-income",
   },
- 
 ];
 
 const DashboardScreen = () => {
   const user = useUserStore();
-  const {syncNow} = useSync();
-  const {syncing} = useSyncStore()
+  const { syncNow } = useSync();
+  const { syncing } = useSyncStore();
   return (
     <>
       <PXWrapper
         header={<DashBoardTop />}
         contentContainerStyle={{ paddingHorizontal: 0 }}
       >
-        <Button
-          title="sync"
-          onPress={() => syncNow({fetchShops:true})}
-        />
         {syncing && <SyncBanner />}
         <View style={{ padding: 12, marginBottom: 6 }}>
           <Text style={{ fontSize: 15, fontFamily: "Poppins-SemiBold" }}>
@@ -129,6 +123,9 @@ const DashboardScreen = () => {
           </View>
         </View>
         <SalesOverviewChart />
+        <SalesSummary />
+        <SalesBreakdownByMethod />
+        <TopSalesItems />
       </PXWrapper>
     </>
   );

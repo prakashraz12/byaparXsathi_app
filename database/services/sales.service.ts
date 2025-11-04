@@ -121,12 +121,14 @@ export const salesService = {
           });
         }
 
-        activityService.create({
-          title: "Sales",
-          description: `${salesData?.status === PaymentStatus.PAID ? `Sales made worth ${salesData.grandTotalAmount}` : `Sales Created amount ${salesData.grandTotalAmount}`}`,
-          type: "Sales",
-          shopId: shopId,
-          platform: "Web",
+        await DB_COLLECTION.activity.create((a) => {
+          a.title = "Sales";
+          a.description = `${salesData?.status === PaymentStatus.PAID ? `Sales made worth ${salesData.grandTotalAmount}` : `Sales Created amount ${salesData.grandTotalAmount}`}`;
+          a.type = "Sales";
+          a.shopId = shopId;
+          a.platform = "MOBILE";
+          a.created_at = Date.now();
+          a.updated_at = Date.now();
         });
         return responseHandler({
           message: "Sales is created",

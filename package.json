@@ -12,7 +12,7 @@
     "generate:api": "openapi-codegen --config ./openapi-codegen.config.ts",
     "prepare": "husky"
   },
-   "lint-staged": {
+  "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
       "prettier --write"
@@ -24,6 +24,7 @@
     "@nozbe/watermelondb": "^0.28.0",
     "@nozbe/with-observables": "^1.6.0",
     "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-community/netinfo": "^11.4.1",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",

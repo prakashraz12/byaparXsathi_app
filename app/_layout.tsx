@@ -1,7 +1,8 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import "react-native-reanimated";
-
+import { useDatabase } from "@nozbe/watermelondb/react";
+import NetInfo from "@react-native-community/netinfo";
 import { ToastProvider } from "@/components/re-usables/custom-toaster/custom-provider";
 import TanstackProvider from "@/layouts/tanstack-provider";
 import {
@@ -13,6 +14,9 @@ import {
 
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
+import { hasUnsyncedChanges } from "@nozbe/watermelondb/sync";
+import database from "@/database";
+import { useSync } from "@/database/hooks/useSync";
 
 const RootLayout = () => {
   // const { registerTaskAsync } = useBackgroundSync();

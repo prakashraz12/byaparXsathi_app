@@ -45,7 +45,7 @@ const CreateSalesScreen = () => {
   // Payment state
   const [paymentType, setPaymentType] = useState<string | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatusType | null>(
-    null
+    null,
   );
   const [paidAmount, setPaidAmount] = useState("");
 
@@ -112,7 +112,7 @@ const CreateSalesScreen = () => {
         total +
         (item.quantity || 0) * (item.price || 0) -
         (item.discountAmount || 0),
-      0
+      0,
     );
   }, [salesItems]);
 
@@ -138,7 +138,7 @@ const CreateSalesScreen = () => {
         setDiscountAmount("");
       }
     },
-    [subtotal]
+    [subtotal],
   );
 
   // Handle discount amount change
@@ -155,7 +155,7 @@ const CreateSalesScreen = () => {
         setDiscountPercentage("");
       }
     },
-    [subtotal]
+    [subtotal],
   );
 
   const calculatedDiscountAmount = useMemo(() => {
@@ -189,7 +189,7 @@ const CreateSalesScreen = () => {
         setTaxAmount("");
       }
     },
-    [subtotal, calculatedDiscountAmount]
+    [subtotal, calculatedDiscountAmount],
   );
 
   const calculatedTaxAmount = useMemo(() => {
@@ -233,80 +233,83 @@ const CreateSalesScreen = () => {
   }, [grandTotal, paidAmount, paymentStatus]);
 
   // Save handler
-  const handleSave = useCallback(async () => {
-    if (paymentStatus === null) {
-      setPaymentSlideup(true);
-      return;
-    }
+  const handleSave = useCallback(
+    async (paymentType?: string) => {
+      if (paymentStatus === null) {
+        setPaymentSlideup(true);
+        return;
+      }
 
-    if (paymentStatus !== "UNPAID" && paymentType === null) {
-      setPaymentModeSlideup(true);
-      return;
-    }
+      if (paymentStatus !== "UNPAID" && paymentType === undefined) {
+        setPaymentModeSlideup(true);
+        return;
+      }
 
-    if (!activeShopId) {
-      Toast.error("Please select a shop");
-      return;
-    }
-    const calculatedPaidAmount =
-      paymentStatus === "PAID"
-        ? grandTotal
-        : paymentStatus === "PARTIALLY_PAID"
-          ? parseNumber(paidAmount)
-          : 0;
+      if (!activeShopId) {
+        Toast.error("Please select a shop");
+        return;
+      }
+      const calculatedPaidAmount =
+        paymentStatus === "PAID"
+          ? grandTotal
+          : paymentStatus === "PARTIALLY_PAID"
+            ? parseNumber(paidAmount)
+            : 0;
 
-    const response = await salesService.create(
-      {
-        invoiceDate: selectedDate.getTime(),
-        grandTotalAmount: grandTotal,
-        subTotalAmount: subtotal,
-        discountAmount: calculatedDiscountAmount,
-        taxAmount: calculatedTaxAmount,
-        additionalAmount: Number(additionalCharge),
-        oldDueAmount: 0,
-        dueAmount: paymentStatus === "PARTIALLY_PAID" ? dueAmount : 0,
-        paidAmount: calculatedPaidAmount,
-        remarks: notes,
-        paymentType: paymentType,
-        status: paymentStatus,
-        customerId: customer?.id || "",
-      },
+      const response = await salesService.create(
+        {
+          invoiceDate: selectedDate.getTime(),
+          grandTotalAmount: grandTotal,
+          subTotalAmount: subtotal,
+          discountAmount: calculatedDiscountAmount,
+          taxAmount: calculatedTaxAmount,
+          additionalAmount: Number(additionalCharge),
+          oldDueAmount: 0,
+          dueAmount: paymentStatus === "PARTIALLY_PAID" ? dueAmount : 0,
+          paidAmount: calculatedPaidAmount,
+          remarks: notes,
+          paymentType: paymentType,
+          status: paymentStatus,
+          customerId: customer?.id || "",
+        },
+        activeShopId,
+        salesItems,
+      );
+
+      if (response?.success) {
+        Toast.success(response?.message as string);
+        useSalesItemStore.setState({ salesItems: [] });
+        setDiscountAmount("");
+        setDiscountPercentage("");
+        setTaxAmount("");
+        setTaxPercentage("");
+        setPaidAmount("");
+        setNotes("");
+        setShowDiscountSection(false);
+        setShowTaxSection(false);
+        setShowAdditionalChargesSection(false);
+        setShowRemarksSection(false);
+        setShowAddItemsSlideup(false);
+        router.back();
+      }
+    },
+    [
+      paymentStatus,
+      paymentType,
+      selectedDate,
+      grandTotal,
+      subtotal,
+      calculatedDiscountAmount,
+      calculatedTaxAmount,
+      additionalCharge,
+      dueAmount,
+      paidAmount,
+      notes,
+      salesItems,
       activeShopId,
-      salesItems
-    );
-
-    if (response?.success) {
-      Toast.success(response?.message as string);
-      useSalesItemStore.setState({ salesItems: [] });
-      setDiscountAmount("");
-      setDiscountPercentage("");
-      setTaxAmount("");
-      setTaxPercentage("");
-      setPaidAmount("");
-      setNotes("");
-      setShowDiscountSection(false);
-      setShowTaxSection(false);
-      setShowAdditionalChargesSection(false);
-      setShowRemarksSection(false);
-      setShowAddItemsSlideup(false);
-      router.back();
-    }
-  }, [
-    paymentStatus,
-    paymentType,
-    selectedDate,
-    grandTotal,
-    subtotal,
-    calculatedDiscountAmount,
-    calculatedTaxAmount,
-    additionalCharge,
-    dueAmount,
-    paidAmount,
-    notes,
-    salesItems,
-    activeShopId,
-    customer?.id,
-  ]);
+      customer?.id,
+    ],
+  );
 
   const isSalesButtonDisabled = grandTotal === 0 || salesItems.length === 0;
 
@@ -326,7 +329,7 @@ const CreateSalesScreen = () => {
           style={{ marginBottom: bottom * 0.2 }}
           disabled={isSalesButtonDisabled}
           title={`Proceed To Sale ${formatNumberWithComma(grandTotal)}`}
-          onPress={handleSave}
+          onPress={() => handleSave()}
         />
       }
     >
@@ -530,6 +533,7 @@ const CreateSalesScreen = () => {
         onClose={() => setPaymentModeSlideup(false)}
         paymentType={paymentType || ""}
         setPaymentType={setPaymentType}
+        onClickAction={(paymentType) => handleSave(paymentType)}
       />
       <AddCustomerSlideup
         visible={showAddCustomerSlideup}

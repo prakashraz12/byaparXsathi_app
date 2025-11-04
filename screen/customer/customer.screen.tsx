@@ -5,6 +5,7 @@ import Input from "@/components/re-usables/input";
 import { useCustomers } from "@/database/hooks/useCustomer";
 import Item from "@/database/model/item.model";
 import PXWrapper from "@/layouts/px-wrapper";
+import { router } from "expo-router";
 import { Search } from "lucide-react-native";
 import type React from "react";
 import { useState } from "react";
@@ -32,7 +33,12 @@ export const CustomerScreen: React.FC = () => {
         </>
       }
       data={customers}
-      renderItem={({ item }:{item:Item}) => <CustomerCard customer={item} />}
+      renderItem={({ item }: { item: Item }) => (
+        <CustomerCard
+          customer={item}
+          onPress={() => router.push(`/customer/${item?.id}`)}
+        />
+      )}
     />
   );
 };

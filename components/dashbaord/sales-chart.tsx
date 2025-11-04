@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { View, Dimensions, StyleSheet } from "react-native";
-import { LineChart } from "react-native-chart-kit";
 import { Text } from "@/components/re-usables/text";
-import { COLORS } from "@/constants/Colors";
 import { WINDOW_WIDTH } from "@/config/app.config";
+import { COLORS } from "@/constants/Colors";
 import { observeSalesAnalytics } from "@/database/services/analaytics.service";
+import { formatNumberWithMode } from "@/utils/format-amount-with-mode";
 import { getDateFormat } from "@/utils/format-date";
-import RTabs from "../re-usables/tabs";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { BarChart } from "react-native-chart-kit";
 
 const SalesOverviewChart = () => {
   const [chartData, setChartData] = useState<
@@ -23,6 +23,7 @@ const SalesOverviewChart = () => {
   if (chartData.length === 0) {
     return null;
   }
+
   return (
     <View style={styles.container}>
       {/* Header Section */}
@@ -35,7 +36,7 @@ const SalesOverviewChart = () => {
 
       <View style={styles.chartContainer}>
         {chartData.length && (
-          <LineChart
+          <BarChart
             data={{
               labels: chartData.map((item) =>
                 getDateFormat(Number(new Date(item.label)), "BS", false, false),
@@ -43,7 +44,7 @@ const SalesOverviewChart = () => {
               datasets: [
                 {
                   data: chartData.map((item) => Number(item.value?.toFixed(2))),
-                  color: (opacity = 1) => COLORS.primary, // Gradient line color
+                  color: (opacity = 1) => COLORS.primary,
                   strokeWidth: 3,
                 },
               ],
@@ -70,7 +71,7 @@ const SalesOverviewChart = () => {
                 fill: "#fff",
               },
               propsForBackgroundLines: {
-                strokeDasharray: "4", // solid lines
+                strokeDasharray: "4",
                 stroke: "#ebe9e9ff",
                 strokeWidth: 1,
               },
@@ -78,13 +79,11 @@ const SalesOverviewChart = () => {
                 fontSize: 11,
                 fontFamily: "Poppins-Regular",
               },
+              formatYLabel: (value) =>
+                formatNumberWithMode(Number(value), "in", 0),
             }}
-            bezier
             style={styles.chart}
             withInnerLines={true}
-            withOuterLines={true}
-            withVerticalLines={false}
-            withHorizontalLines={true}
             withVerticalLabels={true}
             withHorizontalLabels={true}
             fromZero
@@ -105,7 +104,7 @@ const hexToRgb = (hex: string) => {
 const styles = StyleSheet.create({
   container: {
     marginVertical: 20,
-    paddingHorizontal: 12,
+    paddingHorizontal: 5,
   },
   header: {
     flexDirection: "row",

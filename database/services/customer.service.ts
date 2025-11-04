@@ -11,7 +11,6 @@ export const customerService = {
     if (!data.phone || !data.name || !data.address || !data?.shopId) return;
 
     return database.write(async () => {
-      // check if a customer already exists with this phone
       const existingUser = await DB_COLLECTION.customer
         .query(Q.where("phone", data?.phone?.toString()!))
         .extend(Q.where("shopId", data?.shopId!))
@@ -69,57 +68,20 @@ export const customerService = {
       await customer.markAsDeleted();
     });
   },
-  // salesUpdate: async (id: string, data: Partial<Sales>) => {
-  //  try {
-
-  //    const sale = await DB_COLLECTION.sales.find(id);
-
-  //      return database.write(async()=>{
-  //          sale.update((s)=>{
-  //            s.remarks = data.remarks;
-  //           s.updatedAt = new Date();
-  //           s.invoiceNumber = "sldnsadnasd"
-  //           s.shopId = "asdsadasdas"
-  //           s.grandTotalAmount = 1345666
-  //           s.paymentType = "cash"
-  //           s.status = "PAID"
-  //           s.discountAmount = 12000
-  //           s.taxAmount = 12000
-  //           s.subTotalAmount = 12000
-  //           s.additionalAmount = 12000
-  //           s.oldDueAmount = 12000
-  //           s.dueAmount = 12000
-  //           s.paidAmount = 12000
-  //           s.invoiceDate = Date.now()
-        
-
-  //       console.log("Update completed");
-  //       return sale;
-  //         })
-  //      })
-  //  } catch (error) {
-    
-  //  }
-  // }
-  salesUpdate: async (id: string, data: Partial<Sales>) => {
-  try {
-    console.log("salesUpdate called with id:", id);
-    
-    return await database.write(async () => {
-      // Fetch inside the write block
-      const sales = await DB_COLLECTION.sales.find(id);
-      console.log("Found sales:", sales);
-      console.log("Sales table:", sales.table);
-      console.log("Sales update function:", typeof sales.update);
-      
-      await sales.update((s) => {
-        console.log(s, "kando")
-      });
-      return sales;
-    });
-  } catch (error) {
-    console.log("Error in salesUpdate:", error);
-    throw error; // Re-throw to see the full error
-  }
-},
-}
+  getCustomerById: async (id: string) => {
+    if (!id) return;
+    const customer = await DB_COLLECTION.customer.findAndObserve(id);
+    if (!customer) {
+      Toast.error("Customer not found");
+      return;
+    }
+    return customer;
+  },
+  customerTransactions: async (id: string) => {
+    if (!id) return;
+    const customerSales = await DB_COLLECTION.sales
+      .query(Q.where("customerId", id))
+      .fetch();
+    return customerSales;
+  },
+};
