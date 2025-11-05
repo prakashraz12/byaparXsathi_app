@@ -125,7 +125,9 @@ const AlertModal = ({
                 { backgroundColor: `${getTypeColor(isLoading)}15` },
               ]}
             >
-              {icon || <AlertTriangle size={32} color={getTypeColor(isLoading)} />}
+              {icon || (
+                <AlertTriangle size={32} color={getTypeColor(isLoading)} />
+              )}
             </View>
 
             {/* Title */}

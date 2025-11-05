@@ -76,91 +76,107 @@ export default schemaMigrations({
     //   ],
     // },
     {
-      toVersion:2,
-      steps:[
+      toVersion: 2,
+      steps: [
         createTable({
-          name:"expenses",
-          columns:[
-            {name:"title",type:"string"},
-            {name:"amount",type:"number"},
-            {name:"remarks",type:"string"},
-            {name:"createdAt",type:"number"},
-            {name:"updatedAt",type:"number"},
-            {name:"shopId",type:"string"},
+          name: "expenses",
+          columns: [
+            { name: "title", type: "string" },
+            { name: "amount", type: "number" },
+            { name: "remarks", type: "string" },
+            { name: "createdAt", type: "number" },
+            { name: "updatedAt", type: "number" },
+            { name: "shopId", type: "string" },
           ],
-          
         }),
         createTable({
-          name:"saving",
-          columns:[
-          
-            {name:"title",type:"string"},
-            {name:"amount",type:"number"},
-            {name:"remarks",type:"string"},
-            {name:"createdAt",type:"number"},
-            {name:"updatedAt",type:"number"},
-            {name:"shopId",type:"string"},
-          ]
-        })
+          name: "saving",
+          columns: [
+            { name: "title", type: "string" },
+            { name: "amount", type: "number" },
+            { name: "remarks", type: "string" },
+            { name: "createdAt", type: "number" },
+            { name: "updatedAt", type: "number" },
+            { name: "shopId", type: "string" },
+          ],
+        }),
       ],
-      
-    },{
-      toVersion:3,
-      steps:[
-        addColumns({
-          table:"expenses",
-          columns:[
-            {name:"created_at",type:"number"},
-            {name:"updated_at",type:"number"},
-          ]
-        })
-      ]
     },
     {
-      toVersion:4,
-      steps:[
+      toVersion: 3,
+      steps: [
         addColumns({
-          table:"saving",
-          columns:[
-            {name:"created_at",type:"number"},
-            {name:"updated_at",type:"number"},
-          ]
+          table: "expenses",
+          columns: [
+            { name: "created_at", type: "number" },
+            { name: "updated_at", type: "number" },
+          ],
         }),
-        addColumns({
-          table:"sales",
-          columns:[
-            {name:"created_at",type:"number"},
-            {name:"updated_at",type:"number"},
-          ]
-        }),
-        addColumns({
-          table:"salesitem",
-          columns:[
-            {name:"created_at",type:"number"},
-            {name:"updated_at",type:"number"},
-          ]
-        }),
-        addColumns({
-          table:"paymentaccount",
-          columns:[
-            {name:"created_at",type:"number"},
-            {name:"updated_at",type:"number"},
-          ]
-        })
-      ]
+      ],
     },
     {
-      toVersion:5,
-      steps:[
+      toVersion: 4,
+      steps: [
         addColumns({
-          table:"sales",
-          columns:[
-            {name:"customerId",type:"string"},
-            {name:"customerName",type:"string"},
-          ]
-        })
-      ]
-    }
-  
+          table: "saving",
+          columns: [
+            { name: "created_at", type: "number" },
+            { name: "updated_at", type: "number" },
+          ],
+        }),
+        addColumns({
+          table: "sales",
+          columns: [
+            { name: "created_at", type: "number" },
+            { name: "updated_at", type: "number" },
+          ],
+        }),
+        addColumns({
+          table: "salesitem",
+          columns: [
+            { name: "created_at", type: "number" },
+            { name: "updated_at", type: "number" },
+          ],
+        }),
+        addColumns({
+          table: "paymentaccount",
+          columns: [
+            { name: "created_at", type: "number" },
+            { name: "updated_at", type: "number" },
+          ],
+        }),
+      ],
+    },
+    {
+      toVersion: 5,
+      steps: [
+        addColumns({
+          table: "sales",
+          columns: [
+            { name: "customerId", type: "string" },
+            { name: "customerName", type: "string" },
+          ],
+        }),
+      ],
+    },
+    {
+      toVersion: 6,
+      steps: [
+        createTable({
+          name: "paymentIn",
+          columns: [
+            { name: "paymentId", type: "string" },
+            { name: "amount", type: "number" },
+            { name: "remarks", type: "string" },
+            { name: "shopId", type: "string" },
+            { name: "customerId", type: "string" },
+            { name: "paymentInDate", type: "number" },
+            { name: "created_at", type: "number" },
+            { name: "updated_at", type: "number" },
+            { name: "receiptNumber", type: "string" },
+          ],
+        }),
+      ],
+    },
   ],
 });

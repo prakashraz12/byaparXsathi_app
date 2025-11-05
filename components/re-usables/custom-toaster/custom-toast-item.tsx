@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -7,19 +7,19 @@ import {
   StyleSheet,
   Dimensions,
   PanResponder,
-} from 'react-native';
-import { ToastConfig } from './custom-toaster-types';
-import { CheckCircleIcon, Info, X, XCircleIcon } from 'lucide-react-native';
+} from "react-native";
+import { ToastConfig } from "./custom-toaster-types";
+import { CheckCircleIcon, Info, X, XCircleIcon } from "lucide-react-native";
 
 interface ToastItemProps {
   toast: ToastConfig;
   onHide: () => void;
 }
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth } = Dimensions.get("window");
 
 export const ToastItem: React.FC<ToastItemProps> = ({ toast, onHide }) => {
-  const toastType = (toast && (toast as any).type) ? toast.type : 'info';
+  const toastType = toast && (toast as any).type ? toast.type : "info";
   const translateY = useRef(new Animated.Value(-100)).current;
   const translateX = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
@@ -90,7 +90,10 @@ export const ToastItem: React.FC<ToastItemProps> = ({ toast, onHide }) => {
         translateX.setValue(gestureState.dx);
       },
       onPanResponderRelease: (evt, gestureState) => {
-        if (Math.abs(gestureState.dx) > screenWidth * 0.3 || Math.abs(gestureState.vx) > 0.5) {
+        if (
+          Math.abs(gestureState.dx) > screenWidth * 0.3 ||
+          Math.abs(gestureState.vx) > 0.5
+        ) {
           // Swipe to dismiss
           Animated.parallel([
             Animated.timing(translateX, {
@@ -121,13 +124,13 @@ export const ToastItem: React.FC<ToastItemProps> = ({ toast, onHide }) => {
 
   const getToastStyle = () => {
     switch (toastType) {
-      case 'success':
+      case "success":
         return styles.successToast;
-      case 'error':
+      case "error":
         return styles.errorToast;
-      case 'warning':
+      case "warning":
         return styles.warningToast;
-      case 'info':
+      case "info":
         return styles.infoToast;
       default:
         return styles.infoToast;
@@ -136,13 +139,13 @@ export const ToastItem: React.FC<ToastItemProps> = ({ toast, onHide }) => {
 
   const getIconEmoji = () => {
     switch (toastType) {
-      case 'success':
+      case "success":
         return <CheckCircleIcon size={16} color="#FFFFFF" />;
-      case 'error':
+      case "error":
         return <XCircleIcon size={16} color="#FFFFFF" />;
-      case 'warning':
+      case "warning":
         return <Info size={16} color="#FFFFFF" />;
-      case 'info':
+      case "info":
         return <Info size={16} color="#FFFFFF" />;
       default:
         return <Info size={16} color="#FFFFFF" />;
@@ -164,8 +167,10 @@ export const ToastItem: React.FC<ToastItemProps> = ({ toast, onHide }) => {
       <View style={styles.content}>
         <Text style={styles.icon}>{getIconEmoji()}</Text>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{toast?.title ?? ''}</Text>
-          {toast?.message && <Text style={styles.message}>{toast.message}</Text>}
+          <Text style={styles.title}>{toast?.title ?? ""}</Text>
+          {toast?.message && (
+            <Text style={styles.message}>{toast.message}</Text>
+          )}
         </View>
         <TouchableOpacity
           style={styles.closeButton}
@@ -197,7 +202,7 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: 8,
     borderRadius: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -205,13 +210,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    zIndex: 9999999999999999!,
+    zIndex: 1000,
   },
   content: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal:12,
-    paddingVertical:12,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 12,
     zIndex: 9999,
   },
   icon: {
@@ -223,48 +228,48 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     marginBottom: 2,
-    fontFamily: 'Poppins-Regular',
+    fontFamily: "Poppins-Regular",
   },
   message: {
     fontSize: 12,
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     opacity: 0.9,
     lineHeight: 20,
-    fontFamily: 'Poppins-Regular',
+    fontFamily: "Poppins-Regular",
   },
   closeButton: {
     marginLeft: 8,
   },
   closeText: {
     fontSize: 16,
-    color: '#FFFFFF',
-    fontWeight: '300',
+    color: "#FFFFFF",
+    fontWeight: "300",
   },
   actionButton: {
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.2)',
+    borderTopColor: "rgba(255, 255, 255, 0.2)",
   },
   actionText: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    fontFamily: 'Poppins-Regular',
-    textAlign: 'center',
+    fontWeight: "600",
+    color: "#FFFFFF",
+    fontFamily: "Poppins-Regular",
+    textAlign: "center",
   },
   successToast: {
-    backgroundColor: '#10B981',
+    backgroundColor: "#10B981",
   },
   errorToast: {
-    backgroundColor: '#EF4444',
+    backgroundColor: "#EF4444",
   },
   warningToast: {
-    backgroundColor: '#F59E0B',
+    backgroundColor: "#F59E0B",
   },
   infoToast: {
-    backgroundColor: '#3B82F6',
+    backgroundColor: "#3B82F6",
   },
 });

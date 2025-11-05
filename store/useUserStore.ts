@@ -11,7 +11,7 @@ type User = {
   role: string;
   id: string;
   phoneNumber: string;
-  country: Record<string, any>;
+  country: string;
   isDeleted?: boolean;
   requestDeleteOn: string;
   createdAt: string;
@@ -62,6 +62,6 @@ export const useUserStore = create<UserState>()(
         user: state.user,
         activeShopId: state.activeShopId,
       }),
-    }
-  )
+    },
+  ),
 );

@@ -12,7 +12,7 @@ const CARD_WIDTH = width / 2 - CARD_MARGIN * 2.3;
 
 const DashBoardAnalaytics = () => {
   const DEFAULT_PRESET = "THIS_MONTH";
-const [stats, setStats] = useState({
+  const [stats, setStats] = useState({
     totalSales: 0,
     totalExpenses: 0,
     totalCustomers: 0,

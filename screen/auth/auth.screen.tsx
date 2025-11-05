@@ -17,8 +17,6 @@ import { Pressable, StyleSheet, View } from "react-native";
 const AuthScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
 
-
- 
   const form = useForm({
     defaultValues: {
       email: "",
@@ -50,7 +48,7 @@ const AuthScreen = () => {
         pathname: "/(routes)/otp",
         params: { email: form.state.values.email },
       });
-    })
+    }),
   );
 
   return (

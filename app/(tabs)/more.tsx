@@ -5,17 +5,7 @@ import { useUserStore } from "@/store/useUserStore";
 import { View, Text } from "react-native";
 
 const More = () => {
-  const { clearUser, clearToken } = useUserStore();
-  const handleLogOut = async() => {
-    await clearUser();
-    await clearToken();
-    database.write(async () => {
-       await database.unsafeResetDatabase()
-  })
-}
-  return (
-   <MoreScreen/>
-  );
+  return <MoreScreen />;
 };
 
 export default More;

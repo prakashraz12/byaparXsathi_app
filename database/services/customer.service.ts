@@ -5,6 +5,7 @@ import Customer from "../model/customer.model";
 import { Q } from "@nozbe/watermelondb";
 import { idxGenerator } from "@/utils/idx.utils";
 import Sales from "../model/sales.model";
+import PaymentIn from "../model/paymentIn.model";
 
 export const customerService = {
   create: async (data: Partial<Customer> & { id?: string }) => {
@@ -77,11 +78,50 @@ export const customerService = {
     }
     return customer;
   },
-  customerTransactions: async (id: string) => {
-    if (!id) return;
-    const customerSales = await DB_COLLECTION.sales
-      .query(Q.where("customerId", id))
-      .fetch();
-    return customerSales;
+  addPaymentIn: async (data: Partial<PaymentIn>) => {
+    if (!data.customerId || !data.amount || !data.shopId) return;
+    return database.write(async () => {
+      const findCustomer = await DB_COLLECTION.customer.find(data?.customerId!);
+      if (!findCustomer) {
+        Toast.error("Customer not found");
+        return;
+      }
+
+      const id = idxGenerator();
+      const paymentIn = await DB_COLLECTION.paymentIn.create((p) => {
+        p._raw.id = id;
+        p.customerId = data.customerId!;
+        p.amount = data.amount;
+        p.shopId = data.shopId;
+        p.paymentInDate = data.paymentInDate;
+        p.paymentId = data.paymentId;
+        p.created_at = new Date().getTime();
+        p.updated_at = new Date().getTime();
+      });
+
+      if (Number(findCustomer?.outstanding) >= Number(data?.amount)) {
+        const extraAmount =
+          Number(findCustomer?.outstanding) - Number(data?.amount);
+        findCustomer.update((c) => {
+          c.outstanding = 0;
+          c.updated_at = new Date().getTime();
+          c.available_credit =
+            Number(findCustomer?.available_credit) + extraAmount;
+        });
+      } else {
+        findCustomer.update((c) => {
+          c.outstanding =
+            Number(findCustomer?.outstanding) - Number(data?.amount);
+          c.updated_at = new Date().getTime();
+        });
+      }
+
+      return {
+        paymentIn,
+        message: "Payment added successfully",
+        status: 201,
+        success: true,
+      };
+    });
   },
 };

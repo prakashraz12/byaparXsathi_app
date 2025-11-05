@@ -8,4 +8,5 @@ export const SCHEMA_KEYS = {
   EXPENSES: "expenses",
   INCOME: "income",
   ACTIVITY: "activity",
+  PAYMENT_IN: "paymentIn",
 };

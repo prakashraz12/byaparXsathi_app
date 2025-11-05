@@ -8,7 +8,9 @@ import {
   MessageCircle,
   MoreVertical,
   PhoneCall,
+  Plus,
   Search,
+  Wallet2,
 } from "lucide-react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { COLORS } from "@/constants/Colors";
@@ -19,6 +21,7 @@ import { customerService } from "@/database/services/customer.service";
 import Customer from "@/database/model/customer.model";
 import { formatNumberWithComma } from "@/utils/format-number";
 import { Toast } from "@/components/re-usables/custom-toaster/toast-service";
+import CustomerTransitions from "@/components/customer/profile/customer-transitions";
 
 const ProfileScreen = () => {
   const { id } = useLocalSearchParams();
@@ -83,11 +86,38 @@ const ProfileScreen = () => {
 
   return (
     <PXWrapper
+      floatingActionStyle={{ width: "100%", right: 0 }}
+      floatingAction={
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 10,
+            marginBottom: 20,
+            justifyContent: "center",
+            paddingHorizontal: 20,
+            flex: 1,
+          }}
+        >
+          <Button
+            onPress={() => router.push(`/customer/paymentin/${id}`)}
+            variant="success"
+            style={{ flex: 1 }}
+            title="Add Payment In"
+            leftIcon={<Wallet2 size={24} color={"white"} />}
+          />
+          <Button
+            variant="primary"
+            style={{ flex: 1 }}
+            title="Add Sales"
+            leftIcon={<Plus size={24} color={"white"} />}
+          />
+        </View>
+      }
       header={
         <View
           style={{
             flexDirection: "row",
-            marginBottom: 12,
+            marginBottom: 10,
             alignItems: "center",
             gap: 15,
             justifyContent: "space-between",
@@ -158,14 +188,16 @@ const ProfileScreen = () => {
           </Text>
         </View>
         <View style={{ flex: 1, alignItems: "flex-end" }}>
-          <Text style={{ fontSize: 16, color: COLORS.secondary }}>
-            {customer?.phone}
-          </Text>
-          <Text style={{ fontSize: 13, marginTop: 2, color: "#666" }}>
-            {customer?.address}
-          </Text>
-          <Text style={{ fontSize: 11, marginTop: 2, color: "#666" }}>
-            {customer?.email}
+          <Text style={{ fontSize: 16 }}>To Pay</Text>
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: "Poppins-Medium",
+              color: COLORS.error,
+              marginTop: 4,
+            }}
+          >
+            {formatNumberWithComma(customer?.available_credit || 0)}
           </Text>
         </View>
       </View>
@@ -230,37 +262,8 @@ const ProfileScreen = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      <View
-        style={{
-          flex: 1,
-          marginTop: 16,
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 5,
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <CustomInput
-            containerStyle={{ flex: 1 }}
-            placeholder="Search transactions"
-            leftIcon={<Search />}
-          />
-        </View>
-        <TouchableOpacity
-          style={{
-            width: 50,
-            height: 50,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "white",
-            borderRadius: 5,
-            borderWidth: 1,
-            borderColor: COLORS.border,
-          }}
-        >
-          <FilterIcon size={24} color={COLORS.text} />
-        </TouchableOpacity>
-      </View>
+
+      <CustomerTransitions id={id as string} />
     </PXWrapper>
   );
 };

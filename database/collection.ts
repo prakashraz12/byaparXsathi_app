@@ -9,6 +9,7 @@ import PaymentAccount from "./model/payment-account.model";
 import Expenses from "./model/expenses.model";
 import Income from "./model/income.model";
 import { Activity } from "./model/activity.model";
+import PaymentIn from "./model/paymentIn.model";
 
 export const DB_COLLECTION = {
   customer: database.collections.get<Customer>(SCHEMA_KEYS.CUSTOMER),
@@ -22,4 +23,5 @@ export const DB_COLLECTION = {
   expenses: database.collections.get<Expenses>(SCHEMA_KEYS.EXPENSES),
   income: database.collections.get<Income>(SCHEMA_KEYS.INCOME),
   activity: database.collections.get<Activity>(SCHEMA_KEYS.ACTIVITY),
+  paymentIn: database.collections.get<PaymentIn>(SCHEMA_KEYS.PAYMENT_IN),
 };

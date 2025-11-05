@@ -66,7 +66,7 @@ export function userControllerGetMeQuery(
   };
 }
 
-export const useSuspenseUserControllerGetMe = <TData = undefined,>(
+export const useSuspenseUserControllerGetMe = <TData = undefined>(
   variables: UserControllerGetMeVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<undefined, UserControllerGetMeError, TData>,
@@ -85,7 +85,7 @@ export const useSuspenseUserControllerGetMe = <TData = undefined,>(
   });
 };
 
-export const useUserControllerGetMe = <TData = undefined,>(
+export const useUserControllerGetMe = <TData = undefined>(
   variables: UserControllerGetMeVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<undefined, UserControllerGetMeError, TData>,
@@ -410,7 +410,7 @@ export function shopControllerGetAllShopsQuery(
   };
 }
 
-export const useSuspenseShopControllerGetAllShops = <TData = undefined,>(
+export const useSuspenseShopControllerGetAllShops = <TData = undefined>(
   variables: ShopControllerGetAllShopsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -433,7 +433,7 @@ export const useSuspenseShopControllerGetAllShops = <TData = undefined,>(
   });
 };
 
-export const useShopControllerGetAllShops = <TData = undefined,>(
+export const useShopControllerGetAllShops = <TData = undefined>(
   variables: ShopControllerGetAllShopsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -515,7 +515,7 @@ export function salesControllerGetAllSalesQuery(
   };
 }
 
-export const useSuspenseSalesControllerGetAllSales = <TData = undefined,>(
+export const useSuspenseSalesControllerGetAllSales = <TData = undefined>(
   variables: SalesControllerGetAllSalesVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -538,7 +538,7 @@ export const useSuspenseSalesControllerGetAllSales = <TData = undefined,>(
   });
 };
 
-export const useSalesControllerGetAllSales = <TData = undefined,>(
+export const useSalesControllerGetAllSales = <TData = undefined>(
   variables: SalesControllerGetAllSalesVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -615,7 +615,7 @@ export function salesControllerGetAllSalesItemsQuery(
   };
 }
 
-export const useSuspenseSalesControllerGetAllSalesItems = <TData = undefined,>(
+export const useSuspenseSalesControllerGetAllSalesItems = <TData = undefined>(
   variables: SalesControllerGetAllSalesItemsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -640,7 +640,7 @@ export const useSuspenseSalesControllerGetAllSalesItems = <TData = undefined,>(
   });
 };
 
-export const useSalesControllerGetAllSalesItems = <TData = undefined,>(
+export const useSalesControllerGetAllSalesItems = <TData = undefined>(
   variables: SalesControllerGetAllSalesItemsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -718,7 +718,7 @@ export function itemControllerFindAllItemsQuery(
   };
 }
 
-export const useSuspenseItemControllerFindAllItems = <TData = undefined,>(
+export const useSuspenseItemControllerFindAllItems = <TData = undefined>(
   variables: ItemControllerFindAllItemsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -741,7 +741,7 @@ export const useSuspenseItemControllerFindAllItems = <TData = undefined,>(
   });
 };
 
-export const useItemControllerFindAllItems = <TData = undefined,>(
+export const useItemControllerFindAllItems = <TData = undefined>(
   variables: ItemControllerFindAllItemsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -849,7 +849,7 @@ export const useSuspenseSyncControllerPull = <
   });
 };
 
-export const useSyncControllerPull = <TData = Schemas.SyncResponseWrapperDto,>(
+export const useSyncControllerPull = <TData = Schemas.SyncResponseWrapperDto>(
   variables: SyncControllerPullVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1009,9 +1009,7 @@ export function customerControllerGetAllCustomersQuery(
   };
 }
 
-export const useSuspenseCustomerControllerGetAllCustomers = <
-  TData = undefined,
->(
+export const useSuspenseCustomerControllerGetAllCustomers = <TData = undefined>(
   variables: CustomerControllerGetAllCustomersVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1036,7 +1034,7 @@ export const useSuspenseCustomerControllerGetAllCustomers = <
   });
 };
 
-export const useCustomerControllerGetAllCustomers = <TData = undefined,>(
+export const useCustomerControllerGetAllCustomers = <TData = undefined>(
   variables: CustomerControllerGetAllCustomersVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1054,6 +1052,206 @@ export const useCustomerControllerGetAllCustomers = <TData = undefined,>(
     TData
   >({
     ...customerControllerGetAllCustomersQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type FinanceControllerGetIncomeError = Fetcher.ErrorWrapper<undefined>;
+
+export type FinanceControllerGetIncomeVariables =
+  QueriesContext["fetcherOptions"];
+
+export const fetchFinanceControllerGetIncome = (
+  variables: FinanceControllerGetIncomeVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    undefined,
+    FinanceControllerGetIncomeError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/finance/income", method: "get", ...variables, signal });
+
+export function financeControllerGetIncomeQuery(
+  variables: FinanceControllerGetIncomeVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<undefined>;
+};
+
+export function financeControllerGetIncomeQuery(
+  variables: FinanceControllerGetIncomeVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<undefined>)
+    | reactQuery.SkipToken;
+};
+
+export function financeControllerGetIncomeQuery(
+  variables: FinanceControllerGetIncomeVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/api/v1/finance/income",
+      operationId: "financeControllerGetIncome",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchFinanceControllerGetIncome(variables, signal),
+  };
+}
+
+export const useSuspenseFinanceControllerGetIncome = <TData = undefined>(
+  variables: FinanceControllerGetIncomeVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      undefined,
+      FinanceControllerGetIncomeError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    undefined,
+    FinanceControllerGetIncomeError,
+    TData
+  >({
+    ...financeControllerGetIncomeQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useFinanceControllerGetIncome = <TData = undefined>(
+  variables: FinanceControllerGetIncomeVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      undefined,
+      FinanceControllerGetIncomeError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<undefined, FinanceControllerGetIncomeError, TData>(
+    {
+      ...financeControllerGetIncomeQuery(
+        variables === reactQuery.skipToken
+          ? variables
+          : deepMerge(fetcherOptions, variables),
+      ),
+      ...options,
+      ...queryOptions,
+    },
+  );
+};
+
+export type FinanceControllerGetExpensesError = Fetcher.ErrorWrapper<undefined>;
+
+export type FinanceControllerGetExpensesVariables =
+  QueriesContext["fetcherOptions"];
+
+export const fetchFinanceControllerGetExpenses = (
+  variables: FinanceControllerGetExpensesVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    undefined,
+    FinanceControllerGetExpensesError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/api/v1/finance/expenses", method: "get", ...variables, signal });
+
+export function financeControllerGetExpensesQuery(
+  variables: FinanceControllerGetExpensesVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<undefined>;
+};
+
+export function financeControllerGetExpensesQuery(
+  variables: FinanceControllerGetExpensesVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<undefined>)
+    | reactQuery.SkipToken;
+};
+
+export function financeControllerGetExpensesQuery(
+  variables: FinanceControllerGetExpensesVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/api/v1/finance/expenses",
+      operationId: "financeControllerGetExpenses",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchFinanceControllerGetExpenses(variables, signal),
+  };
+}
+
+export const useSuspenseFinanceControllerGetExpenses = <TData = undefined>(
+  variables: FinanceControllerGetExpensesVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      undefined,
+      FinanceControllerGetExpensesError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    undefined,
+    FinanceControllerGetExpensesError,
+    TData
+  >({
+    ...financeControllerGetExpensesQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useFinanceControllerGetExpenses = <TData = undefined>(
+  variables: FinanceControllerGetExpensesVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      undefined,
+      FinanceControllerGetExpensesError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    undefined,
+    FinanceControllerGetExpensesError,
+    TData
+  >({
+    ...financeControllerGetExpensesQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -1151,7 +1349,7 @@ export const useSuspenseUserAnalayticsControllerOnBoardingUser = <
   });
 };
 
-export const useUserAnalayticsControllerOnBoardingUser = <TData = undefined,>(
+export const useUserAnalayticsControllerOnBoardingUser = <TData = undefined>(
   variables:
     | UserAnalayticsControllerOnBoardingUserVariables
     | reactQuery.SkipToken,
@@ -1219,6 +1417,16 @@ export type QueryOperation =
       variables:
         | CustomerControllerGetAllCustomersVariables
         | reactQuery.SkipToken;
+    }
+  | {
+      path: "/api/v1/finance/income";
+      operationId: "financeControllerGetIncome";
+      variables: FinanceControllerGetIncomeVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/api/v1/finance/expenses";
+      operationId: "financeControllerGetExpenses";
+      variables: FinanceControllerGetExpensesVariables | reactQuery.SkipToken;
     }
   | {
       path: "/api/v1/adminx/onboarding-user";

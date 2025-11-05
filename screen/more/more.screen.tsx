@@ -23,6 +23,11 @@ import database from "@/database";
 import { useSyncStore } from "@/store/useSync";
 import { getDateFormat } from "@/utils/format-date";
 
+import NetInfo from "@react-native-community/netinfo";
+import { Toast } from "@/components/re-usables/custom-toaster/toast-service";
+import { hasUnsyncedChanges } from "@nozbe/watermelondb/sync";
+import { useSync } from "@/database/hooks/useSync";
+
 type IconName = keyof typeof Ionicons.glyphMap;
 
 interface SettingsCardProps {
@@ -60,7 +65,8 @@ interface Styles {
 export const MoreScreen = () => {
   const [logoutModal, setLogOutModal] = useState(false);
   const [isLogOuting, setIsLogOuting] = useState(false);
-  const {lastSynced} = useSyncStore()
+  const { lastSynced } = useSyncStore();
+  const { syncNow } = useSync();
 
   const { clearUser, clearToken } = useUserStore();
 
@@ -104,7 +110,7 @@ export const MoreScreen = () => {
   };
 
   const handleLegalNavigation = async (
-    type: "privacy" | "terms"
+    type: "privacy" | "terms",
   ): Promise<void> => {
     try {
       // Replace these URLs with your actual privacy policy and terms URLs
@@ -119,7 +125,7 @@ export const MoreScreen = () => {
       } else {
         Alert.alert(
           "Error",
-          `Cannot open ${type === "privacy" ? "Privacy Policy" : "Terms of Service"}`
+          `Cannot open ${type === "privacy" ? "Privacy Policy" : "Terms of Service"}`,
         );
       }
     } catch (error) {
@@ -129,10 +135,23 @@ export const MoreScreen = () => {
 
   const handleLogOut = async () => {
     try {
+      const netState = await NetInfo.fetch();
+      if (!netState.isConnected) {
+        Toast.error("Please Connect to the internet to log out!");
+
+        return;
+      }
+
+      const unSynced = await hasUnsyncedChanges({ database });
+
       setIsLogOuting(true);
+      if (unSynced) {
+        await syncNow();
+      }
+
       clearUser();
       clearToken();
-      
+
       await database.write(async () => {
         await database.unsafeResetDatabase();
       });

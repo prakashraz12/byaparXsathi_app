@@ -55,7 +55,7 @@ const SalesBreakdownByMethod = () => {
             key={index}
             style={{
               height: 40,
-              width: `${(item.value / total) * 100 - 1}%`,
+              maxWidth: `${(Number(item.value) / total) * 100}%`,
               backgroundColor: colors[index],
               borderRadius: 5,
               marginVertical: 5,

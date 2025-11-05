@@ -45,7 +45,6 @@ const PaymentModeSlideup = ({
         >
           <TouchableOpacity
             onPress={() => {
-              console.log("paymentType", paymentType);
               setPaymentType?.(null);
               setPaymentMode?.(false);
             }}

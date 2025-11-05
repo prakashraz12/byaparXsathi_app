@@ -11,7 +11,9 @@ import {
   Feather,
   Home,
   LayoutGrid,
+  ToolCase,
   User,
+  Users,
   Wallet,
 } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,14 +27,14 @@ interface TabBarProps {
 const TabBar = ({ state, navigation }: TabBarProps) => {
   const insets = useSafeAreaInsets();
   const animatedValues = useRef(
-    state.routes.map(() => new Animated.Value(1))
+    state.routes.map(() => new Animated.Value(1)),
   ).current;
 
   const icons: { [key: string]: any } = {
     index: Home,
     sales: CircleArrowUp,
-    customer: User,
-    items: Wallet,
+    customer: Users,
+    items: ToolCase,
     more: LayoutGrid,
   };
 

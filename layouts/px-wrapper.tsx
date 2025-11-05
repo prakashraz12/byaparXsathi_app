@@ -2,7 +2,16 @@ import NotFound from "@/components/re-usables/not-found";
 import { COLORS } from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import type React from "react";
-import { FlatList, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
+import { useRef, useState } from "react";
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+  Animated,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface PXWrapperProps {
@@ -16,6 +25,7 @@ interface PXWrapperProps {
   floatingAction?: React.ReactNode;
   footer?: React.ReactNode;
   backgroundColor?: string;
+  floatingActionStyle?: object;
 }
 
 const PXWrapper = ({
@@ -29,9 +39,39 @@ const PXWrapper = ({
   floatingAction,
   footer,
   backgroundColor,
+  floatingActionStyle,
 }: PXWrapperProps) => {
   const insets = useSafeAreaInsets();
-  
+  const scrollY = useRef(0);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [isVisible, setIsVisible] = useState(true);
+
+  const handleScroll = (event: any) => {
+    const currentScrollY = event.nativeEvent.contentOffset.y;
+    const scrollDiff = currentScrollY - scrollY.current;
+
+    // Show button when scrolling up, hide when scrolling down
+    if (scrollDiff > 5 && isVisible) {
+      // Scrolling down
+      setIsVisible(false);
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    } else if (scrollDiff < -5 && !isVisible) {
+      // Scrolling up
+      setIsVisible(true);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+
+    scrollY.current = currentScrollY;
+  };
+
   return (
     <View
       style={[
@@ -44,54 +84,78 @@ const PXWrapper = ({
     >
       <StatusBar style="dark" />
       {header ? <View style={styles.header}>{header}</View> : null}
-      
+
       {floatingAction && (
-        <View style={styles.floatingButtonContainer}>{floatingAction}</View>
-      )}
-      
-      <KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}>
-        <View style={{ flex: 1 }}>
-        {data?.length > 0 && renderItem ? (
-          <FlatList
-            data={data}
-            renderItem={renderItem}
-            removeClippedSubviews={true}
-            maxToRenderPerBatch={10}
-            updateCellsBatchingPeriod={30}
-            initialNumToRender={10}
-            windowSize={21}
-            keyExtractor={(item, index) => item?.id || index.toString()}
-            contentContainerStyle={{ 
-              paddingBottom: footer ? 90 : 80, 
-              paddingHorizontal: 10, 
-              paddingTop: 10 
-            }}
-          />
-        ) : data?.length === 0 ? (
-          <NotFound title="No Data Found" />
-        ) : (
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={[
-              styles.contentContainer,
-              contentContainerStyle,
-              footer ? { paddingBottom: 90 } : {},
-            ]}
-            showsVerticalScrollIndicator={showsVerticalScrollIndicator}
-            keyboardShouldPersistTaps="handled"
-          >
-            {children}
-          </ScrollView>
-        )}
-      </View>
-      </KeyboardAvoidingView>
-      
-      {footer && (
-        <View 
+        <Animated.View
           style={[
-            styles.footer,
-            { paddingBottom: insets.bottom + 8 || 10 }
+            styles.floatingButtonContainer,
+            floatingActionStyle,
+            {
+              opacity: fadeAnim,
+              transform: [
+                {
+                  translateY: fadeAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [100, 0],
+                  }),
+                },
+              ],
+            },
           ]}
+          pointerEvents={isVisible ? "auto" : "none"}
+        >
+          {floatingAction}
+        </Animated.View>
+      )}
+
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+      >
+        <View style={{ flex: 1 }}>
+          {data?.length > 0 && renderItem ? (
+            <FlatList
+              data={data}
+              renderItem={renderItem}
+              removeClippedSubviews={true}
+              maxToRenderPerBatch={10}
+              updateCellsBatchingPeriod={30}
+              initialNumToRender={10}
+              windowSize={21}
+              keyExtractor={(item, index) => item?.id || index.toString()}
+              contentContainerStyle={{
+                paddingBottom: footer ? 90 : 80,
+                paddingHorizontal: 10,
+                paddingTop: 10,
+              }}
+              onScroll={handleScroll}
+              scrollEventThrottle={16}
+            />
+          ) : data?.length === 0 ? (
+            <NotFound title="No Data Found" />
+          ) : (
+            <ScrollView
+              style={styles.scrollView}
+              contentContainerStyle={[
+                styles.contentContainer,
+                contentContainerStyle,
+                footer ? { paddingBottom: 90 } : {},
+              ]}
+              showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+              scrollEventThrottle={16}
+              removeClippedSubviews={true}
+              onScroll={handleScroll}
+            >
+              {children}
+            </ScrollView>
+          )}
+        </View>
+      </KeyboardAvoidingView>
+
+      {footer && (
+        <View
+          style={[styles.footer, { paddingBottom: insets.bottom + 8 || 10 }]}
         >
           {footer}
         </View>
@@ -103,8 +167,8 @@ const PXWrapper = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    width:"100%",
-    height:"100%"
+    width: "100%",
+    height: "100%",
   },
   scrollView: {
     flex: 1,
@@ -141,8 +205,7 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 10,
     paddingTop: 10,
-    backgroundColor:"#F2F2F7"
-   
+    backgroundColor: "#F2F2F7",
   },
 });
 

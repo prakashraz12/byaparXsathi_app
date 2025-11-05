@@ -19,7 +19,6 @@ const TopSalesItems = () => {
     }).subscribe(setTopSalesItems);
     return () => sub.unsubscribe();
   }, []);
-  console.log("topSalesItems", topSalesItems);
   return (
     <View
       style={{

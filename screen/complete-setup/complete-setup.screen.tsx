@@ -7,8 +7,8 @@ import CustomInput from "@/components/re-usables/input";
 import { Text } from "@/components/re-usables/text";
 import { COLORS } from "@/constants/Colors";
 import { SHOP_TYPES_OPTIONS } from "@/constants/shop-types";
+import { useSync } from "@/database/hooks/useSync";
 import { shopService } from "@/database/services/shop.service";
-import { syncDatabase } from "@/database/sync.service";
 import {
   completeSchema,
   TCompleteSchema,
@@ -25,11 +25,13 @@ import { Image, Pressable, View, ScrollView, StyleSheet } from "react-native";
 
 const CompleteSetUpScreen = () => {
   const { clearUser, setUser, setActiveShopId } = useUserStore();
+  const { syncNow } = useSync();
+
   const { mutateAsync, isPending } = useAuthControllerCompleteSetup(
     apiOptions(
       undefined,
       async ({ data }: { data: CompletedSetupResponse }) => {
-        await syncDatabase({ isFirstTime: true, fetchShops:true });
+        await syncNow({ isFirstTime: true, fetchShops: true });
         await setUser({
           fullName: data.user.fullName,
           email: data.user.email,
@@ -37,18 +39,17 @@ const CompleteSetUpScreen = () => {
           id: data.user.id.toString(),
           phoneNumber: data.user.phoneNumber,
           stage: data.user.stage,
-          country: "",
+          country: data.user.country,
           isDeleted: false,
           requestDeleteOn: "",
           createdAt: data.user.createdAt,
           updatedAt: data.user.updatedAt,
-          shops: [],
         });
 
         setActiveShopId(data?.shop?.id || "");
         router.replace("/(tabs)");
-      }
-    )
+      },
+    ),
   );
 
   const form = useForm({
@@ -82,146 +83,143 @@ const CompleteSetUpScreen = () => {
   };
 
   return (
-   
-      <PXWrapper>
-        {/* Header Section with Gradient Background */}
-        <View style={styles.headerContainer}>
-          <View style={styles.logoContainer}>
-            <Image
-              source={BANNER_LOGO}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </View>
-          
-          <View style={styles.welcomeCard}>
-            <View style={styles.sparkleIconContainer}>
-              <Sparkles size={32} color={COLORS.primary} strokeWidth={2} />
-            </View>
-            <Text style={styles.title}>Almost There!</Text>
-            <Text style={styles.subtitle}>
-              Complete your profile to unlock your shop experience
-            </Text>
-          </View>
-        </View>
-
-        {/* Form Section */}
-        <View style={styles.formContainer}>
-          <View style={styles.sectionHeader}>
-            <View style={styles.sectionIndicator} />
-            <Text style={styles.sectionTitle}>Personal Information</Text>
-          </View>
-
-          <form.Field name="fullName">
-            {(field) => (
-              <CustomInput
-                containerStyle={styles.inputSpacing}
-                inputMode="text"
-                placeholder="Full Name"
-                leftIcon={<User size={20} color={COLORS.primary} />}
-                value={field.state.value}
-                onChangeText={field.handleChange}
-                onBlur={field.handleBlur}
-                autoCapitalize="words"
-                
-                autoCorrect={false}
-                error={field.state.meta.errors
-                  .map((err: any) => err.message || String(err))
-                  .join(", ")}
-              />
-            )}
-          </form.Field>
-
-          <form.Field name="phoneNumber">
-            {(field) => (
-              <CustomInput
-                containerStyle={styles.inputSpacing}
-                inputMode="tel"
-                placeholder="Phone Number"
-                leftIcon={<Phone size={20} color={COLORS.primary} />}
-                value={field.state.value}
-                onChangeText={field.handleChange}
-                onBlur={field.handleBlur}
-                keyboardType="phone-pad"
-                autoCapitalize="none"
-                autoCorrect={false}
-                error={field.state.meta.errors
-                  .map((err: any) => err.message || String(err))
-                  .join(", ")}
-              />
-            )}
-          </form.Field>
-
-          <form.Field name="address">
-            {(field) => (
-              <CustomInput
-                containerStyle={styles.inputSpacing}
-                inputMode="text"
-                placeholder="Address"
-                leftIcon={<MapPin size={20} color={COLORS.primary} />}
-                value={field.state.value}
-                onChangeText={field.handleChange}
-                onBlur={field.handleBlur}
-                autoCapitalize="words"
-                autoCorrect={false}
-                error={field.state.meta.errors
-                  .map((err: any) => err.message || String(err))
-                  .join(", ")}
-              />
-            )}
-          </form.Field>
-
-
-          <form.Field name="shopName">
-            {(field) => (
-              <CustomInput
-                containerStyle={styles.inputSpacing}
-                inputMode="text"
-                placeholder="Shop Name"
-                leftIcon={<Store size={20} color={COLORS.primary} />}
-                value={field.state.value}
-                onChangeText={field.handleChange}
-                onBlur={field.handleBlur}
-                autoCapitalize="words"
-                autoCorrect={false}
-                error={field.state.meta.errors
-                  .map((err: any) => err.message || String(err))
-                  .join(", ")}
-              />
-            )}
-          </form.Field>
-
-          <View style={styles.sectionHeader}>
-            <View style={styles.sectionIndicator} />
-            <Text style={styles.sectionTitle}>Shop Type</Text>
-          </View>
-
-          <form.Field name="shopType">
-            {(field) => (
-              <BadgeSelector
-                options={SHOP_TYPES_OPTIONS}
-                value={field.state.value}
-                onChange={(value) => field.handleChange(value)}
-              />
-            )}
-          </form.Field>
-
-          <Button
-            title="Complete Setup"
-            style={styles.submitButton}
-            onPress={form.handleSubmit}
-            disabled={isPending}
-            loading={isPending}
+    <PXWrapper>
+      {/* Header Section with Gradient Background */}
+      <View style={styles.headerContainer}>
+        <View style={styles.logoContainer}>
+          <Image
+            source={BANNER_LOGO}
+            style={styles.logo}
+            resizeMode="contain"
           />
-
-          <View style={styles.logoutContainer}>
-            <Text style={styles.logoutText}>Not ready yet?</Text>
-            <Pressable onPress={handleLogout} style={styles.logoutButton}>
-              <Text style={styles.logoutButtonText}>Logout</Text>
-            </Pressable>
-          </View>
         </View>
-      </PXWrapper>
+
+        <View style={styles.welcomeCard}>
+          <View style={styles.sparkleIconContainer}>
+            <Sparkles size={32} color={COLORS.primary} strokeWidth={2} />
+          </View>
+          <Text style={styles.title}>Almost There!</Text>
+          <Text style={styles.subtitle}>
+            Complete your profile to unlock your shop experience
+          </Text>
+        </View>
+      </View>
+
+      {/* Form Section */}
+      <View style={styles.formContainer}>
+        <View style={styles.sectionHeader}>
+          <View style={styles.sectionIndicator} />
+          <Text style={styles.sectionTitle}>Personal Information</Text>
+        </View>
+
+        <form.Field name="fullName">
+          {(field) => (
+            <CustomInput
+              containerStyle={styles.inputSpacing}
+              inputMode="text"
+              placeholder="Full Name"
+              leftIcon={<User size={20} color={COLORS.primary} />}
+              value={field.state.value}
+              onChangeText={field.handleChange}
+              onBlur={field.handleBlur}
+              autoCapitalize="words"
+              autoCorrect={false}
+              error={field.state.meta.errors
+                .map((err: any) => err.message || String(err))
+                .join(", ")}
+            />
+          )}
+        </form.Field>
+
+        <form.Field name="phoneNumber">
+          {(field) => (
+            <CustomInput
+              containerStyle={styles.inputSpacing}
+              inputMode="tel"
+              placeholder="Phone Number"
+              leftIcon={<Phone size={20} color={COLORS.primary} />}
+              value={field.state.value}
+              onChangeText={field.handleChange}
+              onBlur={field.handleBlur}
+              keyboardType="phone-pad"
+              autoCapitalize="none"
+              autoCorrect={false}
+              error={field.state.meta.errors
+                .map((err: any) => err.message || String(err))
+                .join(", ")}
+            />
+          )}
+        </form.Field>
+
+        <form.Field name="address">
+          {(field) => (
+            <CustomInput
+              containerStyle={styles.inputSpacing}
+              inputMode="text"
+              placeholder="Address"
+              leftIcon={<MapPin size={20} color={COLORS.primary} />}
+              value={field.state.value}
+              onChangeText={field.handleChange}
+              onBlur={field.handleBlur}
+              autoCapitalize="words"
+              autoCorrect={false}
+              error={field.state.meta.errors
+                .map((err: any) => err.message || String(err))
+                .join(", ")}
+            />
+          )}
+        </form.Field>
+
+        <form.Field name="shopName">
+          {(field) => (
+            <CustomInput
+              containerStyle={styles.inputSpacing}
+              inputMode="text"
+              placeholder="Shop Name"
+              leftIcon={<Store size={20} color={COLORS.primary} />}
+              value={field.state.value}
+              onChangeText={field.handleChange}
+              onBlur={field.handleBlur}
+              autoCapitalize="words"
+              autoCorrect={false}
+              error={field.state.meta.errors
+                .map((err: any) => err.message || String(err))
+                .join(", ")}
+            />
+          )}
+        </form.Field>
+
+        <View style={styles.sectionHeader}>
+          <View style={styles.sectionIndicator} />
+          <Text style={styles.sectionTitle}>Shop Type</Text>
+        </View>
+
+        <form.Field name="shopType">
+          {(field) => (
+            <BadgeSelector
+              options={SHOP_TYPES_OPTIONS}
+              value={field.state.value}
+              onChange={(value) => field.handleChange(value)}
+            />
+          )}
+        </form.Field>
+
+        <Button
+          title="Complete Setup"
+          style={styles.submitButton}
+          onPress={form.handleSubmit}
+          disabled={isPending}
+          loading={isPending}
+        />
+
+        <View style={styles.logoutContainer}>
+          <Text style={styles.logoutText}>Not ready yet?</Text>
+          <Pressable onPress={handleLogout} style={styles.logoutButton}>
+            <Text style={styles.logoutButtonText}>Logout</Text>
+          </Pressable>
+        </View>
+      </View>
+    </PXWrapper>
   );
 };
 

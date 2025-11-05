@@ -13,7 +13,7 @@ interface SalesCardProps {
   grandTotalAmount: number;
   paymentStatus: string;
   paymentType: string;
-    id: string;
+  id: string;
 }
 
 const SalesCard = ({
@@ -25,13 +25,13 @@ const SalesCard = ({
   id,
 }: SalesCardProps) => {
   const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
+    switch (status) {
       case "PAID":
         return COLORS.success;
-      case "UNPAID":
+      case "UN_PAID":
         return COLORS.error;
-      case "OVERDUE":
-        return COLORS.error;
+      case "PARTIALLY_PAID":
+        return COLORS.warning;
       default:
         return COLORS.notification;
     }
@@ -41,15 +41,17 @@ const SalesCard = ({
     <Link href={`/sales/${id}`} style={{ width: "100%", marginBottom: 15 }}>
       <View style={styles.card}>
         <View style={styles.leftSection}>
-          <Text style={[styles.invoiceNumber,{color:COLORS.primary}]}>#{invoiceNumber}</Text>
+          <Text style={[styles.invoiceNumber, { color: COLORS.primary }]}>
+            #{invoiceNumber}
+          </Text>
           <Text style={styles.title}>{paymentType}</Text>
           <Text style={styles.dateTime}>
-          {getDateFormat(Number(invoiceDate), "BS", true, true)}
+            {getDateFormat(Number(invoiceDate), "BS", true, true)}
           </Text>
         </View>
 
         <View style={styles.rightSection}>
-          <Text style={[styles.amountValue,{color:COLORS.success}]}>
+          <Text style={[styles.amountValue, { color: COLORS.success }]}>
             {formatNumberWithComma(grandTotalAmount)}
           </Text>
           <View
@@ -75,8 +77,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    borderWidth:1,
-    borderColor:COLORS.border,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   leftSection: {
     flex: 1,
@@ -87,16 +89,17 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   title: {
-    fontSize: 17,
+    fontSize: 15,
     color: "#1f2937",
+    fontFamily: "Poppins-Medium",
   },
   dateTime: {
     fontSize: 14,
     color: "#6b7280",
     fontWeight: "400",
-    flexDirection:"row",
-    alignItems:"center",
-    gap:2
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
   },
   rightSection: {
     alignItems: "flex-end",

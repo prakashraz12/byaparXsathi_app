@@ -35,7 +35,6 @@ export const useSync = () => {
           // -------------------------
           pullChanges: async ({ lastPulledAt }) => {
             const lastSync = isFirstTime ? 0 : lastPulledAt || 0;
-            console.log("📥 Pulling changes...", { lastSync });
 
             const res = await fetchSyncControllerPull({
               queryParams: {
@@ -46,21 +45,46 @@ export const useSync = () => {
             });
 
             const data = res?.data;
+            console.log("data", data);
 
             if (!data?.changes) {
               console.warn(
-                "⚠️ No 'changes' returned from pull, returning empty dataset."
+                "⚠️ No 'changes' returned from pull, returning empty dataset.",
               );
               return {
                 changes: {
-                  [SCHEMA_KEYS.CUSTOMER]: { created: [], updated: [], deleted: [] },
+                  [SCHEMA_KEYS.CUSTOMER]: {
+                    created: [],
+                    updated: [],
+                    deleted: [],
+                  },
                   [SCHEMA_KEYS.SHOP]: { created: [], updated: [], deleted: [] },
-                  [SCHEMA_KEYS.PAYMENT_ACCOUNT]: { created: [], updated: [], deleted: [] },
+                  [SCHEMA_KEYS.PAYMENT_ACCOUNT]: {
+                    created: [],
+                    updated: [],
+                    deleted: [],
+                  },
                   [SCHEMA_KEYS.ITEM]: { created: [], updated: [], deleted: [] },
-                  [SCHEMA_KEYS.SALES_ITEM]: { created: [], updated: [], deleted: [] },
-                  [SCHEMA_KEYS.SALES]: { created: [], updated: [], deleted: [] },
-                  [SCHEMA_KEYS.INCOME]: { created: [], updated: [], deleted: [] },
-                  [SCHEMA_KEYS.EXPENSES]: { created: [], updated: [], deleted: [] },
+                  [SCHEMA_KEYS.SALES_ITEM]: {
+                    created: [],
+                    updated: [],
+                    deleted: [],
+                  },
+                  [SCHEMA_KEYS.SALES]: {
+                    created: [],
+                    updated: [],
+                    deleted: [],
+                  },
+                  [SCHEMA_KEYS.INCOME]: {
+                    created: [],
+                    updated: [],
+                    deleted: [],
+                  },
+                  [SCHEMA_KEYS.EXPENSES]: {
+                    created: [],
+                    updated: [],
+                    deleted: [],
+                  },
                 },
                 timestamp: Date.now(),
               };
@@ -82,7 +106,7 @@ export const useSync = () => {
                 created: data.changes.paymentAccount?.created ?? [],
                 updated: data.changes.paymentAccount?.updated ?? [],
                 deleted: data.changes.paymentAccount?.deleted ?? [],
-              },  
+              },
               [SCHEMA_KEYS.ITEM]: {
                 created: data.changes.item?.created ?? [],
                 updated: data.changes.item?.updated ?? [],
@@ -141,7 +165,7 @@ export const useSync = () => {
         setSyncing(false);
       }
     },
-    [setSyncing, setLastSynced, activeShopId, mutateAsync]
+    [setSyncing, setLastSynced, activeShopId, mutateAsync],
   );
 
   return { syncNow };

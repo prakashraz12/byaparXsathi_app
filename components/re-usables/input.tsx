@@ -16,7 +16,7 @@ interface CustomInputProps extends Omit<TextInputProps, "style"> {
   label?: string;
   disabled?: boolean;
   containerStyle?: ViewStyle;
-  required?:boolean
+  required?: boolean;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -26,14 +26,22 @@ const CustomInput: React.FC<CustomInputProps> = ({
   label,
   disabled = false,
   containerStyle,
-  required= false,
+  required = false,
   ...textInputProps
 }) => {
   return (
     <View>
       {label && (
-        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16, marginTop:10, marginLeft:4, color:COLORS.text }}>
-          {label}{" "}{required ? <Text style={{color:"red"}}>*</Text> :""}
+        <Text
+          style={{
+            fontFamily: "Poppins-Medium",
+            fontSize: 16,
+            marginTop: 10,
+            marginLeft: 4,
+            color: COLORS.text,
+          }}
+        >
+          {label} {required ? <Text style={{ color: "red" }}>*</Text> : ""}
         </Text>
       )}
       <View

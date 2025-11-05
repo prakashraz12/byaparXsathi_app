@@ -7,7 +7,6 @@ import {
   DEFAULT_DATE_RANGE_OPTIONS_ENUMS,
 } from "@/utils/date-range-provider";
 import { PaymentStatus } from "@/constants/payment-status";
-import SalesItem from "../model/sales-item.model";
 
 export const observeDashboardAnalytics = ({
   dateRangePreset,
@@ -282,7 +281,7 @@ export const observeTopSaleItems = ({
         }
 
         grouped[name].totalAmount += total;
-        grouped[name].timesSold += 1;
+        grouped[name].timesSold += quantity;
         grouped[name].profitOrLoss += profit;
       });
 

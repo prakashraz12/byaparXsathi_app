@@ -2,7 +2,7 @@ import { appSchema, tableSchema } from "@nozbe/watermelondb";
 import { SCHEMA_KEYS } from "../shema.keys";
 
 export default appSchema({
-  version: 5,
+  version: 6,
   tables: [
     tableSchema({
       name: SCHEMA_KEYS.CUSTOMER,
@@ -134,6 +134,19 @@ export default appSchema({
         { name: "updated_at", type: "number" },
         { name: "shopId", type: "string" },
         { name: "platform", type: "string" },
+      ],
+    }),
+    tableSchema({
+      name: SCHEMA_KEYS.PAYMENT_IN,
+      columns: [
+        { name: "amount", type: "number" },
+        { name: "remarks", type: "string" },
+        { name: "shopId", type: "string" },
+        { name: "receiptNumber", type: "string" },
+        { name: "paymentInDate", type: "number" },
+        { name: "paymentInDate", type: "number" },
+        { name: "created_at", type: "number" },
+        { name: "updated_at", type: "number" },
       ],
     }),
   ],

@@ -9,7 +9,6 @@ import { normalizeToTimestamp } from "../util/normalizeToTimeStamp";
 import { idxGenerator } from "@/utils/idx.utils";
 import Customer from "../model/customer.model";
 import { PaymentStatus } from "@/constants/payment-status";
-import { activityService } from "./activity.service";
 
 export const salesService = {
   create: async (
@@ -60,6 +59,8 @@ export const salesService = {
           s.paymentType = salesData.paymentType || "";
           s.customerId = customer?.id;
           s.customerName = customer?.name;
+          s.created_at = new Date()?.getTime();
+          s.updated_at = new Date()?.getTime();
         });
 
         if (Array.isArray(salesItems) && salesItems.length) {
@@ -73,14 +74,14 @@ export const salesService = {
               si.discountAmount = it.discountAmount || 0;
               si.itemName = it.itemName;
               si.measurementUnit = it.measurementUnit;
-              si.created_at = Date.now();
-              si.updated_at = Date.now();
+              si.created_at = new Date()?.getTime();
+              si.updated_at = new Date()?.getTime();
             });
             const item = await DB_COLLECTION.item.find(it.itemId || "");
             if (item && item?.isStockEnabled) {
               await item.update((i) => {
                 i.currentStock = Number(i.currentStock) - Number(it.quantity);
-                i.updatedAt = Date.now();
+                i.updatedAt = new Date()?.getTime();
               });
             }
           }
@@ -98,7 +99,7 @@ export const salesService = {
             if (paymentAccounts.length === 1) {
               await paymentAccounts[0].update((pa) => {
                 pa.balance = Number(pa.balance) + Number(salesData.paidAmount);
-                pa.updated_at = Date.now();
+                pa.updated_at = new Date()?.getTime();
               });
             }
           } catch (error) {
@@ -110,14 +111,14 @@ export const salesService = {
           await customer.update((c) => {
             c.outstanding =
               Number(c.outstanding) + Number(salesData.paidAmount);
-            c.updated_at = Date.now();
+            c.updated_at = new Date()?.getTime();
           });
         }
         if (customer && salesData.status === PaymentStatus.UNPAID) {
           await customer.update((c) => {
             c.outstanding =
               Number(c.outstanding) + Number(salesData.grandTotalAmount);
-            c.updated_at = Date.now();
+            c.updated_at = new Date()?.getTime();
           });
         }
 
@@ -127,8 +128,8 @@ export const salesService = {
           a.type = "Sales";
           a.shopId = shopId;
           a.platform = "MOBILE";
-          a.created_at = Date.now();
-          a.updated_at = Date.now();
+          a.created_at = new Date()?.getTime();
+          a.updated_at = new Date()?.getTime();
         });
         return responseHandler({
           message: "Sales is created",

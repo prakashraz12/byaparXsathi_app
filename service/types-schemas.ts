@@ -100,6 +100,7 @@ export type UserResponse = {
   role: string;
   id: string;
   phoneNumber: string;
+  country: string;
   address: string;
   stage: UserStage;
   /**
