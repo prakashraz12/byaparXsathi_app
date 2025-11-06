@@ -1,1 +1,1 @@
-export type PaymentStatusType = "PAID" | "UNPAID" | "PARTIALLY_PAID";
+export type PaymentStatusType = 'PAID' | 'UNPAID' | 'PARTIALLY_PAID';

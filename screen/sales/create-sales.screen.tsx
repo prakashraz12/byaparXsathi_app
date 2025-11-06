@@ -1,83 +1,59 @@
-import { Button } from "@/components/re-usables/button";
-import { Toast } from "@/components/re-usables/custom-toaster/toast-service";
-import DatePicker from "@/components/re-usables/date-picker/date-picker";
-import { Header } from "@/components/re-usables/header";
-import { Text } from "@/components/re-usables/text";
-import { COLORS } from "@/constants/Colors";
-import { salesService } from "@/database/services/sales.service";
-import PXWrapper from "@/layouts/px-wrapper";
-import { PaymentStatusType } from "@/types/payment-status";
-import { formatNumberWithComma } from "@/utils/format-number";
-import { router } from "expo-router";
-import {
-  Calendar,
-  ChevronDown,
-  ChevronRight,
-  Link2,
-  Minus,
-  Plus,
-  PlusCircle,
-  Trash2,
-} from "lucide-react-native";
-import { useCallback, useMemo, useState } from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { router } from 'expo-router';
+import { Calendar, ChevronDown, Link2, Minus, Plus, PlusCircle, Trash2 } from 'lucide-react-native';
+import { useCallback, useMemo, useState } from 'react';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import AddCustomerSlideup from "@/components/sales/add-customer-slideup";
-import Customer from "@/database/model/customer.model";
-import { useSalesItemStore } from "@/store/useSalesItem";
-import { useUserStore } from "@/store/useUserStore";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import PaymentModeSlideup from "../../components/sales/payment-mode-slideup";
-import PaymentSlideUp from "../../components/sales/payment-status-slide-up";
-import SalesItemCard from "../../components/sales/sales-item-card";
+import { Button } from '@/components/re-usables/button';
+import DatePicker from '@/components/re-usables/date-picker/date-picker';
+import { Header } from '@/components/re-usables/header';
+import { Text } from '@/components/re-usables/text';
+import AddCustomerSlideup from '@/components/sales/add-customer-slideup';
+import { COLORS } from '@/constants/Colors';
+import Customer from '@/database/model/customer.model';
+import PXWrapper from '@/layouts/px-wrapper';
+import { useSalesStore } from '@/store/useSale';
+import { useSalesItemStore } from '@/store/useSalesItem';
+import { formatNumberWithComma } from '@/utils/format-number';
+
+import SalesItemCard from '../../components/sales/sales-item-card';
 
 // Utility functions
 const parseNumber = (value: string): number => Number.parseFloat(value) || 0;
 
 const CreateSalesScreen = () => {
   // Basic state
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [customer, setCustomer] = useState<Customer | null>(null);
-  const [notes, setNotes] = useState("");
+  const [notes, setNotes] = useState('');
   const { bottom } = useSafeAreaInsets();
   const [showAddCustomerSlideup, setShowAddCustomerSlideup] = useState(false);
 
-  // Payment state
-  const [paymentType, setPaymentType] = useState<string | null>(null);
-  const [paymentStatus, setPaymentStatus] = useState<PaymentStatusType | null>(
-    null,
-  );
-  const [paidAmount, setPaidAmount] = useState("");
+  const { salesItems, removeSalesItem } = useSalesItemStore();
 
-  // Items state
-  const { salesItems, addSalesItem, removeSalesItem } = useSalesItemStore();
-  // Slideup modals state
-  const [showAddItemsSlideup, setShowAddItemsSlideup] = useState(false);
-  const [paymentSlideup, setPaymentSlideup] = useState(false);
-  const [paymentModeSlideup, setPaymentModeSlideup] = useState(false);
   const [itemShow, setItemShow] = useState(true);
 
-  // Section visibility state
   const [showDiscountSection, setShowDiscountSection] = useState(false);
   const [showTaxSection, setShowTaxSection] = useState(false);
-  const [showAdditionalChargesSection, setShowAdditionalChargesSection] =
-    useState(false);
+  const [showAdditionalChargesSection, setShowAdditionalChargesSection] = useState(false);
   const [showRemarksSection, setShowRemarksSection] = useState(false);
 
-  // Discount state
-  const [discountPercentage, setDiscountPercentage] = useState("");
-  const [discountAmount, setDiscountAmount] = useState("");
+  const {
+    setDiscountPercentage,
+    setDiscountAmount,
+    setTaxAmount,
+    setTaxPercentage,
+    discountAmount,
+    discountPercentage,
+    taxAmount,
+    taxPercentage,
+    invoiceDate,
+    setInvoiceDate,
+    setGrandTotal,
+    setSubTotal
+  } = useSalesStore();
 
-  // Tax state
-  const [taxPercentage, setTaxPercentage] = useState("");
-  const [taxAmount, setTaxAmount] = useState("");
+  const [additionalCharge, setAdditionalCharge] = useState('');
 
-  // Additional charges state
-  const [additionalCharge, setAdditionalCharge] = useState("");
-
-  const { activeShopId } = useUserStore();
-
-  // Handlers
   const handleCustomerPress = useCallback(() => {
     setShowAddCustomerSlideup(true);
   }, []);
@@ -88,54 +64,49 @@ const CreateSalesScreen = () => {
 
   const toggleDiscountSection = useCallback(() => {
     setShowDiscountSection((prev) => !prev);
-    setDiscountPercentage("");
-    setDiscountAmount("");
+    setDiscountPercentage(0);
+    setDiscountAmount(0);
     setLastEditedDiscount(null);
   }, []);
 
   const toggleTaxSection = useCallback(() => {
     setShowTaxSection((prev) => !prev);
-    setTaxPercentage("");
-    setTaxAmount("");
+    setTaxPercentage(0);
+    setTaxAmount(0);
     setLastEditedTax(null);
   }, []);
 
   const toggleRemarksSection = useCallback(() => {
     setShowRemarksSection((prev) => !prev);
-    setNotes("");
+    setNotes('');
   }, []);
 
-  // Calculations
   const subtotal = useMemo(() => {
     return salesItems.reduce(
       (total, item) =>
-        total +
-        (item.quantity || 0) * (item.price || 0) -
-        (item.discountAmount || 0),
+        total + (item.quantity || 0) * (item.price || 0) - (item.discountAmount || 0),
       0,
     );
   }, [salesItems]);
 
   // Track which field was last edited
-  const [lastEditedDiscount, setLastEditedDiscount] = useState<
-    "percentage" | "amount" | null
-  >(null);
-  const [lastEditedTax, setLastEditedTax] = useState<
-    "percentage" | "amount" | null
-  >(null);
+  const [lastEditedDiscount, setLastEditedDiscount] = useState<'percentage' | 'amount' | null>(
+    null,
+  );
+  const [lastEditedTax, setLastEditedTax] = useState<'percentage' | 'amount' | null>(null);
 
   // Handle discount percentage change
   const handleDiscountPercentageChange = useCallback(
     (value: string) => {
-      setDiscountPercentage(value);
-      setLastEditedDiscount("percentage");
+      setDiscountPercentage(Number(value));
+      setLastEditedDiscount('percentage');
 
       // Auto-calculate amount from percentage
       if (value && subtotal > 0) {
         const calculatedAmount = (subtotal * parseNumber(value)) / 100;
-        setDiscountAmount(calculatedAmount.toFixed(2));
+        setDiscountAmount(Number(calculatedAmount?.toFixed(2)));
       } else {
-        setDiscountAmount("");
+        setDiscountAmount(0);
       }
     },
     [subtotal],
@@ -144,15 +115,15 @@ const CreateSalesScreen = () => {
   // Handle discount amount change
   const handleDiscountAmountChange = useCallback(
     (value: string) => {
-      setDiscountAmount(value);
-      setLastEditedDiscount("amount");
+      setDiscountAmount(Number(value));
+      setLastEditedDiscount('amount');
 
       // Auto-calculate percentage from amount
       if (value && subtotal > 0) {
         const calculatedPercentage = (parseNumber(value) / subtotal) * 100;
-        setDiscountPercentage(calculatedPercentage.toFixed(2));
+        setDiscountPercentage(Number(calculatedPercentage.toFixed(2)));
       } else {
-        setDiscountPercentage("");
+        setDiscountPercentage(0);
       }
     },
     [subtotal],
@@ -161,32 +132,25 @@ const CreateSalesScreen = () => {
   const calculatedDiscountAmount = useMemo(() => {
     if (!showDiscountSection || subtotal === 0) return 0;
 
-    const percentValue = parseNumber(discountPercentage);
-    const amountValue = parseNumber(discountAmount);
+    const percentValue = parseNumber(discountPercentage?.toString());
+    const amountValue = parseNumber(discountAmount?.toString());
 
-    if (lastEditedDiscount === "percentage" && percentValue > 0) {
+    if (lastEditedDiscount === 'percentage' && percentValue > 0) {
       return (subtotal * percentValue) / 100;
     }
 
     return amountValue;
-  }, [
-    showDiscountSection,
-    discountPercentage,
-    discountAmount,
-    subtotal,
-    lastEditedDiscount,
-  ]);
+  }, [showDiscountSection, discountPercentage, discountAmount, subtotal, lastEditedDiscount]);
   const handleTaxPercentageChange = useCallback(
     (value: string) => {
-      setTaxPercentage(value);
-      setLastEditedTax("percentage");
+      setTaxPercentage(Number(value));
+      setLastEditedTax('percentage');
       const amountAfterDiscount = subtotal - calculatedDiscountAmount;
       if (value && amountAfterDiscount > 0) {
-        const calculatedAmount =
-          (amountAfterDiscount * parseNumber(value)) / 100;
-        setTaxAmount(calculatedAmount.toFixed(2));
+        const calculatedAmount = (amountAfterDiscount * parseNumber(value)) / 100;
+        setTaxAmount(Number(calculatedAmount.toFixed(2)));
       } else {
-        setTaxAmount("");
+        setTaxAmount(0);
       }
     },
     [subtotal, calculatedDiscountAmount],
@@ -196,120 +160,100 @@ const CreateSalesScreen = () => {
     if (!showTaxSection) return 0;
 
     const amountAfterDiscount = subtotal - calculatedDiscountAmount;
-    const percentValue = parseNumber(taxPercentage);
-    const amountValue = parseNumber(taxAmount);
+    const percentValue = parseNumber(taxPercentage?.toString());
+    const amountValue = parseNumber(taxAmount?.toString());
 
-    if (lastEditedTax === "percentage" && percentValue > 0) {
+    if (lastEditedTax === 'percentage' && percentValue > 0) {
       return (amountAfterDiscount * percentValue) / 100;
     }
 
     return amountValue;
-  }, [
-    showTaxSection,
-    taxPercentage,
-    taxAmount,
-    subtotal,
-    calculatedDiscountAmount,
-    lastEditedTax,
-  ]);
+  }, [showTaxSection, taxPercentage, taxAmount, subtotal, calculatedDiscountAmount, lastEditedTax]);
 
   const grandTotal = useMemo(() => {
-    return (
-      subtotal -
-      calculatedDiscountAmount +
-      calculatedTaxAmount +
-      Number(additionalCharge)
-    );
-  }, [
-    subtotal,
-    calculatedDiscountAmount,
-    calculatedTaxAmount,
-    additionalCharge,
-  ]);
+    return subtotal - calculatedDiscountAmount + calculatedTaxAmount + Number(additionalCharge);
+  }, [subtotal, calculatedDiscountAmount, calculatedTaxAmount, additionalCharge]);
 
-  const dueAmount = useMemo(() => {
-    if (paymentStatus !== "PARTIALLY_PAID") return 0;
-    return grandTotal - parseNumber(paidAmount);
-  }, [grandTotal, paidAmount, paymentStatus]);
+  // const dueAmount = useMemo(() => {
+  //   if (paymentStatus !== 'PARTIALLY_PAID') return 0;
+  //   return grandTotal - parseNumber(paidAmount);
+  // }, [grandTotal, paidAmount, paymentStatus]);
 
   // Save handler
-  const handleSave = useCallback(
-    async (paymentType?: string) => {
-      if (paymentStatus === null) {
-        setPaymentSlideup(true);
-        return;
-      }
+  // const handleSave = useCallback(
+  //   async (paymentType?: string) => {
+  //     if (paymentStatus === null) {
+  //       setPaymentSlideup(true);
+  //       return;
+  //     }
 
-      if (paymentStatus !== "UNPAID" && paymentType === undefined) {
-        setPaymentModeSlideup(true);
-        return;
-      }
+  //     if (paymentStatus !== 'UNPAID' && paymentType === undefined) {
+  //       setPaymentModeSlideup(true);
+  //       return;
+  //     }
 
-      if (!activeShopId) {
-        Toast.error("Please select a shop");
-        return;
-      }
-      const calculatedPaidAmount =
-        paymentStatus === "PAID"
-          ? grandTotal
-          : paymentStatus === "PARTIALLY_PAID"
-            ? parseNumber(paidAmount)
-            : 0;
+  //     if (!activeShopId) {
+  //       Toast.error('Please select a shop');
+  //       return;
+  //     }
+  //     const calculatedPaidAmount =
+  //       paymentStatus === 'PAID'
+  //         ? grandTotal
+  //         : paymentStatus === 'PARTIALLY_PAID'
+  //           ? parseNumber(paidAmount)
+  //           : 0;
 
-      const response = await salesService.create(
-        {
-          invoiceDate: selectedDate.getTime(),
-          grandTotalAmount: grandTotal,
-          subTotalAmount: subtotal,
-          discountAmount: calculatedDiscountAmount,
-          taxAmount: calculatedTaxAmount,
-          additionalAmount: Number(additionalCharge),
-          oldDueAmount: 0,
-          dueAmount: paymentStatus === "PARTIALLY_PAID" ? dueAmount : 0,
-          paidAmount: calculatedPaidAmount,
-          remarks: notes,
-          paymentType: paymentType,
-          status: paymentStatus,
-          customerId: customer?.id || "",
-        },
-        activeShopId,
-        salesItems,
-      );
+  //     const response = await salesService.create(
+  //       {
+  //         invoiceDate: selectedDate.getTime(),
+  //         grandTotalAmount: grandTotal,
+  //         subTotalAmount: subtotal,
+  //         discountAmount: calculatedDiscountAmount,
+  //         taxAmount: calculatedTaxAmount,
+  //         additionalAmount: Number(additionalCharge),
+  //         oldDueAmount: 0,
+  //         dueAmount: paymentStatus === 'PARTIALLY_PAID' ? dueAmount : 0,
+  //         paidAmount: calculatedPaidAmount,
+  //         remarks: notes,
+  //         paymentType: paymentType,
+  //         status: paymentStatus,
+  //         customerId: customer?.id || '',
+  //       },
+  //       activeShopId,
+  //       salesItems,
+  //     );
 
-      if (response?.success) {
-        Toast.success(response?.message as string);
-        useSalesItemStore.setState({ salesItems: [] });
-        setDiscountAmount("");
-        setDiscountPercentage("");
-        setTaxAmount("");
-        setTaxPercentage("");
-        setPaidAmount("");
-        setNotes("");
-        setShowDiscountSection(false);
-        setShowTaxSection(false);
-        setShowAdditionalChargesSection(false);
-        setShowRemarksSection(false);
-        setShowAddItemsSlideup(false);
-        router.back();
-      }
-    },
-    [
-      paymentStatus,
-      paymentType,
-      selectedDate,
-      grandTotal,
-      subtotal,
-      calculatedDiscountAmount,
-      calculatedTaxAmount,
-      additionalCharge,
-      dueAmount,
-      paidAmount,
-      notes,
-      salesItems,
-      activeShopId,
-      customer?.id,
-    ],
-  );
+  //     if (response?.success) {
+  //       Toast.success(response?.message as string);
+  //       useSalesItemStore.setState({ salesItems: [] });
+  //       setDiscountAmount('');
+  //       setDiscountPercentage('');
+  //       setTaxAmount('');
+  //       setTaxPercentage('');
+  //       setNotes('');
+  //       setShowDiscountSection(false);
+  //       setShowTaxSection(false);
+  //       setShowAdditionalChargesSection(false);
+  //       setShowRemarksSection(false);
+  //       router.back();
+  //     }
+  //   },
+  //   [
+  //     paymentStatus,
+  //     selectedDate,
+  //     grandTotal,
+  //     subtotal,
+  //     calculatedDiscountAmount,
+  //     calculatedTaxAmount,
+  //     additionalCharge,
+  //     dueAmount,
+  //     paidAmount,
+  //     notes,
+  //     salesItems,
+  //     activeShopId,
+  //     customer?.id,
+  //   ],
+  // );
 
   const isSalesButtonDisabled = grandTotal === 0 || salesItems.length === 0;
 
@@ -329,7 +273,11 @@ const CreateSalesScreen = () => {
           style={{ marginBottom: bottom * 0.2 }}
           disabled={isSalesButtonDisabled}
           title={`Proceed To Sale ${formatNumberWithComma(grandTotal)}`}
-          onPress={() => handleSave()}
+          onPress={() => {
+            router.push('/checkout');
+            setSubTotal(subtotal);
+            setGrandTotal(grandTotal);
+          }}
         />
       }
     >
@@ -341,29 +289,21 @@ const CreateSalesScreen = () => {
             activeOpacity={0.7}
           >
             {customer?.outstanding ? (
-              <Text style={{ fontSize: 12, color: COLORS.error }}>
-                {customer?.outstanding}
-              </Text>
+              <Text style={{ fontSize: 12, color: COLORS.error }}>{customer?.outstanding}</Text>
             ) : (
               <Text style={styles.label}>Customer</Text>
             )}
             <View style={styles.inputContent}>
-              <Text style={styles.inputValue}>
-                {customer?.name || "Select Customer"}
-              </Text>
+              <Text style={styles.inputValue}>{customer?.name || 'Select Customer'}</Text>
               <ChevronDown size={18} color="#666" />
             </View>
           </TouchableOpacity>
 
           <DatePicker
-            selectedDate={selectedDate}
-            onDateChange={setSelectedDate}
+            selectedDate={invoiceDate}
+            onDateChange={setInvoiceDate}
             renderCustomSelection={({ onPress, formattedDate }) => (
-              <TouchableOpacity
-                style={styles.inputBox}
-                onPress={onPress}
-                activeOpacity={0.7}
-              >
+              <TouchableOpacity style={styles.inputBox} onPress={onPress} activeOpacity={0.7}>
                 <Text style={styles.label}>Date</Text>
                 <View style={styles.inputContent}>
                   <Text style={styles.inputValue}>{formattedDate}</Text>
@@ -376,17 +316,17 @@ const CreateSalesScreen = () => {
 
         <TouchableOpacity
           style={styles.addItemsButton}
-          onPress={() => router.push("/(routes)/sales/sales-items")}
+          onPress={() => router.push('/(routes)/sales/sales-items')}
           activeOpacity={0.7}
         >
-          <PlusCircle size={25} color={"white"} fill={COLORS.primary} />
+          <PlusCircle size={25} color={'white'} fill={COLORS.primary} />
           <Text style={styles.addItemsText}>Add Items</Text>
         </TouchableOpacity>
 
         <View>
           {salesItems?.length > 0 && (
             <View style={styles.itemsHeader}>
-              <Text size={16} style={{ fontFamily: "Poppins-Medium" }}>
+              <Text size={16} style={{ fontFamily: 'Poppins-Medium' }}>
                 Items
               </Text>
               <TouchableOpacity onPress={() => setItemShow(!itemShow)}>
@@ -398,7 +338,7 @@ const CreateSalesScreen = () => {
               </TouchableOpacity>
             </View>
           )}
-          <View style={{ display: itemShow ? "flex" : "none" }}>
+          <View style={{ display: itemShow ? 'flex' : 'none' }}>
             {salesItems?.map((item, index) => (
               <SalesItemCard
                 key={`${item.itemId}-${index}`}
@@ -411,30 +351,25 @@ const CreateSalesScreen = () => {
 
         <View style={styles.subtotalContainer}>
           <Text style={styles.subtotalLabel}>Subtotal</Text>
-          <Text style={styles.subtotalValue}>
-            {formatNumberWithComma(subtotal)}
-          </Text>
+          <Text style={styles.subtotalValue}>{formatNumberWithComma(subtotal)}</Text>
         </View>
 
         {showDiscountSection ? (
           <DiscountSection
-            discountPercentage={discountPercentage}
-            discountAmount={discountAmount}
+            discountPercentage={discountPercentage?.toString()}
+            discountAmount={discountAmount?.toString()}
             onDiscountPercentageChange={handleDiscountPercentageChange}
             onDiscountAmountChange={handleDiscountAmountChange}
             onRemove={toggleDiscountSection}
           />
         ) : (
-          <AddSectionButton
-            label="Add Discount"
-            onPress={toggleDiscountSection}
-          />
+          <AddSectionButton label="Add Discount" onPress={toggleDiscountSection} />
         )}
 
         {showTaxSection ? (
           <TaxSection
-            taxPercentage={taxPercentage}
-            taxAmount={taxAmount}
+            taxPercentage={taxPercentage?.toString()}
+            taxAmount={taxAmount?.toString()}
             onTaxPercentageChange={handleTaxPercentageChange}
             onRemove={toggleTaxSection}
           />
@@ -458,89 +393,18 @@ const CreateSalesScreen = () => {
         )}
 
         {showRemarksSection ? (
-          <RemarksSection
-            notes={notes}
-            onNotesChange={setNotes}
-            onRemove={toggleRemarksSection}
-          />
+          <RemarksSection notes={notes} onNotesChange={setNotes} onRemove={toggleRemarksSection} />
         ) : (
-          <AddSectionButton
-            label="Add Remarks"
-            onPress={toggleRemarksSection}
-          />
+          <AddSectionButton label="Add Remarks" onPress={toggleRemarksSection} />
         )}
 
         <View style={styles.grandTotalContainer}>
           <Text style={styles.grandTotalLabel}>Total Amount</Text>
-          <Text style={styles.grandTotalValue}>
-            {formatNumberWithComma(grandTotal)}
-          </Text>
+          <Text style={styles.grandTotalValue}>{formatNumberWithComma(grandTotal)}</Text>
         </View>
-
-        {paymentStatus && (
-          <InfoRow
-            label="Payment Status"
-            value={paymentStatus}
-            onPress={() => setPaymentSlideup(true)}
-          />
-        )}
-
-        {/* Paid and Due Amount */}
-        {paymentStatus === "PARTIALLY_PAID" && (
-          <>
-            <View style={styles.amountRow}>
-              <Text>Paid Amount</Text>
-              <View style={styles.amountInput}>
-                <Text>Rs.</Text>
-                <TextInput
-                  style={styles.amountInputField}
-                  placeholder="00"
-                  placeholderTextColor="#999"
-                  keyboardType="numeric"
-                  value={paidAmount}
-                  onChangeText={setPaidAmount}
-                />
-              </View>
-            </View>
-            <View style={styles.amountRow}>
-              <Text style={styles.errorText}>Due Amount</Text>
-              <Text style={styles.errorText}>
-                Rs. {formatNumberWithComma(dueAmount)}
-              </Text>
-            </View>
-          </>
-        )}
-
-        {paymentType && (
-          <InfoRow
-            label="Payment Mode"
-            value={paymentType}
-            onPress={() => setPaymentModeSlideup(true)}
-          />
-        )}
       </View>
 
-      <PaymentSlideUp
-        paymentType={paymentType}
-        paymentStatus={paymentStatus}
-        setPaymentModeSlideup={setPaymentModeSlideup}
-        setPaymentStatus={setPaymentStatus}
-        visible={paymentSlideup}
-        onClose={() => setPaymentSlideup(false)}
-      />
-      <PaymentModeSlideup
-        visible={paymentModeSlideup}
-        onClose={() => setPaymentModeSlideup(false)}
-        paymentType={paymentType || ""}
-        setPaymentType={setPaymentType}
-        onClickAction={(paymentType) => handleSave(paymentType)}
-      />
-      <AddCustomerSlideup
-        visible={showAddCustomerSlideup}
-        onClose={() => setShowAddCustomerSlideup(false)}
-        setCustomer={setCustomer}
-        selectedCustomer={customer}
-      />
+    
     </PXWrapper>
   );
 };
@@ -605,23 +469,23 @@ const TaxSection = ({
 }) => (
   <View
     style={{
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       gap: 6,
-      justifyContent: "space-between",
+      justifyContent: 'space-between',
     }}
   >
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
       <TouchableOpacity onPress={onRemove} activeOpacity={0.7}>
         <Trash2 size={20} color="#ef4444" />
       </TouchableOpacity>
       <Text style={styles.sectionLabel}>Tax</Text>
     </View>
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
       <View
         style={{
-          flexDirection: "row",
-          alignItems: "center",
+          flexDirection: 'row',
+          alignItems: 'center',
           gap: 6,
           width: 100,
           borderBottomWidth: 1,
@@ -639,9 +503,7 @@ const TaxSection = ({
         />
         <Text style={styles.unitText}>%</Text>
       </View>
-      <Text style={styles.unitText}>
-        {formatNumberWithComma(Number(taxAmount))}
-      </Text>
+      <Text style={styles.unitText}>{formatNumberWithComma(Number(taxAmount))}</Text>
     </View>
   </View>
 );
@@ -656,10 +518,10 @@ const AdditionalChargeRow = ({
   setShowAdditionalChargesSection: (value: boolean) => void;
 }) => (
   <View style={styles.sectionRow}>
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
       <TouchableOpacity
         onPress={() => {
-          setCharge("");
+          setCharge('');
           setShowAdditionalChargesSection(false);
         }}
         activeOpacity={0.7}
@@ -711,41 +573,11 @@ const RemarksSection = ({
   </View>
 );
 
-const AddSectionButton = ({
-  label,
-  onPress,
-}: {
-  label: string;
-  onPress: () => void;
-}) => (
+const AddSectionButton = ({ label, onPress }: { label: string; onPress: () => void }) => (
   <View style={styles.addSectionButtonContainer}>
-    <TouchableOpacity
-      style={styles.addSectionButton}
-      onPress={onPress}
-      activeOpacity={0.7}
-    >
+    <TouchableOpacity style={styles.addSectionButton} onPress={onPress} activeOpacity={0.7}>
       <Plus size={18} color={COLORS.primary} />
       <Text style={styles.addSectionText}>{label}</Text>
-    </TouchableOpacity>
-  </View>
-);
-
-const InfoRow = ({
-  label,
-  value,
-  onPress,
-}: {
-  label: string;
-  value: string;
-  onPress: () => void;
-}) => (
-  <View style={styles.infoRow}>
-    <Text>{label}</Text>
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.infoValue}>
-        <Text style={styles.primaryText}>{value}</Text>
-        <ChevronRight size={18} color={COLORS.primary} />
-      </View>
     </TouchableOpacity>
   </View>
 );
@@ -756,41 +588,41 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   topRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 12,
-    width: "100%",
+    width: '100%',
   },
   inputBox: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: '#e5e7eb',
     padding: 14,
   },
   label: {
     fontSize: 12,
-    color: "#6b7280",
+    color: '#6b7280',
     marginBottom: 6,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   inputContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     gap: 10,
   },
   inputValue: {
     fontSize: 15,
-    color: "#111827",
-    fontWeight: "600",
+    color: '#111827',
+    fontWeight: '600',
   },
   addItemsButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: 8,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 8,
     borderWidth: 1,
     borderColor: COLORS.border,
@@ -799,54 +631,54 @@ const styles = StyleSheet.create({
   addItemsText: {
     fontSize: 14,
     color: COLORS.primary,
-    fontFamily: "Poppins-Medium",
+    fontFamily: 'Poppins-Medium',
     marginTop: 4,
   },
   itemsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 8,
   },
   subtotalContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   subtotalLabel: {
     fontSize: 16,
-    color: "#374151",
-    fontFamily: "Poppins-Medium",
+    color: '#374151',
+    fontFamily: 'Poppins-Medium',
   },
   subtotalValue: {
     fontSize: 16,
-    color: "#111827",
-    fontWeight: "700",
+    color: '#111827',
+    fontWeight: '700',
   },
   sectionRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
     paddingVertical: 8,
     paddingHorizontal: 6,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   sectionLabel: {
     fontSize: 14,
-    color: "#374151",
-    fontWeight: "600",
+    color: '#374151',
+    fontWeight: '600',
     minWidth: 70,
   },
   dualInputContainer: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 10,
   },
   inputWithUnit: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 6,
     borderWidth: 1,
     padding: 10,
@@ -856,24 +688,24 @@ const styles = StyleSheet.create({
   mediumInput: {
     flex: 1,
     fontSize: 16,
-    color: "#111827",
+    color: '#111827',
     padding: 0,
     minWidth: 40,
   },
   unitText: {
     fontSize: 14,
-    color: "#6b7280",
-    fontWeight: "500",
+    color: '#6b7280',
+    fontWeight: '500',
   },
   chargeNameInput: {
     flex: 1,
     fontSize: 14,
-    color: "#111827",
+    color: '#111827',
     padding: 10,
   },
   chargeAmountContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 6,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.primary,
@@ -882,83 +714,83 @@ const styles = StyleSheet.create({
   chargeAmountInput: {
     fontSize: 14,
     minWidth: 60,
-    textAlign: "right",
+    textAlign: 'right',
   },
   addSectionButtonContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   addSectionButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     gap: 4,
   },
   addSectionText: {
     fontSize: 14,
     color: COLORS.primary,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   grandTotalContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   grandTotalLabel: {
     fontSize: 16,
-    fontFamily: "Poppins-Medium",
+    fontFamily: 'Poppins-Medium',
   },
   grandTotalValue: {
     fontSize: 16,
-    fontFamily: "Poppins-Medium",
+    fontFamily: 'Poppins-Medium',
   },
   remarksContainer: {
     gap: 8,
   },
   remarksHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 8,
   },
   remarksLabel: {
     fontSize: 14,
-    color: "#374151",
-    fontFamily: "Poppins-Medium",
+    color: '#374151',
+    fontFamily: 'Poppins-Medium',
   },
   notesInput: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: '#e5e7eb',
     padding: 14,
     fontSize: 14,
-    color: "#111827",
+    color: '#111827',
     minHeight: 80,
   },
   infoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   infoValue: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 5,
   },
   primaryText: {
     color: COLORS.primary,
   },
   amountRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   amountInput: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 5,
   },
   amountInputField: {

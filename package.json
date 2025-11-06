@@ -10,7 +10,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "generate:api": "openapi-codegen --config ./openapi-codegen.config.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "format": "prettier --write ."
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -79,12 +80,13 @@
     "@openapi-codegen/typescript": "^11.0.1",
     "@types/react": "~19.0.10",
     "@types/react-native-pdf-lib": "^0.2.3",
-    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
     "@typescript-eslint/parser": "^8.41.0",
     "eslint": "^9.39.0",
     "eslint-config-expo": "~9.2.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.6",

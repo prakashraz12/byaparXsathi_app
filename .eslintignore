@@ -1,0 +1,10 @@
+# .eslintignore
+services/queries-components.ts
+services/queries-fetcher.ts
+services/queries-utils.ts
+services/queries-context.ts
+services/queries-types.ts
+src/generated/**
+node_modules/
+dist/
+build/

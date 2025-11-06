@@ -1,4 +1,4 @@
-import DashboardScreen from "@/screen/dashboard/dashboard.screen";
+import DashboardScreen from '@/screen/dashboard/dashboard.screen';
 
 const Dashboard = () => {
   return <DashboardScreen />;

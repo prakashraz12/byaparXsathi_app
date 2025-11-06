@@ -1,6 +1,6 @@
-import SyncingScreen from "@/components/syncing"
+import SyncingScreen from '@/components/syncing';
 
-const Syncing = ()=>{
-    return (<SyncingScreen/>)
-}
+const Syncing = () => {
+  return <SyncingScreen />;
+};
 export default Syncing;

@@ -1,8 +1,9 @@
-import { Text, View } from "react-native";
-import { useEffect, useState } from "react";
-import { observeTopSaleItems } from "@/database/services/analaytics.service";
-import { COLORS } from "@/constants/Colors";
-import { formatNumberWithComma } from "@/utils/format-number";
+import { useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
+
+import { COLORS } from '@/constants/Colors';
+import { observeTopSaleItems } from '@/database/services/analaytics.service';
+import { formatNumberWithComma } from '@/utils/format-number';
 
 const TopSalesItems = () => {
   const [topSalesItems, setTopSalesItems] = useState<
@@ -15,7 +16,7 @@ const TopSalesItems = () => {
   >([]);
   useEffect(() => {
     const sub = observeTopSaleItems({
-      dateRangePreset: "THIS_MONTH",
+      dateRangePreset: 'THIS_MONTH',
     }).subscribe(setTopSalesItems);
     return () => sub.unsubscribe();
   }, []);
@@ -23,7 +24,7 @@ const TopSalesItems = () => {
     <View
       style={{
         padding: 20,
-        backgroundColor: "white",
+        backgroundColor: 'white',
         borderRadius: 8,
         borderWidth: 1,
         borderColor: COLORS.border,
@@ -31,35 +32,33 @@ const TopSalesItems = () => {
         paddingHorizontal: 20,
       }}
     >
-      <Text style={{ fontSize: 15, fontFamily: "Poppins-SemiBold" }}>
-        Top Sales Items
-      </Text>
+      <Text style={{ fontSize: 15, fontFamily: 'Poppins-SemiBold' }}>Top Sales Items</Text>
       <Text
         style={{
           fontSize: 14,
-          fontFamily: "Poppins-Regular",
+          fontFamily: 'Poppins-Regular',
           color: COLORS.textLight,
         }}
       >
         Top sales items of this month
       </Text>
-      <View style={{ marginTop: 12, flexDirection: "column", gap: 10 }}>
+      <View style={{ marginTop: 12, flexDirection: 'column', gap: 10 }}>
         {topSalesItems.map((item, index) => (
           <View
             key={index}
             style={{
-              flexDirection: "row",
-              alignItems: "center",
+              flexDirection: 'row',
+              alignItems: 'center',
               gap: 10,
-              width: "100%",
+              width: '100%',
             }}
           >
             <Text
               style={{
                 fontSize: 15,
-                fontFamily: "Poppins-Medium",
+                fontFamily: 'Poppins-Medium',
                 color: COLORS.textLight,
-                width: "8%",
+                width: '8%',
               }}
             >
               #{index + 1}
@@ -67,22 +66,20 @@ const TopSalesItems = () => {
             <Text
               style={{
                 fontSize: 15,
-                fontFamily: "Poppins-Medium",
-                width: "30%",
+                fontFamily: 'Poppins-Medium',
+                width: '30%',
               }}
               numberOfLines={1}
             >
               {item.label}
             </Text>
 
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-            >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
               <Text
                 style={{
                   fontSize: 14,
-                  fontFamily: "Poppins-Medium",
-                  width: "30%",
+                  fontFamily: 'Poppins-Medium',
+                  width: '30%',
                 }}
                 numberOfLines={1}
               >
@@ -92,9 +89,9 @@ const TopSalesItems = () => {
               <Text
                 style={{
                   fontSize: 14,
-                  fontFamily: "Poppins-Medium",
-                  textAlign: "right",
-                  width: "40%",
+                  fontFamily: 'Poppins-Medium',
+                  textAlign: 'right',
+                  width: '40%',
                 }}
                 numberOfLines={1}
               >

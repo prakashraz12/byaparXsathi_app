@@ -1,33 +1,36 @@
-import { View } from "react-native";
-import { Text } from "./text";
-import { COLORS } from "@/constants/Colors";
+import { View } from 'react-native';
+
+import { COLORS } from '@/constants/Colors';
+
+import { Text } from './text';
 
 interface IAvatarCard {
-    name: string;
-    size: number;
+  name: string;
+  size: number;
+  borderRedius?: number;
 }
-const AvatarCard = ({ name, size }: IAvatarCard) => {
+const AvatarCard = ({ name, size, borderRedius }: IAvatarCard) => {
   return (
     <View
       style={{
         width: size || 50,
         height: size || 50,
-        borderRadius: (size || 50) / 2,
-        overflow: "hidden",
+        borderRadius: borderRedius || size / 2,
+        overflow: 'hidden',
         borderWidth: 1,
         borderColor: COLORS.border,
         backgroundColor: COLORS.background,
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <Text
         style={{
           fontSize: 14,
           color: COLORS.text,
-          textAlign: "center",
-          fontFamily: "Poppins-SemiBold",
-          textAlignVertical: "center",
+          textAlign: 'center',
+          fontFamily: 'Poppins-SemiBold',
+          textAlignVertical: 'center',
         }}
       >
         {name?.slice(0, 2)?.toUpperCase()}

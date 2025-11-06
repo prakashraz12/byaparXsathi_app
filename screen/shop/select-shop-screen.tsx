@@ -1,23 +1,23 @@
-import AvatarCard from "@/components/re-usables/avatar-card";
-import { Button } from "@/components/re-usables/button";
-import { Text } from "@/components/re-usables/text";
-import { COLORS } from "@/constants/Colors";
-import useShops from "@/database/hooks/useShops";
-import PXWrapper from "@/layouts/px-wrapper";
-import { TouchableOpacity, View } from "react-native";
-import { router } from "expo-router";
-import { useState } from "react";
-import Shop from "@/database/model/shop.model";
-import { CheckCircleIcon } from "lucide-react-native";
-import { useUserStore } from "@/store/useUserStore";
-import { syncDatabase } from "@/database/sync.service";
-import { useSync } from "@/database/hooks/useSync";
+import AvatarCard from '@/components/re-usables/avatar-card';
+import { Button } from '@/components/re-usables/button';
+import { Text } from '@/components/re-usables/text';
+import { COLORS } from '@/constants/Colors';
+import useShops from '@/database/hooks/useShops';
+import PXWrapper from '@/layouts/px-wrapper';
+import { TouchableOpacity, View } from 'react-native';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import Shop from '@/database/model/shop.model';
+import { CheckCircleIcon } from 'lucide-react-native';
+import { useUserStore } from '@/store/useUserStore';
+import { syncDatabase } from '@/database/sync.service';
+import { useSync } from '@/database/hooks/useSync';
 
 const SelectShopScreen = () => {
   const { shops } = useShops();
   const { user, setActiveShopId } = useUserStore();
   const [selectedShop, setSelectedShop] = useState<Shop | null>(null);
-  const {syncNow} = useSync()
+  const { syncNow } = useSync();
 
   const handleContinue = () => {
     if (selectedShop?.id) {
@@ -26,7 +26,7 @@ const SelectShopScreen = () => {
         isFirstTime: true,
         fetchShops: false,
       });
-      router.push("/syncing");
+      router.push('/syncing');
     }
   };
   return (
@@ -35,35 +35,33 @@ const SelectShopScreen = () => {
         <Text
           style={{
             fontSize: 20,
-            fontFamily: "Poppins-SemiBold",
+            fontFamily: 'Poppins-SemiBold',
             color: COLORS.primary,
           }}
         >
           Welcome back!
         </Text>
-        <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium" }}>
+        <Text style={{ fontSize: 16, fontFamily: 'Poppins-Medium' }}>
           Good evening,{user?.fullName}
         </Text>
         <Text
           style={{
             fontSize: 12,
-            fontFamily: "Poppins-Regular",
+            fontFamily: 'Poppins-Regular',
             marginTop: 12,
             color: COLORS.textLight,
           }}
         >
-          Byapar Sathi is a ultimate business management app for small and
-          medium businesses. it hepls buisenns to keep daily transitions.
+          Byapar Sathi is a ultimate business management app for small and medium businesses. it
+          hepls buisenns to keep daily transitions.
         </Text>
       </View>
       <View style={{ marginTop: 20, marginBottom: 15 }}>
-        <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium" }}>
-          Select Shop to continue,
-        </Text>
+        <Text style={{ fontSize: 16, fontFamily: 'Poppins-Medium' }}>Select Shop to continue,</Text>
         <Text
           style={{
             fontSize: 12,
-            fontFamily: "Poppins-Regular",
+            fontFamily: 'Poppins-Regular',
             color: COLORS.textLight,
           }}
         >
@@ -81,9 +79,9 @@ const SelectShopScreen = () => {
                   borderColor: COLORS.border,
                   borderRadius: 7,
                   padding: 10,
-                  flexDirection: "row",
-                  alignItems: "center",
-                  position: "relative",
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  position: 'relative',
                   gap: 12,
                 },
                 selectedShop?.id === shop?.id && {
@@ -92,15 +90,13 @@ const SelectShopScreen = () => {
                 },
               ]}
             >
-              <AvatarCard name={shop?.shopName || ""} size={60} />
-              <View style={{ flex: 1, flexDirection: "column" }}>
-                <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium" }}>
-                  {shop?.shopName}
-                </Text>
+              <AvatarCard name={shop?.shopName || ''} size={60} />
+              <View style={{ flex: 1, flexDirection: 'column' }}>
+                <Text style={{ fontSize: 16, fontFamily: 'Poppins-Medium' }}>{shop?.shopName}</Text>
                 <Text
                   style={{
                     fontSize: 12,
-                    fontFamily: "Poppins-Regular",
+                    fontFamily: 'Poppins-Regular',
                     marginTop: 1,
                     color: COLORS.textLight,
                   }}
@@ -109,7 +105,7 @@ const SelectShopScreen = () => {
                 </Text>
               </View>
               {selectedShop?.id === shop?.id && (
-                <View style={{ position: "absolute", right: 15, top: 15 }}>
+                <View style={{ position: 'absolute', right: 15, top: 15 }}>
                   <CheckCircleIcon size={20} color={COLORS.success} />
                 </View>
               )}
@@ -117,11 +113,7 @@ const SelectShopScreen = () => {
           ))}
         </View>
       </View>
-      <Button
-        disabled={!selectedShop}
-        title="Continue"
-        onPress={handleContinue}
-      />
+      <Button disabled={!selectedShop} title="Continue" onPress={handleContinue} />
     </PXWrapper>
   );
 };

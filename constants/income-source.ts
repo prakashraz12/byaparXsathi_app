@@ -1,26 +1,26 @@
 export const IncomeSource = [
-    {
-        label:"Salary",
-        value:"salary"
-    },
-    {
-        label:"Business",
-        value:"business"
-    },
-    {
-        label:"Gift",
-        value:"gift"
-    },
-    {
-        label:"Commission",
-        value:"commission"
-    },
-    {
-        label:"Sales",
-        value:"sales"
-    },
-    {
-        label:"Others",
-        value:"others"
-    }
-]
+  {
+    label: 'Salary',
+    value: 'salary',
+  },
+  {
+    label: 'Business',
+    value: 'business',
+  },
+  {
+    label: 'Gift',
+    value: 'gift',
+  },
+  {
+    label: 'Commission',
+    value: 'commission',
+  },
+  {
+    label: 'Sales',
+    value: 'sales',
+  },
+  {
+    label: 'Others',
+    value: 'others',
+  },
+];

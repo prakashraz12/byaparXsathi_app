@@ -1,18 +1,17 @@
-import NotFound from "@/components/re-usables/not-found";
-import { COLORS } from "@/constants/Colors";
-import { StatusBar } from "expo-status-bar";
-import type React from "react";
-import { useRef, useState } from "react";
+import { StatusBar } from 'expo-status-bar';
+import React, { useRef, useState } from 'react';
 import {
+  Animated,
   FlatList,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
   View,
-  Animated,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import NotFound from '@/components/re-usables/not-found';
 
 interface PXWrapperProps {
   children?: React.ReactNode;
@@ -26,6 +25,8 @@ interface PXWrapperProps {
   footer?: React.ReactNode;
   backgroundColor?: string;
   floatingActionStyle?: object;
+  numColumns?: number;
+  columnWrapperStyle?: object;
 }
 
 const PXWrapper = ({
@@ -40,6 +41,8 @@ const PXWrapper = ({
   footer,
   backgroundColor,
   floatingActionStyle,
+  numColumns,
+  columnWrapperStyle,
 }: PXWrapperProps) => {
   const insets = useSafeAreaInsets();
   const scrollY = useRef(0);
@@ -78,8 +81,8 @@ const PXWrapper = ({
         styles.safeArea,
         { paddingTop: insets.top * 0.6 },
         style,
-        { backgroundColor: backgroundColor ? backgroundColor : "#F2F2F7" },
-        floatingAction ? { position: "relative" } : {},
+        { backgroundColor: backgroundColor ? backgroundColor : '#F2F2F7' },
+        floatingAction ? { position: 'relative' } : {},
       ]}
     >
       <StatusBar style="dark" />
@@ -102,39 +105,41 @@ const PXWrapper = ({
               ],
             },
           ]}
-          pointerEvents={isVisible ? "auto" : "none"}
+          pointerEvents={isVisible ? 'auto' : 'none'}
         >
           {floatingAction}
         </Animated.View>
       )}
 
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-      >
-        <View style={{ flex: 1 }}>
-          {data?.length > 0 && renderItem ? (
-            <FlatList
-              data={data}
-              renderItem={renderItem}
-              removeClippedSubviews={true}
-              maxToRenderPerBatch={10}
-              updateCellsBatchingPeriod={30}
-              initialNumToRender={10}
-              windowSize={21}
-              keyExtractor={(item, index) => item?.id || index.toString()}
-              contentContainerStyle={{
-                paddingBottom: footer ? 90 : 80,
-                paddingHorizontal: 10,
-                paddingTop: 10,
-              }}
-              onScroll={handleScroll}
-              scrollEventThrottle={16}
-            />
-          ) : data?.length === 0 ? (
-            <NotFound title="No Data Found" />
-          ) : (
+      <View style={{ flex: 1 }}>
+        {data?.length > 0 && renderItem ? (
+          <FlatList
+            data={data}
+            renderItem={renderItem}
+            removeClippedSubviews={true}
+            maxToRenderPerBatch={10}
+            updateCellsBatchingPeriod={30}
+            initialNumToRender={10}
+            windowSize={21}
+            numColumns={numColumns}
+            keyExtractor={(item, index) => item?.id || index.toString()}
+            contentContainerStyle={{
+              paddingBottom: footer ? 90 : 80,
+              paddingHorizontal: 10,
+              paddingTop: 10,
+            }}
+            columnWrapperStyle={columnWrapperStyle}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+          />
+        ) : data?.length === 0 ? (
+          <NotFound title="No Data Found" />
+        ) : (
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{ flex: 1 }}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+          >
             <ScrollView
               style={styles.scrollView}
               contentContainerStyle={[
@@ -149,16 +154,12 @@ const PXWrapper = ({
             >
               {children}
             </ScrollView>
-          )}
-        </View>
-      </KeyboardAvoidingView>
+          </KeyboardAvoidingView>
+        )}
+      </View>
 
       {footer && (
-        <View
-          style={[styles.footer, { paddingBottom: insets.bottom + 8 || 10 }]}
-        >
-          {footer}
-        </View>
+        <View style={[styles.footer, { paddingBottom: insets.bottom + 8 || 10 }]}>{footer}</View>
       )}
     </View>
   );
@@ -167,12 +168,12 @@ const PXWrapper = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
   scrollView: {
     flex: 1,
-    height: "100%",
+    height: '100%',
     paddingVertical: 2,
     paddingHorizontal: 8,
   },
@@ -187,25 +188,25 @@ const styles = StyleSheet.create({
   },
   noDataText: {
     fontSize: 16,
-    fontFamily: "Poppins-Regular",
-    textAlign: "center",
+    fontFamily: 'Poppins-Regular',
+    textAlign: 'center',
     marginTop: 20,
   },
   floatingButtonContainer: {
-    position: "absolute",
+    position: 'absolute',
     right: 20,
     bottom: 20,
     zIndex: 1000,
     elevation: 5,
   },
   footer: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     paddingHorizontal: 10,
     paddingTop: 10,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: '#F2F2F7',
   },
 });
 

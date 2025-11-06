@@ -1,11 +1,10 @@
-import { nepaliCalendar } from "@/components/re-usables/date-picker/calender-config";
-import { Text } from "@/components/re-usables/text";
-import { COLORS } from "@/constants/Colors";
-import { getDateFormat } from "@/utils/format-date";
-import { formatNumberWithComma } from "@/utils/format-number";
-import { Link } from "expo-router";
-import { Calendar } from "lucide-react-native";
-import { View, StyleSheet } from "react-native";
+import { Link } from 'expo-router';
+import { StyleSheet, View } from 'react-native';
+
+import { Text } from '@/components/re-usables/text';
+import { COLORS } from '@/constants/Colors';
+import { getDateFormat } from '@/utils/format-date';
+import { formatNumberWithComma } from '@/utils/format-number';
 
 interface SalesCardProps {
   invoiceNumber: string;
@@ -26,11 +25,11 @@ const SalesCard = ({
 }: SalesCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "PAID":
+      case 'PAID':
         return COLORS.success;
-      case "UN_PAID":
+      case 'UN_PAID':
         return COLORS.error;
-      case "PARTIALLY_PAID":
+      case 'PARTIALLY_PAID':
         return COLORS.warning;
       default:
         return COLORS.notification;
@@ -38,15 +37,15 @@ const SalesCard = ({
   };
 
   return (
-    <Link href={`/sales/${id}`} style={{ width: "100%", marginBottom: 15 }}>
+    <Link href={`/sales/${id}`} style={{ width: '100%', marginBottom: 15 }}>
       <View style={styles.card}>
         <View style={styles.leftSection}>
-          <Text style={[styles.invoiceNumber, { color: COLORS.primary }]}>
-            #{invoiceNumber}
+          <Text style={[styles.invoiceNumber, { color: 'gray' }]}>#{invoiceNumber}</Text>
+          <Text style={styles.title}>
+            {paymentType ? paymentType : paymentStatus === 'UNPAID' ? 'Credit Sale' : paymentStatus}
           </Text>
-          <Text style={styles.title}>{paymentType}</Text>
           <Text style={styles.dateTime}>
-            {getDateFormat(Number(invoiceDate), "BS", true, true)}
+            {getDateFormat(Number(invoiceDate), 'BS', true, true)}
           </Text>
         </View>
 
@@ -54,12 +53,7 @@ const SalesCard = ({
           <Text style={[styles.amountValue, { color: COLORS.success }]}>
             {formatNumberWithComma(grandTotalAmount)}
           </Text>
-          <View
-            style={[
-              styles.statusBadge,
-              { backgroundColor: getStatusColor(paymentStatus) },
-            ]}
-          >
+          <View style={[styles.statusBadge, { backgroundColor: getStatusColor(paymentStatus) }]}>
             <Text style={styles.statusText}>{paymentStatus}</Text>
           </View>
         </View>
@@ -70,13 +64,13 @@ const SalesCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
     borderRadius: 8,
     padding: 12,
     marginVertical: 4,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: COLORS.border,
   },
@@ -86,23 +80,23 @@ const styles = StyleSheet.create({
   },
   invoiceNumber: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   title: {
     fontSize: 15,
-    color: "#1f2937",
-    fontFamily: "Poppins-Medium",
+    color: '#1f2937',
+    fontFamily: 'Poppins-Medium',
   },
   dateTime: {
     fontSize: 14,
-    color: "#6b7280",
-    fontWeight: "400",
-    flexDirection: "row",
-    alignItems: "center",
+    color: '#6b7280',
+    fontWeight: '400',
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 2,
   },
   rightSection: {
-    alignItems: "flex-end",
+    alignItems: 'flex-end',
     gap: 6,
   },
   amountValue: {
@@ -115,8 +109,8 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 11,
-    fontWeight: "600",
-    color: "#ffffff",
+    fontWeight: '600',
+    color: '#ffffff',
   },
 });
 

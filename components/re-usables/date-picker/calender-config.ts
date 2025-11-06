@@ -1,4 +1,3 @@
-
 // Nepali Calendar utility functions
 export const calendarData = {
   bsMonths: [
@@ -48,56 +47,50 @@ export const calendarData = {
   ],
   extractedBsMonthData: [
     [
-      0, 1, 1, 22, 1, 3, 1, 1, 1, 3, 1, 22, 1, 3, 1, 3, 1, 22, 1, 3, 1, 19, 1,
-      3, 1, 1, 3, 1, 2, 2, 1, 3, 1,
+      0, 1, 1, 22, 1, 3, 1, 1, 1, 3, 1, 22, 1, 3, 1, 3, 1, 22, 1, 3, 1, 19, 1, 3, 1, 1, 3, 1, 2, 2,
+      1, 3, 1,
     ],
     [
-      1, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 3, 1, 2,
-      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
-      3, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 3, 1, 1, 2,
+      1, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2,
+      2, 2, 2, 2, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2,
+      2, 2, 2, 1, 3, 1, 1, 2,
     ],
     [
-      0, 1, 2, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2,
-      1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 2,
-      2, 2, 2, 1, 3, 1, 3, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 3, 1, 1, 2,
+      0, 1, 2, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 2,
+      2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 1, 1, 1, 2,
+      2, 2, 2, 2, 1, 3, 1, 1, 2,
     ],
     [
-      1, 2, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1,
-      3, 1, 3, 1, 2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 1, 3, 1, 3,
-      1, 3, 1, 3, 1, 3, 1, 3, 2, 2, 1, 3, 1, 2, 2, 2, 1, 2,
+      1, 2, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 2, 2,
+      2, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 2, 2, 1, 3,
+      1, 2, 2, 2, 1, 2,
     ],
     [59, 1, 26, 1, 28, 1, 2, 1, 12],
     [
-      0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2,
-      2, 2, 2, 2, 2, 2, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 2, 2,
-      2, 2, 2, 2, 2, 2, 2, 2, 5, 1, 1, 2, 2, 1, 3, 1, 2, 1, 2,
+      0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+      1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 5, 1, 1, 2,
+      2, 1, 3, 1, 2, 1, 2,
+    ],
+    [0, 12, 1, 3, 1, 3, 1, 5, 1, 11, 1, 3, 1, 3, 1, 18, 1, 3, 1, 3, 1, 18, 1, 3, 1, 3, 1, 27, 1, 2],
+    [
+      1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 3, 1, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2,
+      2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 15, 2, 4,
     ],
     [
-      0, 12, 1, 3, 1, 3, 1, 5, 1, 11, 1, 3, 1, 3, 1, 18, 1, 3, 1, 3, 1, 18, 1,
-      3, 1, 3, 1, 27, 1, 2,
+      0, 1, 2, 2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 2,
+      2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 2, 2, 2, 15, 2, 4,
     ],
     [
-      1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 3, 1, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-      1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-      2, 2, 2, 1, 2, 2, 2, 15, 2, 4,
+      1, 1, 3, 1, 3, 1, 14, 1, 3, 1, 1, 1, 3, 1, 14, 1, 3, 1, 3, 1, 3, 1, 18, 1, 3, 1, 3, 1, 3, 1,
+      14, 1, 3, 15, 1, 2, 1, 1,
     ],
     [
-      0, 1, 2, 2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 3, 2, 2, 2, 1, 3, 1, 3, 1,
-      3, 1, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-      1, 3, 1, 3, 1, 2, 2, 2, 15, 2, 4,
+      0, 1, 1, 3, 1, 3, 1, 10, 1, 3, 1, 3, 1, 1, 1, 3, 1, 3, 1, 10, 1, 3, 1, 3, 1, 3, 1, 3, 1, 14,
+      1, 3, 1, 3, 1, 3, 1, 3, 1, 10, 1, 20, 1, 1, 1,
     ],
     [
-      1, 1, 3, 1, 3, 1, 14, 1, 3, 1, 1, 1, 3, 1, 14, 1, 3, 1, 3, 1, 3, 1, 18, 1,
-      3, 1, 3, 1, 3, 1, 14, 1, 3, 15, 1, 2, 1, 1,
-    ],
-    [
-      0, 1, 1, 3, 1, 3, 1, 10, 1, 3, 1, 3, 1, 1, 1, 3, 1, 3, 1, 10, 1, 3, 1, 3,
-      1, 3, 1, 3, 1, 14, 1, 3, 1, 3, 1, 3, 1, 3, 1, 10, 1, 20, 1, 1, 1,
-    ],
-    [
-      1, 2, 2, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 1, 3, 1, 3,
-      1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 2,
-      2, 1, 3, 1, 3, 1, 20, 3,
+      1, 2, 2, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2,
+      2, 2, 2, 2, 1, 3, 1, 3, 1, 3, 1, 3, 1, 2, 2, 2, 2, 2, 2, 2, 1, 3, 1, 3, 1, 20, 3,
     ],
   ],
   minBsYear: 1970,
@@ -150,10 +143,7 @@ export const nepaliCalendar = {
     const prefixNum = Math.floor(number / 10);
     const suffixNum = number % 10;
     if (prefixNum !== 0) {
-      return (
-        nepaliCalendar.getNepaliNumber(prefixNum) +
-        calendarData.nepaliNumbers[suffixNum]
-      );
+      return nepaliCalendar.getNepaliNumber(prefixNum) + calendarData.nepaliNumbers[suffixNum];
     } else {
       return calendarData.nepaliNumbers[suffixNum];
     }
@@ -163,7 +153,7 @@ export const nepaliCalendar = {
   getBsMonthDays: (bsYear: number, bsMonth: number): number => {
     if (bsYear < calendarData.minBsYear || bsYear > calendarData.maxBsYear) {
       throw new Error(
-        `Year should be between ${calendarData.minBsYear} and ${calendarData.maxBsYear}`
+        `Year should be between ${calendarData.minBsYear} and ${calendarData.maxBsYear}`,
       );
     }
     if (bsMonth < 1 || bsMonth > 12) {
@@ -182,36 +172,18 @@ export const nepaliCalendar = {
       const bsMonthUpperDaysIndex = i % 2;
       yearCount += bsMonthData[i];
       if (totalYears <= yearCount) {
-        if (
-          (bsYear === 2085 && bsMonth === 5) ||
-          (bsYear === 2088 && bsMonth === 5)
-        ) {
-          return (
-            calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex] -
-            2
-          );
+        if ((bsYear === 2085 && bsMonth === 5) || (bsYear === 2088 && bsMonth === 5)) {
+          return calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex] - 2;
         } else if (bsYear === 2081 && bsMonth === 2) {
-          return calendarData.bsMonthUpperDays[bsMonth - 1][
-            bsMonthUpperDaysIndex + 1
-          ];
+          return calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex + 1];
         } else if (bsYear === 2081 && bsMonth === 3) {
-          return calendarData.bsMonthUpperDays[bsMonth - 1][
-            bsMonthUpperDaysIndex - 1
-          ];
+          return calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex - 1];
         } else if (bsYear === 2081 && bsMonth === 11) {
-          return (
-            calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex] -
-            1
-          );
+          return calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex] - 1;
         } else if (bsYear === 2081 && bsMonth === 12) {
-          return (
-            calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex] +
-            1
-          );
+          return calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex] + 1;
         } else {
-          return calendarData.bsMonthUpperDays[bsMonth - 1][
-            bsMonthUpperDaysIndex
-          ];
+          return calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex];
         }
       }
     }
@@ -220,32 +192,25 @@ export const nepaliCalendar = {
   },
 
   // FIXED: Get AD date from BS date
-  getAdDateByBsDate: (
-    bsYear: number,
-    bsMonth: number,
-    bsDate: number
-  ): Date => {
+  getAdDateByBsDate: (bsYear: number, bsMonth: number, bsDate: number): Date => {
     if (bsYear < calendarData.minBsYear || bsYear > calendarData.maxBsYear) {
       throw new Error(
-        `Year should be between ${calendarData.minBsYear} and ${calendarData.maxBsYear}`
+        `Year should be between ${calendarData.minBsYear} and ${calendarData.maxBsYear}`,
       );
     }
 
     const daysNumFromMinBsYear = nepaliCalendar.getTotalDaysNumFromMinBsYear(
       bsYear,
       bsMonth,
-      bsDate
+      bsDate,
     );
-
 
     // Create AD date properly - JavaScript Date constructor expects (year, month-1, date)
     const adDate = new Date(
       calendarData.minAdDateEqBsDate.ad.year,
-      calendarData.minAdDateEqBsDate.ad.month -1,
-      calendarData.minAdDateEqBsDate.ad.date
+      calendarData.minAdDateEqBsDate.ad.month - 1,
+      calendarData.minAdDateEqBsDate.ad.date,
     );
-
-   
 
     adDate.setDate(adDate.getDate() + daysNumFromMinBsYear);
     return adDate;
@@ -281,11 +246,7 @@ export const nepaliCalendar = {
   // यो function ले 2081 साल वैशाख 1 सम्म कति दिन भइसकेको छ भनेर गनी April 14, 1943 मा त्यो दिन संख्या थपेर 2081 वैशाख 1 को अंग्रेजी मिति फिर्ता गर्छ।
 
   // FIXED: Get BS date from AD date
-  getBsDateByAdDate: (
-    adYear: number,
-    adMonth: number,
-    adDate: number
-  ): BsDate => {
+  getBsDateByAdDate: (adYear: number, adMonth: number, adDate: number): BsDate => {
     let bsYear = adYear + 57;
     let bsMonth = (adMonth + 9) % 12;
     bsMonth = bsMonth === 0 ? 12 : bsMonth;
@@ -300,11 +261,7 @@ export const nepaliCalendar = {
       }
     }
 
-    const bsMonthFirstAdDate = nepaliCalendar.getAdDateByBsDate(
-      bsYear,
-      bsMonth,
-      1
-    );
+    const bsMonthFirstAdDate = nepaliCalendar.getAdDateByBsDate(bsYear, bsMonth, 1);
     if (adDate >= 1 && adDate < bsMonthFirstAdDate.getDate()) {
       bsMonth = bsMonth !== 1 ? bsMonth - 1 : 12;
       if (bsMonth === 12) bsYear -= 1;
@@ -322,14 +279,10 @@ export const nepaliCalendar = {
   },
 
   // Get total days from min BS year
-  getTotalDaysNumFromMinBsYear: (
-    bsYear: number,
-    bsMonth: number,
-    bsDate: number
-  ): number => {
+  getTotalDaysNumFromMinBsYear: (bsYear: number, bsMonth: number, bsDate: number): number => {
     if (bsYear < calendarData.minBsYear || bsYear > calendarData.maxBsYear) {
       throw new Error(
-        `Year should be between ${calendarData.minBsYear} and ${calendarData.maxBsYear}`
+        `Year should be between ${calendarData.minBsYear} and ${calendarData.maxBsYear}`,
       );
     }
 
@@ -338,15 +291,9 @@ export const nepaliCalendar = {
 
     for (let month = 1; month <= 12; month++) {
       if (month < bsMonth) {
-        daysNumFromMinBsYear += nepaliCalendar.getMonthDaysNumFormMinBsYear(
-          month,
-          diffYears + 1
-        );
+        daysNumFromMinBsYear += nepaliCalendar.getMonthDaysNumFormMinBsYear(month, diffYears + 1);
       } else {
-        daysNumFromMinBsYear += nepaliCalendar.getMonthDaysNumFormMinBsYear(
-          month,
-          diffYears
-        );
+        daysNumFromMinBsYear += nepaliCalendar.getMonthDaysNumFormMinBsYear(month, diffYears);
       }
     }
 
@@ -394,8 +341,7 @@ export const nepaliCalendar = {
       if (yearDiff > yearCount + bsMonthData[i]) {
         yearCount += bsMonthData[i];
         monthDaysFromMinBsYear +=
-          calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex] *
-          bsMonthData[i];
+          calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex] * bsMonthData[i];
       } else {
         monthDaysFromMinBsYear +=
           calendarData.bsMonthUpperDays[bsMonth - 1][bsMonthUpperDaysIndex] *
@@ -434,9 +380,21 @@ export const nepaliCalendar = {
     try {
       const today = new Date();
       return {
-        bsYear: nepaliCalendar.getBsDateByAdDate(today.getFullYear(), today.getMonth() + 1, today.getDate()).bsYear,
-        bsMonth: nepaliCalendar.getBsDateByAdDate(today.getFullYear(), today.getMonth() + 1, today.getDate()).bsMonth,
-        bsDate: nepaliCalendar.getBsDateByAdDate(today.getFullYear(), today.getMonth() + 1, today.getDate()).bsDate,
+        bsYear: nepaliCalendar.getBsDateByAdDate(
+          today.getFullYear(),
+          today.getMonth() + 1,
+          today.getDate(),
+        ).bsYear,
+        bsMonth: nepaliCalendar.getBsDateByAdDate(
+          today.getFullYear(),
+          today.getMonth() + 1,
+          today.getDate(),
+        ).bsMonth,
+        bsDate: nepaliCalendar.getBsDateByAdDate(
+          today.getFullYear(),
+          today.getMonth() + 1,
+          today.getDate(),
+        ).bsDate,
       };
     } catch (error) {
       console.log(error);
@@ -473,24 +431,19 @@ export const nepaliCalendar = {
 
   // Add days to a BS date
   addDays: (date: BsDate, days: number): BsDate => {
-    const adDate = nepaliCalendar.getAdDateByBsDate(
-      date.bsYear,
-      date.bsMonth,
-      date.bsDate
-    );
+    const adDate = nepaliCalendar.getAdDateByBsDate(date.bsYear, date.bsMonth, date.bsDate);
     adDate.setDate(adDate.getDate() + days);
     return nepaliCalendar.getBsDateByAdDate(
       adDate.getFullYear(),
       adDate.getMonth() + 1,
-      adDate.getDate()
+      adDate.getDate(),
     );
   },
 
   // Get days in month
   getDaysInBsMonth: (year: number, month: number): number => {
     const yearData = bsMonthData[year];
-    if (!yearData)
-      throw new Error(`Year ${year} not found in BS calendar config`);
+    if (!yearData) throw new Error(`Year ${year} not found in BS calendar config`);
 
     const days = yearData[month - 1]; // month is 1-indexed (1 = Baisakh)
     if (!days) throw new Error(`Invalid month ${month} for year ${year}`);
@@ -500,19 +453,10 @@ export const nepaliCalendar = {
   // FIXED: Get day of week (0-6, Sunday to Saturday)
   getDayOfWeek: (date: BsDate): number => {
     try {
-     
-      const adDate = nepaliCalendar.getAdDateByBsDate(
-        date.bsYear,
-        date.bsMonth,
-        date.bsDate
-      );
+      const adDate = nepaliCalendar.getAdDateByBsDate(date.bsYear, date.bsMonth, date.bsDate);
       return adDate.getDay();
     } catch (error) {
-      const adDate = nepaliCalendar.getAdDateByBsDate(
-        date.bsYear,
-        date.bsMonth,
-        date.bsDate
-      );
+      const adDate = nepaliCalendar.getAdDateByBsDate(date.bsYear, date.bsMonth, date.bsDate);
       return adDate.getDay();
     }
   },
@@ -560,16 +504,14 @@ export const nepaliCalendar = {
   debugDateTransition: (year: number, fromMonth: number, toMonth: number) => {
     try {
       const fromDays = nepaliCalendar.getBsMonthDays(year, fromMonth);
-      console.log(
-        `${calendarData.bsMonthsENG[fromMonth - 1]} has ${fromDays} days`
-      );
+      console.log(`${calendarData.bsMonthsENG[fromMonth - 1]} has ${fromDays} days`);
 
       // Check last few days of fromMonth
       for (let day = Math.max(1, fromDays - 2); day <= fromDays; day++) {
         const date = { bsYear: year, bsMonth: fromMonth, bsDate: day };
         const dayOfWeek = nepaliCalendar.getDayOfWeek(date);
         console.log(
-          `${calendarData.bsMonthsENG[fromMonth - 1]} ${day}: ${calendarData.adDays[dayOfWeek]}`
+          `${calendarData.bsMonthsENG[fromMonth - 1]} ${day}: ${calendarData.adDays[dayOfWeek]}`,
         );
       }
 
@@ -579,7 +521,7 @@ export const nepaliCalendar = {
         const date = { bsYear: nextYear, bsMonth: toMonth, bsDate: day };
         const dayOfWeek = nepaliCalendar.getDayOfWeek(date);
         console.log(
-          `${calendarData.bsMonthsENG[toMonth - 1]} ${day}: ${calendarData.adDays[dayOfWeek]}`
+          `${calendarData.bsMonthsENG[toMonth - 1]} ${day}: ${calendarData.adDays[dayOfWeek]}`,
         );
       }
 
@@ -595,10 +537,7 @@ export const nepaliCalendar = {
 
   // NEW: Get next date
   getNextDate: (date: BsDate): BsDate => {
-    const daysInMonth = nepaliCalendar.getBsMonthDays(
-      date.bsYear,
-      date.bsMonth
-    );
+    const daysInMonth = nepaliCalendar.getBsMonthDays(date.bsYear, date.bsMonth);
 
     if (date.bsDate < daysInMonth) {
       // Next day in same month
@@ -638,20 +577,14 @@ export const nepaliCalendar = {
       // Last day of previous month
       if (date.bsMonth > 1) {
         const prevMonth = date.bsMonth - 1;
-        const daysInPrevMonth = nepaliCalendar.getBsMonthDays(
-          date.bsYear,
-          prevMonth
-        );
+        const daysInPrevMonth = nepaliCalendar.getBsMonthDays(date.bsYear, prevMonth);
         return {
           bsYear: date.bsYear,
           bsMonth: prevMonth,
           bsDate: daysInPrevMonth,
         };
       } else {
-        const daysInPrevMonth = nepaliCalendar.getBsMonthDays(
-          date.bsYear - 1,
-          12
-        );
+        const daysInPrevMonth = nepaliCalendar.getBsMonthDays(date.bsYear - 1, 12);
         return {
           bsYear: date.bsYear - 1,
           bsMonth: 12,

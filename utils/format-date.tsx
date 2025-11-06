@@ -1,28 +1,28 @@
-import { nepaliCalendar } from "../components/re-usables/date-picker/calender-config";
+import { nepaliCalendar } from '../components/re-usables/date-picker/calender-config';
 
 export function getDateFormat(
   dateObj: number,
-  mode: "AD",
+  mode: 'AD',
   withTime: false,
-  ampmFormat?: boolean
+  ampmFormat?: boolean,
 ): Date;
 export function getDateFormat(
   dateObj: number,
-  mode: "AD",
+  mode: 'AD',
   withTime: true,
-  ampmFormat?: boolean
+  ampmFormat?: boolean,
 ): string;
 export function getDateFormat(
   dateObj: number,
-  mode: "BS",
+  mode: 'BS',
   withTime?: boolean,
-  ampmFormat?: boolean
+  ampmFormat?: boolean,
 ): string;
 export function getDateFormat(
   dateObj: number,
-  mode: "BS" | "AD" = "BS",
+  mode: 'BS' | 'AD' = 'BS',
   withTime?: boolean,
-  ampmFormat?: boolean // if true, show AM/PM, else 24-hour
+  ampmFormat?: boolean, // if true, show AM/PM, else 24-hour
 ): string | Date {
   const localTime = new Date(dateObj);
 
@@ -30,17 +30,17 @@ export function getDateFormat(
   const bsDateObj = nepaliCalendar.getBsDateByAdDate(
     localTime.getFullYear(),
     localTime.getMonth() + 1,
-    localTime.getDate()
+    localTime.getDate(),
   );
-  const formattedBsDate = nepaliCalendar.formatBsDateEN(bsDateObj, "YYYY-MM-DD");
+  const formattedBsDate = nepaliCalendar.formatBsDateEN(bsDateObj, 'YYYY-MM-DD');
 
-  if (mode === "AD") {
+  if (mode === 'AD') {
     if (!withTime) return localTime;
     const hours = localTime.getHours();
-    const minutes = String(localTime.getMinutes()).padStart(2, "0");
+    const minutes = String(localTime.getMinutes()).padStart(2, '0');
 
     if (ampmFormat) {
-      const ampm = hours >= 12 ? "PM" : "AM";
+      const ampm = hours >= 12 ? 'PM' : 'AM';
       const hour12 = hours % 12 === 0 ? 12 : hours % 12;
       return `${hour12}:${minutes} ${ampm}`;
     } else {
@@ -49,10 +49,10 @@ export function getDateFormat(
   } else {
     if (!withTime) return formattedBsDate;
     const hours = localTime.getHours();
-    const minutes = String(localTime.getMinutes()).padStart(2, "0");
+    const minutes = String(localTime.getMinutes()).padStart(2, '0');
 
     if (ampmFormat) {
-      const ampm = hours >= 12 ? "PM" : "AM";
+      const ampm = hours >= 12 ? 'PM' : 'AM';
       const hour12 = hours % 12 === 0 ? 12 : hours % 12;
       return `${formattedBsDate} . ${hour12}:${minutes} ${ampm}`;
     } else {
@@ -60,4 +60,3 @@ export function getDateFormat(
     }
   }
 }
-

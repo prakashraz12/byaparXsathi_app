@@ -1,28 +1,15 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-"use client";
+'use client';
 
-import { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-  StyleSheet,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import {
-  AI_IMAGE3,
-  BANNER_LOGO_DARK,
-  FINANCE,
-  SUPPLIER,
-  CUSTOMER,
-} from "@/assets";
-import { COLORS } from "@/constants/Colors";
-import { Button } from "@/components/re-usables/button";
-import { router } from "expo-router";
+import { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { AI_IMAGE3, BANNER_LOGO_DARK, FINANCE, SUPPLIER, CUSTOMER } from '@/assets';
+import { COLORS } from '@/constants/Colors';
+import { Button } from '@/components/re-usables/button';
+import { router } from 'expo-router';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 
 const OnboardingScreen = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -30,29 +17,29 @@ const OnboardingScreen = () => {
   const onboardingData = [
     {
       id: 1,
-      title: "Welcome to\nByapar Sathi",
-      subtitle: "A Business Management Solution for You.",
+      title: 'Welcome to\nByapar Sathi',
+      subtitle: 'A Business Management Solution for You.',
       image: AI_IMAGE3,
       showLogo: true,
     },
     {
       id: 2,
-      title: "Customer Management",
+      title: 'Customer Management',
       subtitle: "Manage your customer's credit and payments efficiently",
       image: CUSTOMER,
       showLogo: false,
     },
     {
       id: 3,
-      title: "Supplier Management",
-      subtitle: "Handle supplier purchases and payments seamlessly",
+      title: 'Supplier Management',
+      subtitle: 'Handle supplier purchases and payments seamlessly',
       image: SUPPLIER,
       showLogo: false,
     },
     {
       id: 4,
-      title: "Financial Management",
-      subtitle: "Track income, expenses, and savings in one place",
+      title: 'Financial Management',
+      subtitle: 'Track income, expenses, and savings in one place',
       image: FINANCE,
       showLogo: false,
     },
@@ -62,12 +49,12 @@ const OnboardingScreen = () => {
     if (currentPage < onboardingData.length - 1) {
       setCurrentPage(currentPage + 1);
     } else {
-      router.replace("/(routes)/auth");
+      router.replace('/(routes)/auth');
     }
   };
 
   const handleSkip = () => {
-    router.replace("/(routes)/auth");
+    router.replace('/(routes)/auth');
   };
 
   const renderDots = () => {
@@ -76,10 +63,7 @@ const OnboardingScreen = () => {
         {onboardingData.slice(1).map((_, index) => (
           <View
             key={index}
-            style={[
-              styles.dot,
-              currentPage === index + 1 ? styles.activeDot : styles.inactiveDot,
-            ]}
+            style={[styles.dot, currentPage === index + 1 ? styles.activeDot : styles.inactiveDot]}
           />
         ))}
       </View>
@@ -93,14 +77,10 @@ const OnboardingScreen = () => {
           <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
 
-        <Image
-          source={onboardingData[0].image}
-          style={styles.backgroundImage}
-          resizeMode="cover"
-        />
+        <Image source={onboardingData[0].image} style={styles.backgroundImage} resizeMode="cover" />
 
         <LinearGradient
-          colors={["transparent", "rgba(215, 221, 231, 0.14)", COLORS.primary]}
+          colors={['transparent', 'rgba(215, 221, 231, 0.14)', COLORS.primary]}
           style={styles.gradientOverlay}
         />
 
@@ -114,9 +94,7 @@ const OnboardingScreen = () => {
               />
             </View>
 
-            <Text style={styles.welcomeSubtitle}>
-              {onboardingData[0].subtitle}
-            </Text>
+            <Text style={styles.welcomeSubtitle}>{onboardingData[0].subtitle}</Text>
 
             <Button
               title="Continue"
@@ -151,18 +129,14 @@ const OnboardingScreen = () => {
 
         <View style={styles.textContent}>
           <Text style={styles.title}>{onboardingData[currentPage].title}</Text>
-          <Text style={styles.subtitle}>
-            {onboardingData[currentPage].subtitle}
-          </Text>
+          <Text style={styles.subtitle}>{onboardingData[currentPage].subtitle}</Text>
         </View>
       </View>
 
       <View style={styles.bottomSection}>
         {renderDots()}
         <Button
-          title={
-            currentPage === onboardingData.length - 1 ? "Get Started" : "Next"
-          }
+          title={currentPage === onboardingData.length - 1 ? 'Get Started' : 'Next'}
           onPress={handleNext}
         />
       </View>
@@ -173,10 +147,10 @@ const OnboardingScreen = () => {
 const styles = StyleSheet.create({
   fullscreenContainer: {
     flex: 1,
-    position: "relative",
+    position: 'relative',
   },
   skipButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 48,
     right: 24,
     zIndex: 20,
@@ -184,28 +158,28 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   skipText: {
-    color: "rgba(255,255,255,0.8)",
+    color: 'rgba(255,255,255,0.8)',
     fontSize: 16,
   },
   backgroundImage: {
-    position: "absolute",
+    position: 'absolute',
     width: width,
     height: height,
   },
   gradientOverlay: {
-    position: "absolute",
+    position: 'absolute',
     width: width,
     height: height,
   },
   contentOverlay: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
     paddingHorizontal: 32,
     paddingBottom: 64,
     zIndex: 10,
   },
   textContainer: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   logoContainer: {
     marginBottom: 4,
@@ -213,17 +187,17 @@ const styles = StyleSheet.create({
 
   welcomeSubtitle: {
     fontSize: 16,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 32,
-    color: "white",
-    fontFamily: "Poppins-Regular",
+    color: 'white',
+    fontFamily: 'Poppins-Regular',
   },
   continueButton: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     paddingVertical: 16,
     paddingHorizontal: 48,
     borderRadius: 12,
-    width: "100%",
+    width: '100%',
     maxWidth: 288,
     borderColor: COLORS.primary,
     borderWidth: 1,
@@ -231,15 +205,15 @@ const styles = StyleSheet.create({
   continueButtonText: {
     color: COLORS.primary,
     fontSize: 18,
-    fontWeight: "600",
-    textAlign: "center",
+    fontWeight: '600',
+    textAlign: 'center',
   },
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
   regularSkipButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 48,
     right: 24,
     zIndex: 10,
@@ -247,20 +221,20 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   regularSkipText: {
-    color: "#6B7280",
+    color: '#6B7280',
     fontSize: 16,
   },
   mainContent: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 32,
     paddingTop: 64,
   },
   imageContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 32,
   },
   onboardingImage: {
@@ -268,32 +242,32 @@ const styles = StyleSheet.create({
     maxHeight: 320,
   },
   textContent: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 32,
   },
   title: {
     fontSize: 24,
-    color: "#1F2937",
-    textAlign: "center",
+    color: '#1F2937',
+    textAlign: 'center',
     marginBottom: 16,
     lineHeight: 32,
-    fontFamily: "Poppins-Bold",
+    fontFamily: 'Poppins-Bold',
   },
   subtitle: {
     fontSize: 14,
-    color: "#6B7280",
-    textAlign: "center",
+    color: '#6B7280',
+    textAlign: 'center',
     lineHeight: 26,
     paddingHorizontal: 16,
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
   },
   bottomSection: {
     paddingBottom: 50,
     paddingHorizontal: 32,
   },
   dotsContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
     gap: 8,
     marginBottom: 32,
   },
@@ -303,10 +277,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   activeDot: {
-    backgroundColor: "#3B82F6",
+    backgroundColor: '#3B82F6',
   },
   inactiveDot: {
-    backgroundColor: "#D1D5DB",
+    backgroundColor: '#D1D5DB',
   },
 });
 

@@ -1,15 +1,16 @@
-import IncomeForm from "@/components/finance/income/income-from";
-import { Toast } from "@/components/re-usables/custom-toaster/toast-service";
-import { Header } from "@/components/re-usables/header";
-import AlertModal from "@/components/re-usables/modal/alert-modal";
-import { COLORS } from "@/constants/Colors";
-import Income from "@/database/model/income.model";
-import { financeService } from "@/database/services/finance.service";
-import PXWrapper from "@/layouts/px-wrapper";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { Trash2 } from "lucide-react-native";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, TouchableOpacity } from "react-native";
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Trash2 } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, TouchableOpacity } from 'react-native';
+
+import IncomeForm from '@/components/finance/income/income-from';
+import { Toast } from '@/components/re-usables/custom-toaster/toast-service';
+import { Header } from '@/components/re-usables/header';
+import AlertModal from '@/components/re-usables/modal/alert-modal';
+import { COLORS } from '@/constants/Colors';
+import Income from '@/database/model/income.model';
+import { financeService } from '@/database/services/finance.service';
+import PXWrapper from '@/layouts/px-wrapper';
 
 const IncomeDetail = () => {
   const router = useRouter();
@@ -22,7 +23,7 @@ const IncomeDetail = () => {
     if (!income?.id) return;
     const response = await financeService.deleteIncome(income?.id as string);
     if (response?.success) {
-      Toast.success(response?.message)
+      Toast.success(response?.message);
       router.back();
     }
   };
@@ -43,7 +44,6 @@ const IncomeDetail = () => {
   return (
     <PXWrapper
       header={
-
         <>
           <Header
             title="Income Details"
@@ -57,7 +57,11 @@ const IncomeDetail = () => {
         </>
       }
     >
-      {isLoading ? <ActivityIndicator /> : !isLoading && income && <IncomeForm mode="edit" income={income} />}
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        !isLoading && income && <IncomeForm mode="edit" income={income} />
+      )}
       <AlertModal
         type="danger"
         title="Are you sure want to delete"

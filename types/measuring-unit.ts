@@ -1,6 +1,5 @@
 export interface MeasuringUnitType {
-    label: string;
-    shortForm: string;
-    active: boolean;
-  }
-  
+  label: string;
+  shortForm: string;
+  active: boolean;
+}

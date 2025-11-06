@@ -3,39 +3,33 @@
  *
  * @version 1.0
  */
-import * as reactQuery from "@tanstack/react-query";
-import {
-  useQueriesContext,
-  QueriesContext,
-  queryKeyFn,
-} from "./queries-context";
-import { deepMerge } from "./queries-utils";
-import type * as Fetcher from "./queries-fetcher";
-import { queriesFetch } from "./queries-fetcher";
-import type * as Schemas from "./types-schemas";
+import * as reactQuery from '@tanstack/react-query';
+import { useQueriesContext, QueriesContext, queryKeyFn } from './queries-context';
+import { deepMerge } from './queries-utils';
+import type * as Fetcher from './queries-fetcher';
+import { queriesFetch } from './queries-fetcher';
+import type * as Schemas from './types-schemas';
 
 type QueryFnOptions = {
-  signal?: AbortController["signal"];
+  signal?: AbortController['signal'];
 };
 
 export type UserControllerGetMeError = Fetcher.ErrorWrapper<undefined>;
 
-export type UserControllerGetMeVariables = QueriesContext["fetcherOptions"];
+export type UserControllerGetMeVariables = QueriesContext['fetcherOptions'];
 
 export const fetchUserControllerGetMe = (
   variables: UserControllerGetMeVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<undefined, UserControllerGetMeError, undefined, {}, {}, {}>({
-    url: "/api/v1/user/me",
-    method: "get",
+    url: '/api/v1/user/me',
+    method: 'get',
     ...variables,
     signal,
   });
 
-export function userControllerGetMeQuery(
-  variables: UserControllerGetMeVariables,
-): {
+export function userControllerGetMeQuery(variables: UserControllerGetMeVariables): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<undefined>;
 };
@@ -44,9 +38,7 @@ export function userControllerGetMeQuery(
   variables: UserControllerGetMeVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<undefined>)
-    | reactQuery.SkipToken;
+  queryFn: ((options: QueryFnOptions) => Promise<undefined>) | reactQuery.SkipToken;
 };
 
 export function userControllerGetMeQuery(
@@ -54,15 +46,14 @@ export function userControllerGetMeQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/api/v1/user/me",
-      operationId: "userControllerGetMe",
+      path: '/api/v1/user/me',
+      operationId: 'userControllerGetMe',
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchUserControllerGetMe(variables, signal),
+        : ({ signal }: QueryFnOptions) => fetchUserControllerGetMe(variables, signal),
   };
 }
 
@@ -70,15 +61,11 @@ export const useSuspenseUserControllerGetMe = <TData = undefined>(
   variables: UserControllerGetMeVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<undefined, UserControllerGetMeError, TData>,
-    "queryKey" | "queryFn" | "initialData"
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    undefined,
-    UserControllerGetMeError,
-    TData
-  >({
+  return reactQuery.useSuspenseQuery<undefined, UserControllerGetMeError, TData>({
     ...userControllerGetMeQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
@@ -89,15 +76,13 @@ export const useUserControllerGetMe = <TData = undefined>(
   variables: UserControllerGetMeVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<undefined, UserControllerGetMeError, TData>,
-    "queryKey" | "queryFn" | "initialData"
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<undefined, UserControllerGetMeError, TData>({
     ...userControllerGetMeQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
+      variables === reactQuery.skipToken ? variables : deepMerge(fetcherOptions, variables),
     ),
     ...options,
     ...queryOptions,
@@ -108,20 +93,18 @@ export type AuthControllerWithEmailError = Fetcher.ErrorWrapper<undefined>;
 
 export type AuthControllerWithEmailVariables = {
   body: Schemas.WithEmailDto;
-} & QueriesContext["fetcherOptions"];
+} & QueriesContext['fetcherOptions'];
 
 export const fetchAuthControllerWithEmail = (
   variables: AuthControllerWithEmailVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    AuthControllerWithEmailError,
-    Schemas.WithEmailDto,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/auth/with-email", method: "post", ...variables, signal });
+  queriesFetch<undefined, AuthControllerWithEmailError, Schemas.WithEmailDto, {}, {}, {}>({
+    url: '/api/v1/auth/with-email',
+    method: 'post',
+    ...variables,
+    signal,
+  });
 
 export const useAuthControllerWithEmail = (
   options?: Omit<
@@ -130,7 +113,7 @@ export const useAuthControllerWithEmail = (
       AuthControllerWithEmailError,
       AuthControllerWithEmailVariables
     >,
-    "mutationFn"
+    'mutationFn'
   >,
 ) => {
   const { fetcherOptions } = useQueriesContext();
@@ -149,7 +132,7 @@ export type AuthControllerWithOtpLoginError = Fetcher.ErrorWrapper<undefined>;
 
 export type AuthControllerWithOtpLoginVariables = {
   body: Schemas.LoginDto;
-} & QueriesContext["fetcherOptions"];
+} & QueriesContext['fetcherOptions'];
 
 export const fetchAuthControllerWithOtpLogin = (
   variables: AuthControllerWithOtpLoginVariables,
@@ -162,7 +145,7 @@ export const fetchAuthControllerWithOtpLogin = (
     {},
     {},
     {}
-  >({ url: "/api/v1/auth/otp-login", method: "post", ...variables, signal });
+  >({ url: '/api/v1/auth/otp-login', method: 'post', ...variables, signal });
 
 export const useAuthControllerWithOtpLogin = (
   options?: Omit<
@@ -171,7 +154,7 @@ export const useAuthControllerWithOtpLogin = (
       AuthControllerWithOtpLoginError,
       AuthControllerWithOtpLoginVariables
     >,
-    "mutationFn"
+    'mutationFn'
   >,
 ) => {
   const { fetcherOptions } = useQueriesContext();
@@ -190,7 +173,7 @@ export type AuthControllerCompleteSetupError = Fetcher.ErrorWrapper<undefined>;
 
 export type AuthControllerCompleteSetupVariables = {
   body: Schemas.CompleteSetupDto;
-} & QueriesContext["fetcherOptions"];
+} & QueriesContext['fetcherOptions'];
 
 export const fetchAuthControllerCompleteSetup = (
   variables: AuthControllerCompleteSetupVariables,
@@ -204,8 +187,8 @@ export const fetchAuthControllerCompleteSetup = (
     {},
     {}
   >({
-    url: "/api/v1/auth/complete-setup",
-    method: "post",
+    url: '/api/v1/auth/complete-setup',
+    method: 'post',
     ...variables,
     signal,
   });
@@ -217,7 +200,7 @@ export const useAuthControllerCompleteSetup = (
       AuthControllerCompleteSetupError,
       AuthControllerCompleteSetupVariables
     >,
-    "mutationFn"
+    'mutationFn'
   >,
 ) => {
   const { fetcherOptions } = useQueriesContext();
@@ -232,11 +215,9 @@ export const useAuthControllerCompleteSetup = (
   });
 };
 
-export type AuthControllerRevalidateTokenError =
-  Fetcher.ErrorWrapper<undefined>;
+export type AuthControllerRevalidateTokenError = Fetcher.ErrorWrapper<undefined>;
 
-export type AuthControllerRevalidateTokenVariables =
-  QueriesContext["fetcherOptions"];
+export type AuthControllerRevalidateTokenVariables = QueriesContext['fetcherOptions'];
 
 export const fetchAuthControllerRevalidateToken = (
   variables: AuthControllerRevalidateTokenVariables,
@@ -250,8 +231,8 @@ export const fetchAuthControllerRevalidateToken = (
     {},
     {}
   >({
-    url: "/api/v1/auth/revalidate-token",
-    method: "post",
+    url: '/api/v1/auth/revalidate-token',
+    method: 'post',
     ...variables,
     signal,
   });
@@ -263,7 +244,7 @@ export const useAuthControllerRevalidateToken = (
       AuthControllerRevalidateTokenError,
       AuthControllerRevalidateTokenVariables
     >,
-    "mutationFn"
+    'mutationFn'
   >,
 ) => {
   const { fetcherOptions } = useQueriesContext();
@@ -280,21 +261,18 @@ export const useAuthControllerRevalidateToken = (
 
 export type StorageControllerUploadFileError = Fetcher.ErrorWrapper<undefined>;
 
-export type StorageControllerUploadFileVariables =
-  QueriesContext["fetcherOptions"];
+export type StorageControllerUploadFileVariables = QueriesContext['fetcherOptions'];
 
 export const fetchStorageControllerUploadFile = (
   variables: StorageControllerUploadFileVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    StorageControllerUploadFileError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/storage/upload", method: "post", ...variables, signal });
+  queriesFetch<undefined, StorageControllerUploadFileError, undefined, {}, {}, {}>({
+    url: '/api/v1/storage/upload',
+    method: 'post',
+    ...variables,
+    signal,
+  });
 
 export const useStorageControllerUploadFile = (
   options?: Omit<
@@ -303,7 +281,7 @@ export const useStorageControllerUploadFile = (
       StorageControllerUploadFileError,
       StorageControllerUploadFileVariables
     >,
-    "mutationFn"
+    'mutationFn'
   >,
 ) => {
   const { fetcherOptions } = useQueriesContext();
@@ -322,20 +300,18 @@ export type ShopControllerCreateShopError = Fetcher.ErrorWrapper<undefined>;
 
 export type ShopControllerCreateShopVariables = {
   body: Schemas.CreateShopDto;
-} & QueriesContext["fetcherOptions"];
+} & QueriesContext['fetcherOptions'];
 
 export const fetchShopControllerCreateShop = (
   variables: ShopControllerCreateShopVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    ShopControllerCreateShopError,
-    Schemas.CreateShopDto,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/shop/create", method: "post", ...variables, signal });
+  queriesFetch<undefined, ShopControllerCreateShopError, Schemas.CreateShopDto, {}, {}, {}>({
+    url: '/api/v1/shop/create',
+    method: 'post',
+    ...variables,
+    signal,
+  });
 
 export const useShopControllerCreateShop = (
   options?: Omit<
@@ -344,7 +320,7 @@ export const useShopControllerCreateShop = (
       ShopControllerCreateShopError,
       ShopControllerCreateShopVariables
     >,
-    "mutationFn"
+    'mutationFn'
   >,
 ) => {
   const { fetcherOptions } = useQueriesContext();
@@ -361,25 +337,20 @@ export const useShopControllerCreateShop = (
 
 export type ShopControllerGetAllShopsError = Fetcher.ErrorWrapper<undefined>;
 
-export type ShopControllerGetAllShopsVariables =
-  QueriesContext["fetcherOptions"];
+export type ShopControllerGetAllShopsVariables = QueriesContext['fetcherOptions'];
 
 export const fetchShopControllerGetAllShops = (
   variables: ShopControllerGetAllShopsVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    ShopControllerGetAllShopsError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/shop/all", method: "get", ...variables, signal });
+  queriesFetch<undefined, ShopControllerGetAllShopsError, undefined, {}, {}, {}>({
+    url: '/api/v1/shop/all',
+    method: 'get',
+    ...variables,
+    signal,
+  });
 
-export function shopControllerGetAllShopsQuery(
-  variables: ShopControllerGetAllShopsVariables,
-): {
+export function shopControllerGetAllShopsQuery(variables: ShopControllerGetAllShopsVariables): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<undefined>;
 };
@@ -388,9 +359,7 @@ export function shopControllerGetAllShopsQuery(
   variables: ShopControllerGetAllShopsVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<undefined>)
-    | reactQuery.SkipToken;
+  queryFn: ((options: QueryFnOptions) => Promise<undefined>) | reactQuery.SkipToken;
 };
 
 export function shopControllerGetAllShopsQuery(
@@ -398,35 +367,26 @@ export function shopControllerGetAllShopsQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/api/v1/shop/all",
-      operationId: "shopControllerGetAllShops",
+      path: '/api/v1/shop/all',
+      operationId: 'shopControllerGetAllShops',
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchShopControllerGetAllShops(variables, signal),
+        : ({ signal }: QueryFnOptions) => fetchShopControllerGetAllShops(variables, signal),
   };
 }
 
 export const useSuspenseShopControllerGetAllShops = <TData = undefined>(
   variables: ShopControllerGetAllShopsVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      ShopControllerGetAllShopsError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, ShopControllerGetAllShopsError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    undefined,
-    ShopControllerGetAllShopsError,
-    TData
-  >({
+  return reactQuery.useSuspenseQuery<undefined, ShopControllerGetAllShopsError, TData>({
     ...shopControllerGetAllShopsQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
@@ -436,20 +396,14 @@ export const useSuspenseShopControllerGetAllShops = <TData = undefined>(
 export const useShopControllerGetAllShops = <TData = undefined>(
   variables: ShopControllerGetAllShopsVariables | reactQuery.SkipToken,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      ShopControllerGetAllShopsError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, ShopControllerGetAllShopsError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<undefined, ShopControllerGetAllShopsError, TData>({
     ...shopControllerGetAllShopsQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
+      variables === reactQuery.skipToken ? variables : deepMerge(fetcherOptions, variables),
     ),
     ...options,
     ...queryOptions,
@@ -467,7 +421,7 @@ export type SalesControllerGetAllSalesError = Fetcher.ErrorWrapper<undefined>;
 
 export type SalesControllerGetAllSalesVariables = {
   queryParams: SalesControllerGetAllSalesQueryParams;
-} & QueriesContext["fetcherOptions"];
+} & QueriesContext['fetcherOptions'];
 
 export const fetchSalesControllerGetAllSales = (
   variables: SalesControllerGetAllSalesVariables,
@@ -480,11 +434,9 @@ export const fetchSalesControllerGetAllSales = (
     {},
     SalesControllerGetAllSalesQueryParams,
     {}
-  >({ url: "/api/v1/sales/all", method: "get", ...variables, signal });
+  >({ url: '/api/v1/sales/all', method: 'get', ...variables, signal });
 
-export function salesControllerGetAllSalesQuery(
-  variables: SalesControllerGetAllSalesVariables,
-): {
+export function salesControllerGetAllSalesQuery(variables: SalesControllerGetAllSalesVariables): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<undefined>;
 };
@@ -493,9 +445,7 @@ export function salesControllerGetAllSalesQuery(
   variables: SalesControllerGetAllSalesVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<undefined>)
-    | reactQuery.SkipToken;
+  queryFn: ((options: QueryFnOptions) => Promise<undefined>) | reactQuery.SkipToken;
 };
 
 export function salesControllerGetAllSalesQuery(
@@ -503,35 +453,26 @@ export function salesControllerGetAllSalesQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/api/v1/sales/all",
-      operationId: "salesControllerGetAllSales",
+      path: '/api/v1/sales/all',
+      operationId: 'salesControllerGetAllSales',
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchSalesControllerGetAllSales(variables, signal),
+        : ({ signal }: QueryFnOptions) => fetchSalesControllerGetAllSales(variables, signal),
   };
 }
 
 export const useSuspenseSalesControllerGetAllSales = <TData = undefined>(
   variables: SalesControllerGetAllSalesVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      SalesControllerGetAllSalesError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, SalesControllerGetAllSalesError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    undefined,
-    SalesControllerGetAllSalesError,
-    TData
-  >({
+  return reactQuery.useSuspenseQuery<undefined, SalesControllerGetAllSalesError, TData>({
     ...salesControllerGetAllSalesQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
@@ -541,46 +482,34 @@ export const useSuspenseSalesControllerGetAllSales = <TData = undefined>(
 export const useSalesControllerGetAllSales = <TData = undefined>(
   variables: SalesControllerGetAllSalesVariables | reactQuery.SkipToken,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      SalesControllerGetAllSalesError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, SalesControllerGetAllSalesError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<undefined, SalesControllerGetAllSalesError, TData>(
-    {
-      ...salesControllerGetAllSalesQuery(
-        variables === reactQuery.skipToken
-          ? variables
-          : deepMerge(fetcherOptions, variables),
-      ),
-      ...options,
-      ...queryOptions,
-    },
-  );
+  return reactQuery.useQuery<undefined, SalesControllerGetAllSalesError, TData>({
+    ...salesControllerGetAllSalesQuery(
+      variables === reactQuery.skipToken ? variables : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
 };
 
-export type SalesControllerGetAllSalesItemsError =
-  Fetcher.ErrorWrapper<undefined>;
+export type SalesControllerGetAllSalesItemsError = Fetcher.ErrorWrapper<undefined>;
 
-export type SalesControllerGetAllSalesItemsVariables =
-  QueriesContext["fetcherOptions"];
+export type SalesControllerGetAllSalesItemsVariables = QueriesContext['fetcherOptions'];
 
 export const fetchSalesControllerGetAllSalesItems = (
   variables: SalesControllerGetAllSalesItemsVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    SalesControllerGetAllSalesItemsError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/sales/all-items", method: "get", ...variables, signal });
+  queriesFetch<undefined, SalesControllerGetAllSalesItemsError, undefined, {}, {}, {}>({
+    url: '/api/v1/sales/all-items',
+    method: 'get',
+    ...variables,
+    signal,
+  });
 
 export function salesControllerGetAllSalesItemsQuery(
   variables: SalesControllerGetAllSalesItemsVariables,
@@ -593,9 +522,7 @@ export function salesControllerGetAllSalesItemsQuery(
   variables: SalesControllerGetAllSalesItemsVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<undefined>)
-    | reactQuery.SkipToken;
+  queryFn: ((options: QueryFnOptions) => Promise<undefined>) | reactQuery.SkipToken;
 };
 
 export function salesControllerGetAllSalesItemsQuery(
@@ -603,38 +530,27 @@ export function salesControllerGetAllSalesItemsQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/api/v1/sales/all-items",
-      operationId: "salesControllerGetAllSalesItems",
+      path: '/api/v1/sales/all-items',
+      operationId: 'salesControllerGetAllSalesItems',
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchSalesControllerGetAllSalesItems(variables, signal),
+        : ({ signal }: QueryFnOptions) => fetchSalesControllerGetAllSalesItems(variables, signal),
   };
 }
 
 export const useSuspenseSalesControllerGetAllSalesItems = <TData = undefined>(
   variables: SalesControllerGetAllSalesItemsVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      SalesControllerGetAllSalesItemsError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, SalesControllerGetAllSalesItemsError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    undefined,
-    SalesControllerGetAllSalesItemsError,
-    TData
-  >({
-    ...salesControllerGetAllSalesItemsQuery(
-      deepMerge(fetcherOptions, variables),
-    ),
+  return reactQuery.useSuspenseQuery<undefined, SalesControllerGetAllSalesItemsError, TData>({
+    ...salesControllerGetAllSalesItemsQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
   });
@@ -643,24 +559,14 @@ export const useSuspenseSalesControllerGetAllSalesItems = <TData = undefined>(
 export const useSalesControllerGetAllSalesItems = <TData = undefined>(
   variables: SalesControllerGetAllSalesItemsVariables | reactQuery.SkipToken,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      SalesControllerGetAllSalesItemsError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, SalesControllerGetAllSalesItemsError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    undefined,
-    SalesControllerGetAllSalesItemsError,
-    TData
-  >({
+  return reactQuery.useQuery<undefined, SalesControllerGetAllSalesItemsError, TData>({
     ...salesControllerGetAllSalesItemsQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
+      variables === reactQuery.skipToken ? variables : deepMerge(fetcherOptions, variables),
     ),
     ...options,
     ...queryOptions,
@@ -669,25 +575,20 @@ export const useSalesControllerGetAllSalesItems = <TData = undefined>(
 
 export type ItemControllerFindAllItemsError = Fetcher.ErrorWrapper<undefined>;
 
-export type ItemControllerFindAllItemsVariables =
-  QueriesContext["fetcherOptions"];
+export type ItemControllerFindAllItemsVariables = QueriesContext['fetcherOptions'];
 
 export const fetchItemControllerFindAllItems = (
   variables: ItemControllerFindAllItemsVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    ItemControllerFindAllItemsError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/item/getAll", method: "get", ...variables, signal });
+  queriesFetch<undefined, ItemControllerFindAllItemsError, undefined, {}, {}, {}>({
+    url: '/api/v1/item/getAll',
+    method: 'get',
+    ...variables,
+    signal,
+  });
 
-export function itemControllerFindAllItemsQuery(
-  variables: ItemControllerFindAllItemsVariables,
-): {
+export function itemControllerFindAllItemsQuery(variables: ItemControllerFindAllItemsVariables): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<undefined>;
 };
@@ -696,9 +597,7 @@ export function itemControllerFindAllItemsQuery(
   variables: ItemControllerFindAllItemsVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<undefined>)
-    | reactQuery.SkipToken;
+  queryFn: ((options: QueryFnOptions) => Promise<undefined>) | reactQuery.SkipToken;
 };
 
 export function itemControllerFindAllItemsQuery(
@@ -706,35 +605,26 @@ export function itemControllerFindAllItemsQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/api/v1/item/getAll",
-      operationId: "itemControllerFindAllItems",
+      path: '/api/v1/item/getAll',
+      operationId: 'itemControllerFindAllItems',
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchItemControllerFindAllItems(variables, signal),
+        : ({ signal }: QueryFnOptions) => fetchItemControllerFindAllItems(variables, signal),
   };
 }
 
 export const useSuspenseItemControllerFindAllItems = <TData = undefined>(
   variables: ItemControllerFindAllItemsVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      ItemControllerFindAllItemsError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, ItemControllerFindAllItemsError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    undefined,
-    ItemControllerFindAllItemsError,
-    TData
-  >({
+  return reactQuery.useSuspenseQuery<undefined, ItemControllerFindAllItemsError, TData>({
     ...itemControllerFindAllItemsQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
@@ -744,26 +634,18 @@ export const useSuspenseItemControllerFindAllItems = <TData = undefined>(
 export const useItemControllerFindAllItems = <TData = undefined>(
   variables: ItemControllerFindAllItemsVariables | reactQuery.SkipToken,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      ItemControllerFindAllItemsError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, ItemControllerFindAllItemsError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<undefined, ItemControllerFindAllItemsError, TData>(
-    {
-      ...itemControllerFindAllItemsQuery(
-        variables === reactQuery.skipToken
-          ? variables
-          : deepMerge(fetcherOptions, variables),
-      ),
-      ...options,
-      ...queryOptions,
-    },
-  );
+  return reactQuery.useQuery<undefined, ItemControllerFindAllItemsError, TData>({
+    ...itemControllerFindAllItemsQuery(
+      variables === reactQuery.skipToken ? variables : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
 };
 
 export type SyncControllerPullQueryParams = {
@@ -776,7 +658,7 @@ export type SyncControllerPullError = Fetcher.ErrorWrapper<undefined>;
 
 export type SyncControllerPullVariables = {
   queryParams?: SyncControllerPullQueryParams;
-} & QueriesContext["fetcherOptions"];
+} & QueriesContext['fetcherOptions'];
 
 export const fetchSyncControllerPull = (
   variables: SyncControllerPullVariables,
@@ -789,11 +671,9 @@ export const fetchSyncControllerPull = (
     {},
     SyncControllerPullQueryParams,
     {}
-  >({ url: "/api/v1/sync/pull", method: "get", ...variables, signal });
+  >({ url: '/api/v1/sync/pull', method: 'get', ...variables, signal });
 
-export function syncControllerPullQuery(
-  variables: SyncControllerPullVariables,
-): {
+export function syncControllerPullQuery(variables: SyncControllerPullVariables): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<Schemas.SyncResponseWrapperDto>;
 };
@@ -812,29 +692,22 @@ export function syncControllerPullQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/api/v1/sync/pull",
-      operationId: "syncControllerPull",
+      path: '/api/v1/sync/pull',
+      operationId: 'syncControllerPull',
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchSyncControllerPull(variables, signal),
+        : ({ signal }: QueryFnOptions) => fetchSyncControllerPull(variables, signal),
   };
 }
 
-export const useSuspenseSyncControllerPull = <
-  TData = Schemas.SyncResponseWrapperDto,
->(
+export const useSuspenseSyncControllerPull = <TData = Schemas.SyncResponseWrapperDto>(
   variables: SyncControllerPullVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.SyncResponseWrapperDto,
-      SyncControllerPullError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<Schemas.SyncResponseWrapperDto, SyncControllerPullError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
@@ -852,24 +725,14 @@ export const useSuspenseSyncControllerPull = <
 export const useSyncControllerPull = <TData = Schemas.SyncResponseWrapperDto>(
   variables: SyncControllerPullVariables | reactQuery.SkipToken,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.SyncResponseWrapperDto,
-      SyncControllerPullError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<Schemas.SyncResponseWrapperDto, SyncControllerPullError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    Schemas.SyncResponseWrapperDto,
-    SyncControllerPullError,
-    TData
-  >({
+  return reactQuery.useQuery<Schemas.SyncResponseWrapperDto, SyncControllerPullError, TData>({
     ...syncControllerPullQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
+      variables === reactQuery.skipToken ? variables : deepMerge(fetcherOptions, variables),
     ),
     ...options,
     ...queryOptions,
@@ -880,37 +743,27 @@ export type SyncControllerPushError = Fetcher.ErrorWrapper<undefined>;
 
 export type SyncControllerPushVariables = {
   body: Schemas.PushSyncDto;
-} & QueriesContext["fetcherOptions"];
+} & QueriesContext['fetcherOptions'];
 
 export const fetchSyncControllerPush = (
   variables: SyncControllerPushVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    SyncControllerPushError,
-    Schemas.PushSyncDto,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/sync/push", method: "post", ...variables, signal });
+  queriesFetch<undefined, SyncControllerPushError, Schemas.PushSyncDto, {}, {}, {}>({
+    url: '/api/v1/sync/push',
+    method: 'post',
+    ...variables,
+    signal,
+  });
 
 export const useSyncControllerPush = (
   options?: Omit<
-    reactQuery.UseMutationOptions<
-      undefined,
-      SyncControllerPushError,
-      SyncControllerPushVariables
-    >,
-    "mutationFn"
+    reactQuery.UseMutationOptions<undefined, SyncControllerPushError, SyncControllerPushVariables>,
+    'mutationFn'
   >,
 ) => {
   const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    undefined,
-    SyncControllerPushError,
-    SyncControllerPushVariables
-  >({
+  return reactQuery.useMutation<undefined, SyncControllerPushError, SyncControllerPushVariables>({
     mutationFn: (variables: SyncControllerPushVariables) =>
       fetchSyncControllerPush(deepMerge(fetcherOptions, variables)),
     ...options,
@@ -919,21 +772,18 @@ export const useSyncControllerPush = (
 
 export type CustomerControllerCreateUserError = Fetcher.ErrorWrapper<undefined>;
 
-export type CustomerControllerCreateUserVariables =
-  QueriesContext["fetcherOptions"];
+export type CustomerControllerCreateUserVariables = QueriesContext['fetcherOptions'];
 
 export const fetchCustomerControllerCreateUser = (
   variables: CustomerControllerCreateUserVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    CustomerControllerCreateUserError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/customer/create", method: "post", ...variables, signal });
+  queriesFetch<undefined, CustomerControllerCreateUserError, undefined, {}, {}, {}>({
+    url: '/api/v1/customer/create',
+    method: 'post',
+    ...variables,
+    signal,
+  });
 
 export const useCustomerControllerCreateUser = (
   options?: Omit<
@@ -942,7 +792,7 @@ export const useCustomerControllerCreateUser = (
       CustomerControllerCreateUserError,
       CustomerControllerCreateUserVariables
     >,
-    "mutationFn"
+    'mutationFn'
   >,
 ) => {
   const { fetcherOptions } = useQueriesContext();
@@ -957,24 +807,20 @@ export const useCustomerControllerCreateUser = (
   });
 };
 
-export type CustomerControllerGetAllCustomersError =
-  Fetcher.ErrorWrapper<undefined>;
+export type CustomerControllerGetAllCustomersError = Fetcher.ErrorWrapper<undefined>;
 
-export type CustomerControllerGetAllCustomersVariables =
-  QueriesContext["fetcherOptions"];
+export type CustomerControllerGetAllCustomersVariables = QueriesContext['fetcherOptions'];
 
 export const fetchCustomerControllerGetAllCustomers = (
   variables: CustomerControllerGetAllCustomersVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    CustomerControllerGetAllCustomersError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/customer/all", method: "get", ...variables, signal });
+  queriesFetch<undefined, CustomerControllerGetAllCustomersError, undefined, {}, {}, {}>({
+    url: '/api/v1/customer/all',
+    method: 'get',
+    ...variables,
+    signal,
+  });
 
 export function customerControllerGetAllCustomersQuery(
   variables: CustomerControllerGetAllCustomersVariables,
@@ -987,9 +833,7 @@ export function customerControllerGetAllCustomersQuery(
   variables: CustomerControllerGetAllCustomersVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<undefined>)
-    | reactQuery.SkipToken;
+  queryFn: ((options: QueryFnOptions) => Promise<undefined>) | reactQuery.SkipToken;
 };
 
 export function customerControllerGetAllCustomersQuery(
@@ -997,38 +841,27 @@ export function customerControllerGetAllCustomersQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/api/v1/customer/all",
-      operationId: "customerControllerGetAllCustomers",
+      path: '/api/v1/customer/all',
+      operationId: 'customerControllerGetAllCustomers',
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchCustomerControllerGetAllCustomers(variables, signal),
+        : ({ signal }: QueryFnOptions) => fetchCustomerControllerGetAllCustomers(variables, signal),
   };
 }
 
 export const useSuspenseCustomerControllerGetAllCustomers = <TData = undefined>(
   variables: CustomerControllerGetAllCustomersVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      CustomerControllerGetAllCustomersError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, CustomerControllerGetAllCustomersError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    undefined,
-    CustomerControllerGetAllCustomersError,
-    TData
-  >({
-    ...customerControllerGetAllCustomersQuery(
-      deepMerge(fetcherOptions, variables),
-    ),
+  return reactQuery.useSuspenseQuery<undefined, CustomerControllerGetAllCustomersError, TData>({
+    ...customerControllerGetAllCustomersQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
   });
@@ -1037,24 +870,14 @@ export const useSuspenseCustomerControllerGetAllCustomers = <TData = undefined>(
 export const useCustomerControllerGetAllCustomers = <TData = undefined>(
   variables: CustomerControllerGetAllCustomersVariables | reactQuery.SkipToken,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      CustomerControllerGetAllCustomersError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, CustomerControllerGetAllCustomersError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    undefined,
-    CustomerControllerGetAllCustomersError,
-    TData
-  >({
+  return reactQuery.useQuery<undefined, CustomerControllerGetAllCustomersError, TData>({
     ...customerControllerGetAllCustomersQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
+      variables === reactQuery.skipToken ? variables : deepMerge(fetcherOptions, variables),
     ),
     ...options,
     ...queryOptions,
@@ -1063,25 +886,20 @@ export const useCustomerControllerGetAllCustomers = <TData = undefined>(
 
 export type FinanceControllerGetIncomeError = Fetcher.ErrorWrapper<undefined>;
 
-export type FinanceControllerGetIncomeVariables =
-  QueriesContext["fetcherOptions"];
+export type FinanceControllerGetIncomeVariables = QueriesContext['fetcherOptions'];
 
 export const fetchFinanceControllerGetIncome = (
   variables: FinanceControllerGetIncomeVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    FinanceControllerGetIncomeError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/finance/income", method: "get", ...variables, signal });
+  queriesFetch<undefined, FinanceControllerGetIncomeError, undefined, {}, {}, {}>({
+    url: '/api/v1/finance/income',
+    method: 'get',
+    ...variables,
+    signal,
+  });
 
-export function financeControllerGetIncomeQuery(
-  variables: FinanceControllerGetIncomeVariables,
-): {
+export function financeControllerGetIncomeQuery(variables: FinanceControllerGetIncomeVariables): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<undefined>;
 };
@@ -1090,9 +908,7 @@ export function financeControllerGetIncomeQuery(
   variables: FinanceControllerGetIncomeVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<undefined>)
-    | reactQuery.SkipToken;
+  queryFn: ((options: QueryFnOptions) => Promise<undefined>) | reactQuery.SkipToken;
 };
 
 export function financeControllerGetIncomeQuery(
@@ -1100,35 +916,26 @@ export function financeControllerGetIncomeQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/api/v1/finance/income",
-      operationId: "financeControllerGetIncome",
+      path: '/api/v1/finance/income',
+      operationId: 'financeControllerGetIncome',
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchFinanceControllerGetIncome(variables, signal),
+        : ({ signal }: QueryFnOptions) => fetchFinanceControllerGetIncome(variables, signal),
   };
 }
 
 export const useSuspenseFinanceControllerGetIncome = <TData = undefined>(
   variables: FinanceControllerGetIncomeVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      FinanceControllerGetIncomeError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, FinanceControllerGetIncomeError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    undefined,
-    FinanceControllerGetIncomeError,
-    TData
-  >({
+  return reactQuery.useSuspenseQuery<undefined, FinanceControllerGetIncomeError, TData>({
     ...financeControllerGetIncomeQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
@@ -1138,45 +945,34 @@ export const useSuspenseFinanceControllerGetIncome = <TData = undefined>(
 export const useFinanceControllerGetIncome = <TData = undefined>(
   variables: FinanceControllerGetIncomeVariables | reactQuery.SkipToken,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      FinanceControllerGetIncomeError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, FinanceControllerGetIncomeError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<undefined, FinanceControllerGetIncomeError, TData>(
-    {
-      ...financeControllerGetIncomeQuery(
-        variables === reactQuery.skipToken
-          ? variables
-          : deepMerge(fetcherOptions, variables),
-      ),
-      ...options,
-      ...queryOptions,
-    },
-  );
+  return reactQuery.useQuery<undefined, FinanceControllerGetIncomeError, TData>({
+    ...financeControllerGetIncomeQuery(
+      variables === reactQuery.skipToken ? variables : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
 };
 
 export type FinanceControllerGetExpensesError = Fetcher.ErrorWrapper<undefined>;
 
-export type FinanceControllerGetExpensesVariables =
-  QueriesContext["fetcherOptions"];
+export type FinanceControllerGetExpensesVariables = QueriesContext['fetcherOptions'];
 
 export const fetchFinanceControllerGetExpenses = (
   variables: FinanceControllerGetExpensesVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    FinanceControllerGetExpensesError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: "/api/v1/finance/expenses", method: "get", ...variables, signal });
+  queriesFetch<undefined, FinanceControllerGetExpensesError, undefined, {}, {}, {}>({
+    url: '/api/v1/finance/expenses',
+    method: 'get',
+    ...variables,
+    signal,
+  });
 
 export function financeControllerGetExpensesQuery(
   variables: FinanceControllerGetExpensesVariables,
@@ -1189,9 +985,7 @@ export function financeControllerGetExpensesQuery(
   variables: FinanceControllerGetExpensesVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<undefined>)
-    | reactQuery.SkipToken;
+  queryFn: ((options: QueryFnOptions) => Promise<undefined>) | reactQuery.SkipToken;
 };
 
 export function financeControllerGetExpensesQuery(
@@ -1199,35 +993,26 @@ export function financeControllerGetExpensesQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/api/v1/finance/expenses",
-      operationId: "financeControllerGetExpenses",
+      path: '/api/v1/finance/expenses',
+      operationId: 'financeControllerGetExpenses',
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchFinanceControllerGetExpenses(variables, signal),
+        : ({ signal }: QueryFnOptions) => fetchFinanceControllerGetExpenses(variables, signal),
   };
 }
 
 export const useSuspenseFinanceControllerGetExpenses = <TData = undefined>(
   variables: FinanceControllerGetExpensesVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      FinanceControllerGetExpensesError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, FinanceControllerGetExpensesError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    undefined,
-    FinanceControllerGetExpensesError,
-    TData
-  >({
+  return reactQuery.useSuspenseQuery<undefined, FinanceControllerGetExpensesError, TData>({
     ...financeControllerGetExpensesQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
@@ -1237,50 +1022,31 @@ export const useSuspenseFinanceControllerGetExpenses = <TData = undefined>(
 export const useFinanceControllerGetExpenses = <TData = undefined>(
   variables: FinanceControllerGetExpensesVariables | reactQuery.SkipToken,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      FinanceControllerGetExpensesError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, FinanceControllerGetExpensesError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    undefined,
-    FinanceControllerGetExpensesError,
-    TData
-  >({
+  return reactQuery.useQuery<undefined, FinanceControllerGetExpensesError, TData>({
     ...financeControllerGetExpensesQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
+      variables === reactQuery.skipToken ? variables : deepMerge(fetcherOptions, variables),
     ),
     ...options,
     ...queryOptions,
   });
 };
 
-export type UserAnalayticsControllerOnBoardingUserError =
-  Fetcher.ErrorWrapper<undefined>;
+export type UserAnalayticsControllerOnBoardingUserError = Fetcher.ErrorWrapper<undefined>;
 
-export type UserAnalayticsControllerOnBoardingUserVariables =
-  QueriesContext["fetcherOptions"];
+export type UserAnalayticsControllerOnBoardingUserVariables = QueriesContext['fetcherOptions'];
 
 export const fetchUserAnalayticsControllerOnBoardingUser = (
   variables: UserAnalayticsControllerOnBoardingUserVariables,
   signal?: AbortSignal,
 ) =>
-  queriesFetch<
-    undefined,
-    UserAnalayticsControllerOnBoardingUserError,
-    undefined,
-    {},
-    {},
-    {}
-  >({
-    url: "/api/v1/adminx/onboarding-user",
-    method: "get",
+  queriesFetch<undefined, UserAnalayticsControllerOnBoardingUserError, undefined, {}, {}, {}>({
+    url: '/api/v1/adminx/onboarding-user',
+    method: 'get',
     ...variables,
     signal,
   });
@@ -1293,25 +1059,19 @@ export function userAnalayticsControllerOnBoardingUserQuery(
 };
 
 export function userAnalayticsControllerOnBoardingUserQuery(
-  variables:
-    | UserAnalayticsControllerOnBoardingUserVariables
-    | reactQuery.SkipToken,
+  variables: UserAnalayticsControllerOnBoardingUserVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<undefined>)
-    | reactQuery.SkipToken;
+  queryFn: ((options: QueryFnOptions) => Promise<undefined>) | reactQuery.SkipToken;
 };
 
 export function userAnalayticsControllerOnBoardingUserQuery(
-  variables:
-    | UserAnalayticsControllerOnBoardingUserVariables
-    | reactQuery.SkipToken,
+  variables: UserAnalayticsControllerOnBoardingUserVariables | reactQuery.SkipToken,
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/api/v1/adminx/onboarding-user",
-      operationId: "userAnalayticsControllerOnBoardingUser",
+      path: '/api/v1/adminx/onboarding-user',
+      operationId: 'userAnalayticsControllerOnBoardingUser',
       variables,
     }),
     queryFn:
@@ -1322,56 +1082,34 @@ export function userAnalayticsControllerOnBoardingUserQuery(
   };
 }
 
-export const useSuspenseUserAnalayticsControllerOnBoardingUser = <
-  TData = undefined,
->(
+export const useSuspenseUserAnalayticsControllerOnBoardingUser = <TData = undefined>(
   variables: UserAnalayticsControllerOnBoardingUserVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      UserAnalayticsControllerOnBoardingUserError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, UserAnalayticsControllerOnBoardingUserError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    undefined,
-    UserAnalayticsControllerOnBoardingUserError,
-    TData
-  >({
-    ...userAnalayticsControllerOnBoardingUserQuery(
-      deepMerge(fetcherOptions, variables),
-    ),
-    ...options,
-    ...queryOptions,
-  });
+  return reactQuery.useSuspenseQuery<undefined, UserAnalayticsControllerOnBoardingUserError, TData>(
+    {
+      ...userAnalayticsControllerOnBoardingUserQuery(deepMerge(fetcherOptions, variables)),
+      ...options,
+      ...queryOptions,
+    },
+  );
 };
 
 export const useUserAnalayticsControllerOnBoardingUser = <TData = undefined>(
-  variables:
-    | UserAnalayticsControllerOnBoardingUserVariables
-    | reactQuery.SkipToken,
+  variables: UserAnalayticsControllerOnBoardingUserVariables | reactQuery.SkipToken,
   options?: Omit<
-    reactQuery.UseQueryOptions<
-      undefined,
-      UserAnalayticsControllerOnBoardingUserError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
+    reactQuery.UseQueryOptions<undefined, UserAnalayticsControllerOnBoardingUserError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
   >,
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    undefined,
-    UserAnalayticsControllerOnBoardingUserError,
-    TData
-  >({
+  return reactQuery.useQuery<undefined, UserAnalayticsControllerOnBoardingUserError, TData>({
     ...userAnalayticsControllerOnBoardingUserQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
+      variables === reactQuery.skipToken ? variables : deepMerge(fetcherOptions, variables),
     ),
     ...options,
     ...queryOptions,
@@ -1380,58 +1118,52 @@ export const useUserAnalayticsControllerOnBoardingUser = <TData = undefined>(
 
 export type QueryOperation =
   | {
-      path: "/api/v1/user/me";
-      operationId: "userControllerGetMe";
+      path: '/api/v1/user/me';
+      operationId: 'userControllerGetMe';
       variables: UserControllerGetMeVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/api/v1/shop/all";
-      operationId: "shopControllerGetAllShops";
+      path: '/api/v1/shop/all';
+      operationId: 'shopControllerGetAllShops';
       variables: ShopControllerGetAllShopsVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/api/v1/sales/all";
-      operationId: "salesControllerGetAllSales";
+      path: '/api/v1/sales/all';
+      operationId: 'salesControllerGetAllSales';
       variables: SalesControllerGetAllSalesVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/api/v1/sales/all-items";
-      operationId: "salesControllerGetAllSalesItems";
-      variables:
-        | SalesControllerGetAllSalesItemsVariables
-        | reactQuery.SkipToken;
+      path: '/api/v1/sales/all-items';
+      operationId: 'salesControllerGetAllSalesItems';
+      variables: SalesControllerGetAllSalesItemsVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/api/v1/item/getAll";
-      operationId: "itemControllerFindAllItems";
+      path: '/api/v1/item/getAll';
+      operationId: 'itemControllerFindAllItems';
       variables: ItemControllerFindAllItemsVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/api/v1/sync/pull";
-      operationId: "syncControllerPull";
+      path: '/api/v1/sync/pull';
+      operationId: 'syncControllerPull';
       variables: SyncControllerPullVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/api/v1/customer/all";
-      operationId: "customerControllerGetAllCustomers";
-      variables:
-        | CustomerControllerGetAllCustomersVariables
-        | reactQuery.SkipToken;
+      path: '/api/v1/customer/all';
+      operationId: 'customerControllerGetAllCustomers';
+      variables: CustomerControllerGetAllCustomersVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/api/v1/finance/income";
-      operationId: "financeControllerGetIncome";
+      path: '/api/v1/finance/income';
+      operationId: 'financeControllerGetIncome';
       variables: FinanceControllerGetIncomeVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/api/v1/finance/expenses";
-      operationId: "financeControllerGetExpenses";
+      path: '/api/v1/finance/expenses';
+      operationId: 'financeControllerGetExpenses';
       variables: FinanceControllerGetExpensesVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/api/v1/adminx/onboarding-user";
-      operationId: "userAnalayticsControllerOnBoardingUser";
-      variables:
-        | UserAnalayticsControllerOnBoardingUserVariables
-        | reactQuery.SkipToken;
+      path: '/api/v1/adminx/onboarding-user';
+      operationId: 'userAnalayticsControllerOnBoardingUser';
+      variables: UserAnalayticsControllerOnBoardingUserVariables | reactQuery.SkipToken;
     };

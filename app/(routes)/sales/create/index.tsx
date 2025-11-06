@@ -1,6 +1,6 @@
-import CreateSalesScreen from "@/screen/sales/create-sales.screen";
+import NewSalesScreen from '@/screen/sales/new-create-sales.screen';
 
 const SalesCreate = () => {
-    return <CreateSalesScreen />;
+  return <NewSalesScreen />;
 };
 export default SalesCreate;

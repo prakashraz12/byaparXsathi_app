@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { CloudDownload } from "lucide-react-native";
-import { View, Animated, Easing, StyleSheet } from "react-native";
-import { Text } from "./re-usables/text";
-import { useSyncStore } from "@/store/useSync";
-import { syncControllerPullQuery } from "@/service/queries-components";
-import { router } from "expo-router";
+import { router } from 'expo-router';
+import { CloudDownload } from 'lucide-react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Easing, StyleSheet,View } from 'react-native';
+
+import { useSyncStore } from '@/store/useSync';
+
+import { Text } from './re-usables/text';
 
 const Syncing = () => {
   // Animation values
@@ -14,7 +15,7 @@ const Syncing = () => {
   const progressWidth = useRef(new Animated.Value(0)).current;
 
   // State for dots
-  const [dots, setDots] = useState("");
+  const [dots, setDots] = useState('');
 
   useEffect(() => {
     const breatheAnimation = Animated.loop(
@@ -31,7 +32,7 @@ const Syncing = () => {
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
-      ])
+      ]),
     );
 
     // Download arrow bounce animation
@@ -49,7 +50,7 @@ const Syncing = () => {
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
-      ])
+      ]),
     );
 
     // Progress bar animation
@@ -66,14 +67,14 @@ const Syncing = () => {
           duration: 0,
           useNativeDriver: false,
         }),
-      ])
+      ]),
     );
 
     // Dots animation using setInterval
     let dotCount = 0;
     const dotsInterval = setInterval(() => {
       dotCount = (dotCount + 1) % 4;
-      setDots(".".repeat(dotCount));
+      setDots('.'.repeat(dotCount));
     }, 500);
 
     breatheAnimation.start();
@@ -90,17 +91,14 @@ const Syncing = () => {
 
   const progressWidthInterpolated = progressWidth.interpolate({
     inputRange: [0, 1],
-    outputRange: ["0%", "100%"],
+    outputRange: ['0%', '100%'],
   });
 
-
-
-useEffect(() => {
+  useEffect(() => {
     if (syncing !== null && syncing === false) {
-      router.replace("/(tabs)");
+      router.replace('/(tabs)');
     }
   }, [syncing]);
-  
 
   return (
     <View style={styles.container}>
@@ -108,10 +106,7 @@ useEffect(() => {
         style={[
           styles.iconContainer,
           {
-            transform: [
-              { scale: cloudScale },
-              { translateY: downloadPosition },
-            ],
+            transform: [{ scale: cloudScale }, { translateY: downloadPosition }],
           },
         ]}
       >
@@ -140,48 +135,48 @@ useEffect(() => {
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
+    position: 'absolute',
     zIndex: 99999,
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "white",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   iconContainer: {
     marginBottom: 24,
   },
   textContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 20,
   },
   mainText: {
     fontSize: 20,
-    fontFamily: "PoppinsSemiBold",
-    color: "#1f2937",
+    fontFamily: 'PoppinsSemiBold',
+    color: '#1f2937',
     marginBottom: 8,
     minHeight: 28,
   },
   subText: {
     fontSize: 14,
-    color: "#6b7280",
-    textAlign: "center",
+    color: '#6b7280',
+    textAlign: 'center',
   },
   progressContainer: {
     width: 200,
     height: 4,
-    backgroundColor: "#e5e7eb",
+    backgroundColor: '#e5e7eb',
     borderRadius: 2,
-    overflow: "hidden",
+    overflow: 'hidden',
     marginTop: 12,
   },
   progressBar: {
-    height: "100%",
-    backgroundColor: "#3b82f6",
+    height: '100%',
+    backgroundColor: '#3b82f6',
     borderRadius: 2,
   },
 });

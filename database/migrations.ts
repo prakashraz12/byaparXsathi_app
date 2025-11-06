@@ -1,9 +1,5 @@
 // migrations.ts
-import {
-  addColumns,
-  createTable,
-  schemaMigrations,
-} from "@nozbe/watermelondb/Schema/migrations";
+import { addColumns, createTable, schemaMigrations } from '@nozbe/watermelondb/Schema/migrations';
 
 export default schemaMigrations({
   migrations: [
@@ -79,25 +75,25 @@ export default schemaMigrations({
       toVersion: 2,
       steps: [
         createTable({
-          name: "expenses",
+          name: 'expenses',
           columns: [
-            { name: "title", type: "string" },
-            { name: "amount", type: "number" },
-            { name: "remarks", type: "string" },
-            { name: "createdAt", type: "number" },
-            { name: "updatedAt", type: "number" },
-            { name: "shopId", type: "string" },
+            { name: 'title', type: 'string' },
+            { name: 'amount', type: 'number' },
+            { name: 'remarks', type: 'string' },
+            { name: 'createdAt', type: 'number' },
+            { name: 'updatedAt', type: 'number' },
+            { name: 'shopId', type: 'string' },
           ],
         }),
         createTable({
-          name: "saving",
+          name: 'saving',
           columns: [
-            { name: "title", type: "string" },
-            { name: "amount", type: "number" },
-            { name: "remarks", type: "string" },
-            { name: "createdAt", type: "number" },
-            { name: "updatedAt", type: "number" },
-            { name: "shopId", type: "string" },
+            { name: 'title', type: 'string' },
+            { name: 'amount', type: 'number' },
+            { name: 'remarks', type: 'string' },
+            { name: 'createdAt', type: 'number' },
+            { name: 'updatedAt', type: 'number' },
+            { name: 'shopId', type: 'string' },
           ],
         }),
       ],
@@ -106,10 +102,10 @@ export default schemaMigrations({
       toVersion: 3,
       steps: [
         addColumns({
-          table: "expenses",
+          table: 'expenses',
           columns: [
-            { name: "created_at", type: "number" },
-            { name: "updated_at", type: "number" },
+            { name: 'created_at', type: 'number' },
+            { name: 'updated_at', type: 'number' },
           ],
         }),
       ],
@@ -118,31 +114,31 @@ export default schemaMigrations({
       toVersion: 4,
       steps: [
         addColumns({
-          table: "saving",
+          table: 'saving',
           columns: [
-            { name: "created_at", type: "number" },
-            { name: "updated_at", type: "number" },
+            { name: 'created_at', type: 'number' },
+            { name: 'updated_at', type: 'number' },
           ],
         }),
         addColumns({
-          table: "sales",
+          table: 'sales',
           columns: [
-            { name: "created_at", type: "number" },
-            { name: "updated_at", type: "number" },
+            { name: 'created_at', type: 'number' },
+            { name: 'updated_at', type: 'number' },
           ],
         }),
         addColumns({
-          table: "salesitem",
+          table: 'salesitem',
           columns: [
-            { name: "created_at", type: "number" },
-            { name: "updated_at", type: "number" },
+            { name: 'created_at', type: 'number' },
+            { name: 'updated_at', type: 'number' },
           ],
         }),
         addColumns({
-          table: "paymentaccount",
+          table: 'paymentaccount',
           columns: [
-            { name: "created_at", type: "number" },
-            { name: "updated_at", type: "number" },
+            { name: 'created_at', type: 'number' },
+            { name: 'updated_at', type: 'number' },
           ],
         }),
       ],
@@ -151,10 +147,10 @@ export default schemaMigrations({
       toVersion: 5,
       steps: [
         addColumns({
-          table: "sales",
+          table: 'sales',
           columns: [
-            { name: "customerId", type: "string" },
-            { name: "customerName", type: "string" },
+            { name: 'customerId', type: 'string' },
+            { name: 'customerName', type: 'string' },
           ],
         }),
       ],
@@ -163,17 +159,29 @@ export default schemaMigrations({
       toVersion: 6,
       steps: [
         createTable({
-          name: "paymentIn",
+          name: 'paymentIn',
           columns: [
-            { name: "paymentId", type: "string" },
-            { name: "amount", type: "number" },
-            { name: "remarks", type: "string" },
-            { name: "shopId", type: "string" },
-            { name: "customerId", type: "string" },
-            { name: "paymentInDate", type: "number" },
-            { name: "created_at", type: "number" },
-            { name: "updated_at", type: "number" },
-            { name: "receiptNumber", type: "string" },
+            { name: 'paymentId', type: 'string' },
+            { name: 'amount', type: 'number' },
+            { name: 'remarks', type: 'string' },
+            { name: 'shopId', type: 'string' },
+            { name: 'customerId', type: 'string' },
+            { name: 'paymentInDate', type: 'string' },
+            { name: 'created_at', type: 'number' },
+            { name: 'updated_at', type: 'number' },
+            { name: 'receiptNumber', type: 'string' },
+          ],
+        }),
+      ],
+    },
+    {
+      toVersion: 7,
+      steps: [
+        addColumns({
+          table: 'sales',
+          columns: [
+            { name: 'payableAmount', type: 'number' },
+            { name: 'amountDeducted', type: 'number' },
           ],
         }),
       ],

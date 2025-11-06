@@ -1,9 +1,10 @@
-import { useUserStore } from "@/store/useUserStore";
-import { useCallback, useEffect, useState } from "react";
-import Expenses from "../model/expenses.model";
-import { DB_COLLECTION } from "../collection";
-import { Q } from "@nozbe/watermelondb";
-import Income from "../model/income.model";
+import { Q } from '@nozbe/watermelondb';
+import { useCallback, useEffect, useState } from 'react';
+
+import { useUserStore } from '@/store/useUserStore';
+
+import { DB_COLLECTION } from '../collection';
+import Income from '../model/income.model';
 
 const useIncome = ({ searchParams }: { searchParams?: string }) => {
   const { activeShopId } = useUserStore();
@@ -14,16 +15,13 @@ const useIncome = ({ searchParams }: { searchParams?: string }) => {
     let query = DB_COLLECTION.income.query();
 
     if (activeShopId) {
-      query = query.extend(Q.where("shopId", activeShopId));
+      query = query.extend(Q.where('shopId', activeShopId));
     }
 
     if (searchParams) {
       const likePattern = `%${searchParams}%`;
       query = query.extend(
-        Q.or(
-          Q.where("incomeSource", Q.like(likePattern)),
-          Q.where("remarks", Q.like(likePattern)),
-        ),
+        Q.or(Q.where('incomeSource', Q.like(likePattern)), Q.where('remarks', Q.like(likePattern))),
       );
     }
 
@@ -38,7 +36,7 @@ const useIncome = ({ searchParams }: { searchParams?: string }) => {
         const records = await query.fetch();
         setIncome(records?.map((record) => record?._raw as any));
       } catch (error) {
-        console.error("Error loading income:", error);
+        console.error('Error loading income:', error);
       } finally {
         if (isRefresh) setIsRefreshing(false);
       }

@@ -1,13 +1,13 @@
-import { salesService } from "@/database/services/sales.service";
-import EditSalesScreen from "@/screen/sales/edit-sales.screen";
-import { useSalesItemStore } from "@/store/useSalesItem";
-import { useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
+
+import { salesService } from '@/database/services/sales.service';
+import EditSalesScreen from '@/screen/sales/edit-sales.screen';
+import { useSalesItemStore } from '@/store/useSalesItem';
 
 const EditSales = () => {
   const { id } = useLocalSearchParams();
   const [salesData, setSalesData] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const fetchSales = useCallback(async () => {
     if (!id) return;
@@ -22,11 +22,7 @@ const EditSales = () => {
     fetchSales();
   }, [fetchSales]);
 
-  return (
-    <>
-      {salesData && <EditSalesScreen id={id as string} salesData={salesData} />}
-    </>
-  );
+  return <>{salesData && <EditSalesScreen id={id as string} salesData={salesData} />}</>;
 };
 
 export default EditSales;

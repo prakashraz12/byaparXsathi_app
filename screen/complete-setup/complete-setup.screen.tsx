@@ -1,64 +1,58 @@
-import { BANNER_LOGO } from "@/assets";
-import BadgeSelector from "@/components/re-usables/badge-selector";
-import { Button } from "@/components/re-usables/button";
-import { Toast } from "@/components/re-usables/custom-toaster/toast-service";
-import Dropdown from "@/components/re-usables/drop-down";
-import CustomInput from "@/components/re-usables/input";
-import { Text } from "@/components/re-usables/text";
-import { COLORS } from "@/constants/Colors";
-import { SHOP_TYPES_OPTIONS } from "@/constants/shop-types";
-import { useSync } from "@/database/hooks/useSync";
-import { shopService } from "@/database/services/shop.service";
-import {
-  completeSchema,
-  TCompleteSchema,
-} from "@/forms/schema/complete.schema";
-import PXWrapper from "@/layouts/px-wrapper";
-import { useAuthControllerCompleteSetup } from "@/service/queries-components";
-import { CompletedSetupResponse } from "@/service/types-schemas";
-import { useUserStore } from "@/store/useUserStore";
-import { apiOptions } from "@/utils/api-options.util";
-import { useForm } from "@tanstack/react-form";
-import { router } from "expo-router";
-import { MapPin, Phone, Store, User, Sparkles } from "lucide-react-native";
-import { Image, Pressable, View, ScrollView, StyleSheet } from "react-native";
+import { BANNER_LOGO } from '@/assets';
+import BadgeSelector from '@/components/re-usables/badge-selector';
+import { Button } from '@/components/re-usables/button';
+import { Toast } from '@/components/re-usables/custom-toaster/toast-service';
+import Dropdown from '@/components/re-usables/drop-down';
+import CustomInput from '@/components/re-usables/input';
+import { Text } from '@/components/re-usables/text';
+import { COLORS } from '@/constants/Colors';
+import { SHOP_TYPES_OPTIONS } from '@/constants/shop-types';
+import { useSync } from '@/database/hooks/useSync';
+import { shopService } from '@/database/services/shop.service';
+import { completeSchema, TCompleteSchema } from '@/forms/schema/complete.schema';
+import PXWrapper from '@/layouts/px-wrapper';
+import { useAuthControllerCompleteSetup } from '@/service/queries-components';
+import { CompletedSetupResponse } from '@/service/types-schemas';
+import { useUserStore } from '@/store/useUserStore';
+import { apiOptions } from '@/utils/api-options.util';
+import { useForm } from '@tanstack/react-form';
+import { router } from 'expo-router';
+import { MapPin, Phone, Store, User, Sparkles } from 'lucide-react-native';
+import { Image, Pressable, View, ScrollView, StyleSheet } from 'react-native';
 
 const CompleteSetUpScreen = () => {
   const { clearUser, setUser, setActiveShopId } = useUserStore();
   const { syncNow } = useSync();
 
   const { mutateAsync, isPending } = useAuthControllerCompleteSetup(
-    apiOptions(
-      undefined,
-      async ({ data }: { data: CompletedSetupResponse }) => {
-        await syncNow({ isFirstTime: true, fetchShops: true });
-        await setUser({
-          fullName: data.user.fullName,
-          email: data.user.email,
-          role: data.user.role,
-          id: data.user.id.toString(),
-          phoneNumber: data.user.phoneNumber,
-          stage: data.user.stage,
-          country: data.user.country,
-          isDeleted: false,
-          requestDeleteOn: "",
-          createdAt: data.user.createdAt,
-          updatedAt: data.user.updatedAt,
-        });
+    apiOptions(undefined, async ({ data }: { data: CompletedSetupResponse }) => {
+      await syncNow({ isFirstTime: true, fetchShops: true });
+      await setUser({
+        fullName: data.user.fullName,
+        email: data.user.email,
+        role: data.user.role,
+        id: data.user.id.toString(),
+        phoneNumber: data.user.phoneNumber,
+        stage: data.user.stage,
+        country: data.user.country,
+        isDeleted: false,
+        requestDeleteOn: '',
+        createdAt: data.user.createdAt,
+        updatedAt: data.user.updatedAt,
+      });
 
-        setActiveShopId(data?.shop?.id || "");
-        router.replace("/(tabs)");
-      },
-    ),
+      setActiveShopId(data?.shop?.id || '');
+      router.replace('/(tabs)');
+    }),
   );
 
   const form = useForm({
     defaultValues: {
-      fullName: "",
-      phoneNumber: "",
-      address: "",
-      shopName: "",
-      shopType: "",
+      fullName: '',
+      phoneNumber: '',
+      address: '',
+      shopName: '',
+      shopType: '',
     },
     validators: {
       onChangeAsync: completeSchema,
@@ -71,7 +65,7 @@ const CompleteSetUpScreen = () => {
           address: value.address,
           shopName: value.shopName,
           shopType: value.shopType,
-          id: "",
+          id: '',
         },
       });
     },
@@ -79,7 +73,7 @@ const CompleteSetUpScreen = () => {
 
   const handleLogout = async () => {
     await clearUser();
-    router.replace("/(routes)/onboarding");
+    router.replace('/(routes)/onboarding');
   };
 
   return (
@@ -87,11 +81,7 @@ const CompleteSetUpScreen = () => {
       {/* Header Section with Gradient Background */}
       <View style={styles.headerContainer}>
         <View style={styles.logoContainer}>
-          <Image
-            source={BANNER_LOGO}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+          <Image source={BANNER_LOGO} style={styles.logo} resizeMode="contain" />
         </View>
 
         <View style={styles.welcomeCard}>
@@ -99,9 +89,7 @@ const CompleteSetUpScreen = () => {
             <Sparkles size={32} color={COLORS.primary} strokeWidth={2} />
           </View>
           <Text style={styles.title}>Almost There!</Text>
-          <Text style={styles.subtitle}>
-            Complete your profile to unlock your shop experience
-          </Text>
+          <Text style={styles.subtitle}>Complete your profile to unlock your shop experience</Text>
         </View>
       </View>
 
@@ -126,7 +114,7 @@ const CompleteSetUpScreen = () => {
               autoCorrect={false}
               error={field.state.meta.errors
                 .map((err: any) => err.message || String(err))
-                .join(", ")}
+                .join(', ')}
             />
           )}
         </form.Field>
@@ -146,7 +134,7 @@ const CompleteSetUpScreen = () => {
               autoCorrect={false}
               error={field.state.meta.errors
                 .map((err: any) => err.message || String(err))
-                .join(", ")}
+                .join(', ')}
             />
           )}
         </form.Field>
@@ -165,7 +153,7 @@ const CompleteSetUpScreen = () => {
               autoCorrect={false}
               error={field.state.meta.errors
                 .map((err: any) => err.message || String(err))
-                .join(", ")}
+                .join(', ')}
             />
           )}
         </form.Field>
@@ -184,7 +172,7 @@ const CompleteSetUpScreen = () => {
               autoCorrect={false}
               error={field.state.meta.errors
                 .map((err: any) => err.message || String(err))
-                .join(", ")}
+                .join(', ')}
             />
           )}
         </form.Field>
@@ -228,7 +216,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     paddingTop: 40,
     paddingBottom: 30,
   },
@@ -240,7 +228,7 @@ const styles = StyleSheet.create({
     height: 56,
   },
   welcomeCard: {
-    alignItems: "center",
+    alignItems: 'center',
     paddingHorizontal: 20,
   },
   sparkleIconContainer: {
@@ -248,14 +236,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontFamily: "Poppins-Bold",
-    textAlign: "center",
+    fontFamily: 'Poppins-Bold',
+    textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 15,
-    fontFamily: "Poppins-Regular",
-    textAlign: "center",
+    fontFamily: 'Poppins-Regular',
+    textAlign: 'center',
     opacity: 0.7,
     lineHeight: 22,
     maxWidth: 280,
@@ -265,8 +253,8 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 16,
   },
   sectionIndicator: {
@@ -278,20 +266,20 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: 'Poppins-SemiBold',
   },
   inputSpacing: {
     marginBottom: 14,
   },
   divider: {
     height: 1,
-    backgroundColor: COLORS.border || "#E5E7EB",
+    backgroundColor: COLORS.border || '#E5E7EB',
     marginVertical: 20,
     opacity: 0.3,
   },
   fieldLabel: {
     fontSize: 14,
-    fontFamily: "Poppins-Medium",
+    fontFamily: 'Poppins-Medium',
     marginBottom: 12,
     marginTop: 4,
   },
@@ -300,15 +288,15 @@ const styles = StyleSheet.create({
     height: 52,
   },
   logoutContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 24,
     paddingVertical: 8,
   },
   logoutText: {
     fontSize: 14,
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
     opacity: 0.6,
   },
   logoutButton: {
@@ -318,7 +306,7 @@ const styles = StyleSheet.create({
   },
   logoutButtonText: {
     fontSize: 14,
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: 'Poppins-SemiBold',
     color: COLORS.primary,
   },
 });

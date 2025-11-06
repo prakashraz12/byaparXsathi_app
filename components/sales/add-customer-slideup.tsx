@@ -1,12 +1,14 @@
-import { useCustomers } from "@/database/hooks/useCustomer";
-import Customer from "@/database/model/customer.model";
-import { Search } from "lucide-react-native";
-import { useState } from "react";
-import { ActivityIndicator, Dimensions, View } from "react-native";
-import CustomerCard from "../customer/customer-card";
-import CustomInput from "../re-usables/input";
-import { SlideUpModal } from "../re-usables/modal/slide-up.modal";
-import NotFound from "../re-usables/not-found";
+import { Search } from 'lucide-react-native';
+import { useState } from 'react';
+import { ActivityIndicator, Dimensions, View } from 'react-native';
+
+import { useCustomers } from '@/database/hooks/useCustomer';
+import Customer from '@/database/model/customer.model';
+
+import CustomerCard from '../customer/customer-card';
+import CustomInput from '../re-usables/input';
+import { SlideUpModal } from '../re-usables/modal/slide-up.modal';
+import NotFound from '../re-usables/not-found';
 
 interface AddCustomerSlideupProps {
   visible: boolean;
@@ -22,15 +24,11 @@ const AddCustomerSlideup = ({
   selectedCustomer,
   onSelectCustomer,
 }: AddCustomerSlideupProps) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const { customers, loading } = useCustomers({ search: searchQuery });
-  const WINDOW_HEIGHT = Dimensions.get("window").height;
+  const WINDOW_HEIGHT = Dimensions.get('window').height;
   return (
-    <SlideUpModal
-      visible={visible}
-      onClose={() => onClose()}
-      height={WINDOW_HEIGHT - 80}
-    >
+    <SlideUpModal visible={visible} onClose={() => onClose()} height={WINDOW_HEIGHT - 80}>
       <View>
         <View style={{ marginBottom: 10 }}>
           <CustomInput
@@ -44,8 +42,8 @@ const AddCustomerSlideup = ({
           <View
             style={{
               flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
+              justifyContent: 'center',
+              alignItems: 'center',
               height: WINDOW_HEIGHT - 80,
             }}
           >
@@ -55,7 +53,7 @@ const AddCustomerSlideup = ({
           <NotFound
             title="No Customer Found!"
             description="You haven't added customer yet!"
-            renderButton={{ buttonTitle: "Add Customer", onPress: () => {} }}
+            renderButton={{ buttonTitle: 'Add Customer', onPress: () => {} }}
           />
         ) : (
           customers?.map((customer) => (

@@ -1,9 +1,11 @@
-import { View } from "react-native";
-import { Text } from "../re-usables/text";
-import { COLORS } from "@/constants/Colors";
-import { useEffect, useMemo, useState } from "react";
-import { observeSalesSummary } from "@/database/services/analaytics.service";
-import { formatNumberWithComma } from "@/utils/format-number";
+import { useEffect, useMemo, useState } from 'react';
+import { View } from 'react-native';
+
+import { COLORS } from '@/constants/Colors';
+import { observeSalesSummary } from '@/database/services/analaytics.service';
+import { formatNumberWithComma } from '@/utils/format-number';
+
+import { Text } from '../re-usables/text';
 
 const SalesSummary = () => {
   const [salesSummary, setSalesSummary] = useState<{
@@ -17,7 +19,7 @@ const SalesSummary = () => {
   });
   useEffect(() => {
     const sub = observeSalesSummary({
-      dateRangePreset: "THIS_MONTH",
+      dateRangePreset: 'THIS_MONTH',
     }).subscribe(setSalesSummary);
     return () => sub.unsubscribe();
   }, []);
@@ -38,7 +40,7 @@ const SalesSummary = () => {
     <View
       style={{
         padding: 12,
-        backgroundColor: "white",
+        backgroundColor: 'white',
         borderRadius: 8,
         borderWidth: 1,
         borderColor: COLORS.border,
@@ -46,22 +48,18 @@ const SalesSummary = () => {
         paddingHorizontal: 12,
       }}
     >
-      <Text style={{ fontSize: 16, fontFamily: "Poppins-SemiBold" }}>
-        Sales Summary
-      </Text>
-      <Text
-        style={{ fontSize: 14, fontFamily: "Poppins-Regular", color: "#666" }}
-      >
+      <Text style={{ fontSize: 16, fontFamily: 'Poppins-SemiBold' }}>Sales Summary</Text>
+      <Text style={{ fontSize: 14, fontFamily: 'Poppins-Regular', color: '#666' }}>
         Sales summary of this month
       </Text>
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: 'row',
           marginTop: 15,
-          alignItems: "center",
+          alignItems: 'center',
           gap: 4,
-          maxWidth: "100%",
-          overflow: "hidden",
+          maxWidth: '100%',
+          overflow: 'hidden',
         }}
       >
         <View
@@ -89,16 +87,16 @@ const SalesSummary = () => {
           }}
         />
       </View>
-      <View style={{ marginTop: 20, flexDirection: "column", gap: 20 }}>
+      <View style={{ marginTop: 20, flexDirection: 'column', gap: 20 }}>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection: 'row',
+            alignItems: 'center',
             gap: 10,
-            justifyContent: "space-between",
+            justifyContent: 'space-between',
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <View
               style={{
                 width: 30,
@@ -110,7 +108,7 @@ const SalesSummary = () => {
             <Text
               style={{
                 fontSize: 15,
-                fontFamily: "Poppins-SemiBold",
+                fontFamily: 'Poppins-SemiBold',
                 marginLeft: 10,
               }}
             >
@@ -118,19 +116,19 @@ const SalesSummary = () => {
             </Text>
           </View>
 
-          <Text style={{ fontSize: 15, fontFamily: "Poppins-SemiBold" }}>
+          <Text style={{ fontSize: 15, fontFamily: 'Poppins-SemiBold' }}>
             {formatNumberWithComma(salesSummary?.paid)}
           </Text>
         </View>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection: 'row',
+            alignItems: 'center',
             gap: 10,
-            justifyContent: "space-between",
+            justifyContent: 'space-between',
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <View
               style={{
                 width: 30,
@@ -142,7 +140,7 @@ const SalesSummary = () => {
             <Text
               style={{
                 fontSize: 15,
-                fontFamily: "Poppins-SemiBold",
+                fontFamily: 'Poppins-SemiBold',
                 marginLeft: 10,
               }}
             >
@@ -150,19 +148,19 @@ const SalesSummary = () => {
             </Text>
           </View>
 
-          <Text style={{ fontSize: 15, fontFamily: "Poppins-SemiBold" }}>
+          <Text style={{ fontSize: 15, fontFamily: 'Poppins-SemiBold' }}>
             {formatNumberWithComma(salesSummary?.unpaid)}
           </Text>
         </View>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection: 'row',
+            alignItems: 'center',
             gap: 10,
-            justifyContent: "space-between",
+            justifyContent: 'space-between',
           }}
         >
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <View
               style={{
                 width: 30,
@@ -174,7 +172,7 @@ const SalesSummary = () => {
             <Text
               style={{
                 fontSize: 15,
-                fontFamily: "Poppins-SemiBold",
+                fontFamily: 'Poppins-SemiBold',
                 marginLeft: 10,
               }}
             >
@@ -182,26 +180,24 @@ const SalesSummary = () => {
             </Text>
           </View>
 
-          <Text style={{ fontSize: 15, fontFamily: "Poppins-SemiBold" }}>
+          <Text style={{ fontSize: 15, fontFamily: 'Poppins-SemiBold' }}>
             {formatNumberWithComma(salesSummary?.partialPaid)}
           </Text>
         </View>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection: 'row',
+            alignItems: 'center',
             gap: 10,
-            justifyContent: "space-between",
+            justifyContent: 'space-between',
             marginTop: 10,
             borderTopWidth: 1,
             borderTopColor: COLORS.border,
             paddingTop: 15,
           }}
         >
-          <Text style={{ fontSize: 15, fontFamily: "Poppins-SemiBold" }}>
-            Total
-          </Text>
-          <Text style={{ fontSize: 15, fontFamily: "Poppins-SemiBold" }}>
+          <Text style={{ fontSize: 15, fontFamily: 'Poppins-SemiBold' }}>Total</Text>
+          <Text style={{ fontSize: 15, fontFamily: 'Poppins-SemiBold' }}>
             {formatNumberWithComma(total)}
           </Text>
         </View>

@@ -1,4 +1,4 @@
-import SalesScreen from "@/screen/sales/sales.screen";
+import SalesScreen from '@/screen/sales/sales.screen';
 
 const Sales = () => {
   return <SalesScreen />;

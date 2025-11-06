@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
-import { DB_COLLECTION } from "../collection";
-import { useUserStore } from "@/store/useUserStore";
-import Shop from "../model/shop.model";
-import PaymentAccount from "../model/payment-account.model";
+import { useEffect, useState } from 'react';
+
+import { useUserStore } from '@/store/useUserStore';
+
+import { DB_COLLECTION } from '../collection';
+import PaymentAccount from '../model/payment-account.model';
+import Shop from '../model/shop.model';
 
 const useShops = () => {
   const [shops, setShops] = useState([]);
@@ -23,7 +25,7 @@ const useShops = () => {
       const paymentAccounts = paymentAccountRecords.map((paymentAccount) => paymentAccount._raw);
       setPaymentAccounts(paymentAccounts as any);
     } catch (error) {
-      console.error("Error loading shops:", error);
+      console.error('Error loading shops:', error);
     } finally {
       setIsLoading(false);
     }
@@ -32,12 +34,10 @@ const useShops = () => {
   useEffect(() => {
     loadShops();
   }, []);
-  const activeShop = shops.find((s: Shop) => s.id === activeShopId) as
-    | Shop
-    | undefined;
-    const currentPaymentAccount = paymentAccounts.filter((p: PaymentAccount) => p.shopId === activeShopId)  as
-    | PaymentAccount[]
-    | undefined;
+  const activeShop = shops.find((s: Shop) => s.id === activeShopId) as Shop | undefined;
+  const currentPaymentAccount = paymentAccounts.filter(
+    (p: PaymentAccount) => p.shopId === activeShopId,
+  ) as PaymentAccount[] | undefined;
   return { shops, isLoading, activeShop, currentPaymentAccount };
 };
 export default useShops;

@@ -1,10 +1,11 @@
-import { Tabs } from "expo-router";
-import TabBar from "@/components/tab-bar";
-import { useEffect } from "react";
-import NetInfo from "@react-native-community/netinfo";
-import { hasUnsyncedChanges } from "@nozbe/watermelondb/sync";
-import database from "@/database";
-import { useSync } from "@/database/hooks/useSync";
+import { hasUnsyncedChanges } from '@nozbe/watermelondb/sync';
+import NetInfo from '@react-native-community/netinfo';
+import { Tabs } from 'expo-router';
+import { useEffect } from 'react';
+
+import TabBar from '@/components/tab-bar';
+import database from '@/database';
+import { useSync } from '@/database/hooks/useSync';
 
 const TabLayout = () => {
   const { syncNow } = useSync();
@@ -29,38 +30,38 @@ const TabLayout = () => {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { display: "flex" },
+        tabBarStyle: { display: 'flex' },
       }}
       tabBar={(props) => <TabBar {...props} />}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: 'Home',
         }}
       />
       <Tabs.Screen
         name="sales"
         options={{
-          title: "Sales",
+          title: 'Sales',
         }}
       />
       <Tabs.Screen
         name="customer"
         options={{
-          title: "Customer",
+          title: 'Customer',
         }}
       />
       <Tabs.Screen
         name="items"
         options={{
-          title: "Items",
+          title: 'Items',
         }}
       />
       <Tabs.Screen
         name="more"
         options={{
-          title: "More",
+          title: 'More',
         }}
       />
     </Tabs>

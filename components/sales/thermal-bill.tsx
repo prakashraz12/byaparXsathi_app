@@ -1,25 +1,23 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import type React from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
-import { Text } from "../re-usables/text";
-import Shop from "@/database/model/shop.model";
-import SalesItem from "@/database/model/sales-item.model";
-import { nepaliCalendar } from "../re-usables/date-picker/calender-config";
-import { formatNumberWithComma } from "@/utils/format-number";
+import type React from 'react';
+import { StyleSheet,View } from 'react-native';
 
-interface Customer {
-  name: string;
-  phone?: string;
-  address?: string;
-}
+import SalesItem from '@/database/model/sales-item.model';
+import Shop from '@/database/model/shop.model';
+import { formatNumberWithComma } from '@/utils/format-number';
+
+import { nepaliCalendar } from '../re-usables/date-picker/calender-config';
+import { Text } from '../re-usables/text';
+
+
 
 interface ThermalBillProps {
   invoiceNumber: string;
-  date: string;
+  date: number | undefined;
   shop: Shop;
   customer: string;
   salesItems: SalesItem[];
-  paymentType: "cash" | "credit" | "partially_paid";
+  paymentType: 'cash' | 'credit' | 'partially_paid';
   subtotal: number;
   tax: number;
   cumulativeDiscount: number;
@@ -27,7 +25,13 @@ interface ThermalBillProps {
   remarks?: string;
   paidAmount?: number;
   status?: string;
+  grandTotal:number,
+  subTotal:number,
+  dueAmount:number,
+  payableAmount:number,
+  oldDueAmount:number
 }
+
 
 const DashedDivider = () => (
   <View style={styles.dashedDividerContainer}>
@@ -52,34 +56,34 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
   additionalCharges,
   remarks,
   paidAmount = 0,
-  status = "",
-}) => {
-  const grandTotal = subtotal + tax + additionalCharges - cumulativeDiscount;
-  const balanceAmount =
-    paymentType === "partially_paid" ? grandTotal - paidAmount : 0;
+  status = '',
+  grandTotal,
+  dueAmount,
+  payableAmount,
+  oldDueAmount
+}) => { 
+  
 
-  const adDateObj = new Date(date);
+  const adDateObj = new Date(date as string);
   const bsDateObj = nepaliCalendar.getBsDateByAdDate(
     adDateObj.getFullYear(),
     adDateObj.getMonth() + 1,
-    adDateObj.getDate()
+    adDateObj.getDate(),
   );
-  const formattedBsDate = nepaliCalendar.formatBsDateEN(bsDateObj, "YYYY-MM-DD");
+  const formattedBsDate = nepaliCalendar.formatBsDateEN(bsDateObj, 'YYYY-MM-DD');
 
   const getPaymentTypeLabel = () => {
     switch (paymentType) {
-      case "cash":
-        return "CASH SALE";
-      case "credit":
-        return "CREDIT SALE";
-      case "partially_paid":
-        return "PARTIALLY PAID";
+      case 'cash':
+        return 'CASH SALE';
+      case 'credit':
+        return 'CREDIT SALE';
+      case 'partially_paid':
+        return 'PARTIALLY PAID';
       default:
-        return "SALE";
+        return 'SALE';
     }
   };
-
-
 
   return (
     <View style={styles.container}>
@@ -92,9 +96,9 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
         </View>
         <Text
           style={{
-            textAlign: "center",
+            textAlign: 'center',
             fontSize: 20,
-            fontWeight: "bold",
+            fontWeight: 'bold',
             marginVertical: 4,
           }}
         >
@@ -120,7 +124,6 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
         {/* Customer Details */}
         <View style={styles.customerSection}>
           <Text style={styles.sectionTitle}>TO : {customer}</Text>
-        
         </View>
 
         <DashedDivider />
@@ -129,9 +132,7 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
         <View style={styles.itemsHeader}>
           <Text style={[styles.itemHeaderText, styles.itemNameCol]}>ITEMS</Text>
           <Text style={[styles.itemHeaderText, styles.itemQtyCol]}>QTY</Text>
-          <Text style={[styles.itemHeaderText, styles.itemPriceCol]}>
-            PRICE
-          </Text>
+          <Text style={[styles.itemHeaderText, styles.itemPriceCol]}>PRICE</Text>
           <Text style={[styles.itemHeaderText, styles.itemAmountCol]}>AMOUNT</Text>
         </View>
 
@@ -142,12 +143,8 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
             salesItems?.map((item) => (
               <View key={item.id}>
                 <View style={styles.itemRow}>
-                  <Text style={[styles.itemText, styles.itemNameCol]}>
-                    {item?.itemName}
-                  </Text>
-                  <Text style={[styles.itemText, styles.itemQtyCol]}>
-                    {item?.quantity} x
-                  </Text>
+                  <Text style={[styles.itemText, styles.itemNameCol]}>{item?.itemName}</Text>
+                  <Text style={[styles.itemText, styles.itemQtyCol]}>{item?.quantity} x</Text>
                   <Text style={[styles.itemText, styles.itemPriceCol]}>
                     {formatNumberWithComma(Number(item?.price))}
                   </Text>
@@ -187,9 +184,7 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
           {additionalCharges > 0 && (
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Additional Charges:</Text>
-              <Text style={styles.totalValue}>
-                +{formatNumberWithComma(additionalCharges)}
-              </Text>
+              <Text style={styles.totalValue}>+{formatNumberWithComma(additionalCharges)}</Text>
             </View>
           )}
 
@@ -202,25 +197,27 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
 
           <View style={styles.grandTotalRow}>
             <Text style={styles.grandTotalLabel}>GRAND TOTAL:</Text>
-            <Text style={styles.grandTotalValue}>
-              {formatNumberWithComma(grandTotal)}
-            </Text>
+            <Text style={styles.grandTotalValue}>{formatNumberWithComma(grandTotal)}</Text>
+          </View>
+          <View style={styles.grandTotalRow}>
+            <Text style={styles.grandTotalLabel}>Old Due:</Text>
+            <Text style={styles.grandTotalValue}>{formatNumberWithComma(oldDueAmount)}</Text>
+          </View>
+          <View style={styles.grandTotalRow}>
+            <Text style={styles.grandTotalLabel}>Payable:</Text>
+            <Text style={styles.grandTotalValue}>{formatNumberWithComma(payableAmount)}</Text>
           </View>
 
-          {status === "PARTIALLY_PAID" && (
+          {status === 'PARTIALLY_PAID' && (
             <>
               <View style={styles.totalRow}>
                 <Text style={styles.totalLabel}>Paid Amount:</Text>
-                <Text style={styles.totalValue}>
-                  {formatNumberWithComma(paidAmount)}
-                </Text>
+                <Text style={styles.totalValue}>{formatNumberWithComma(paidAmount)}</Text>
               </View>
               <View style={styles.totalRow}>
-                <Text style={[styles.totalLabel, styles.balanceLabel]}>
-                  Balance Due:
-                </Text>
+                <Text style={[styles.totalLabel, styles.balanceLabel]}>Balance Due:</Text>
                 <Text style={[styles.totalValue, styles.balanceAmount]}>
-                  {formatNumberWithComma(balanceAmount)}
+                  {formatNumberWithComma(dueAmount)}
                 </Text>
               </View>
             </>
@@ -240,7 +237,7 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
         <DashedDivider />
         <View style={styles.footer}>
           <Text style={styles.footerText}>Thank you!</Text>
-          <Text style={{fontSize:10, color:"#888"}}>*This is electrical bill*</Text>
+          <Text style={{ fontSize: 10, color: '#888' }}>*This is electrical bill*</Text>
         </View>
       </View>
     </View>
@@ -250,47 +247,47 @@ const ThermalBill: React.FC<ThermalBillProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    borderRadius:5
+    backgroundColor: '#fff',
+    borderRadius: 5,
   },
   billContainer: {
     paddingHorizontal: 20,
-    paddingVertical:30,
+    paddingVertical: 30,
     maxWidth: 400,
-    alignSelf: "center",
-    width:"100%",
-    minHeight:650
+    alignSelf: 'center',
+    width: '100%',
+    minHeight: 650,
   },
   header: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 4,
   },
   shopName: {
     fontSize: 20,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 2,
   },
   shopPhone: {
     fontSize: 16,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 1,
   },
   shopAddress: {
     fontSize: 14,
-    textAlign: "center",
-    color: "#888",
+    textAlign: 'center',
+    color: '#888',
     marginBottom: 1,
   },
   dashedDividerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginVertical: 4,
     paddingHorizontal: 2,
   },
   dash: {
     width: 2,
     height: 1,
-    backgroundColor: "#ccc",
+    backgroundColor: '#ccc',
     marginHorizontal: 1,
   },
   invoiceDetails: {
@@ -298,20 +295,20 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   detailRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 2,
   },
   detailLabel: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   detailValue: {
     fontSize: 14,
   },
   paymentType: {
-    fontWeight: "bold",
-    color: "#d32f2f",
+    fontWeight: 'bold',
+    color: '#d32f2f',
   },
   customerSection: {
     marginBottom: 2,
@@ -320,19 +317,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 2,
   },
-  
+
   itemsHeader: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 2,
   },
   itemHeaderText: {
     fontSize: 14,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   itemNameCol: {
     flex: 2,
-    textAlign: "left",
+    textAlign: 'left',
   },
   itemQtyCol: {
     flex: 1,
@@ -347,12 +344,12 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   itemRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 3,
   },
   itemText: {
     fontSize: 13,
-    textAlign: "center",
+    textAlign: 'center',
   },
   discountRow: {
     marginLeft: 12,
@@ -360,71 +357,71 @@ const styles = StyleSheet.create({
   },
   discountText: {
     fontSize: 9,
-    color: "#d32f2f",
-    fontStyle: "italic",
+    color: '#d32f2f',
+    fontStyle: 'italic',
   },
   totalsSection: {
     marginBottom: 4,
   },
   totalRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 2,
   },
   totalLabel: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   totalValue: {
     fontSize: 14,
-    textAlign: "right",
+    textAlign: 'right',
   },
   discountAmount: {
-    color: "#d32f2f",
+    color: '#d32f2f',
   },
   grandTotalRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 3,
     marginBottom: 3,
   },
   grandTotalLabel: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   grandTotalValue: {
     fontSize: 14,
-    fontWeight: "bold",
-    textAlign: "right",
+    fontWeight: 'bold',
+    textAlign: 'right',
   },
   balanceLabel: {
-    color: "#d32f2f",
+    color: '#d32f2f',
   },
   balanceAmount: {
-    color: "#d32f2f",
-    fontWeight: "bold",
+    color: '#d32f2f',
+    fontWeight: 'bold',
   },
   remarksSection: {
     marginBottom: 4,
   },
   remarksLabel: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 1,
   },
   remarksText: {
     fontSize: 14,
-    color: "#888",
-    marginTop:8
+    color: '#888',
+    marginTop: 8,
   },
   footer: {
-    alignItems: "center",
-    marginTop:15
+    alignItems: 'center',
+    marginTop: 15,
   },
   footerText: {
     fontSize: 12,
-    textAlign: "center",
-    color: "#888",
+    textAlign: 'center',
+    color: '#888',
     marginBottom: 1,
   },
 });

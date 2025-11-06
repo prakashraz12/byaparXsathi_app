@@ -1,19 +1,16 @@
-import { financeService } from "@/database/services/finance.service";
-import {
-  useLocalSearchParams,
-  useRouter,
-  useSearchParams,
-} from "expo-router/build/hooks";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, TouchableOpacity, View } from "react-native";
-import Expenses from "@/database/model/expenses.model";
-import PXWrapper from "@/layouts/px-wrapper";
-import ExpensesForm from "@/components/finance/expenses/expenses-form";
-import { Header } from "@/components/re-usables/header";
-import { Trash2 } from "lucide-react-native";
-import { COLORS } from "@/constants/Colors";
-import AlertModal from "@/components/re-usables/modal/alert-modal";
-import { Toast } from "@/components/re-usables/custom-toaster/toast-service";
+import { useLocalSearchParams, useRouter } from 'expo-router/build/hooks';
+import { Trash2 } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, TouchableOpacity } from 'react-native';
+
+import ExpensesForm from '@/components/finance/expenses/expenses-form';
+import { Toast } from '@/components/re-usables/custom-toaster/toast-service';
+import { Header } from '@/components/re-usables/header';
+import AlertModal from '@/components/re-usables/modal/alert-modal';
+import { COLORS } from '@/constants/Colors';
+import Expenses from '@/database/model/expenses.model';
+import { financeService } from '@/database/services/finance.service';
+import PXWrapper from '@/layouts/px-wrapper';
 
 const ExpensesDetailScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,15 +19,15 @@ const ExpensesDetailScreen = () => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const router = useRouter();
 
-   const handleDeleteExpenses = async () => {
-    if(!expenses?.id) return;
+  const handleDeleteExpenses = async () => {
+    if (!expenses?.id) return;
     const response = await financeService.deleteExpenses(expenses?.id as string);
-    if(response?.success){
-      Toast.success(response?.message)
+    if (response?.success) {
+      Toast.success(response?.message);
       router.back();
     }
   };
-  
+
   useEffect(() => {
     const fetchExpenses = async () => {
       if (!id) {

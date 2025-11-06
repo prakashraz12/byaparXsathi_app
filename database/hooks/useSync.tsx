@@ -1,14 +1,14 @@
-import { useCallback } from "react";
-import { synchronize } from "@nozbe/watermelondb/sync";
-import database from "../index";
-import { useSyncStore } from "@/store/useSync";
-import {
-  fetchSyncControllerPull,
-  useSyncControllerPush,
-} from "@/service/queries-components";
-import { useUserStore } from "@/store/useUserStore";
-import { PushSyncDto } from "@/service/types-schemas";
-import { SCHEMA_KEYS } from "../shema.keys";
+/* eslint-disable no-console */
+import { synchronize } from '@nozbe/watermelondb/sync';
+import { useCallback } from 'react';
+
+import { fetchSyncControllerPull, useSyncControllerPush } from '@/service/queries-components';
+import { PushSyncDto } from '@/service/types-schemas';
+import { useSyncStore } from '@/store/useSync';
+import { useUserStore } from '@/store/useUserStore';
+
+import database from '../index';
+import { SCHEMA_KEYS } from '../shema.keys';
 
 interface SyncOptions {
   isFirstTime?: boolean;
@@ -23,34 +23,26 @@ export const useSync = () => {
 
   const syncNow = useCallback(
     async ({ isFirstTime = false, fetchShops = false }: SyncOptions = {}) => {
-      // console.log("🚀 Starting sync process...");
       setSyncing(true);
 
       try {
         await synchronize({
           database,
-
-          // -------------------------
-          // 1️⃣ PULL CHANGES
-          // -------------------------
           pullChanges: async ({ lastPulledAt }) => {
             const lastSync = isFirstTime ? 0 : lastPulledAt || 0;
-
             const res = await fetchSyncControllerPull({
               queryParams: {
                 lastPulledAt: lastSync,
-                shopId: activeShopId || "",
+                shopId: activeShopId || '',
                 fetchShops,
               },
             });
 
             const data = res?.data;
-            console.log("data", data);
+            console.log('data', data);
 
             if (!data?.changes) {
-              console.warn(
-                "⚠️ No 'changes' returned from pull, returning empty dataset.",
-              );
+              console.warn("⚠️ No 'changes' returned from pull, returning empty dataset.");
               return {
                 changes: {
                   [SCHEMA_KEYS.CUSTOMER]: {
@@ -133,7 +125,7 @@ export const useSync = () => {
                 deleted: data.changes.expenses?.deleted ?? [],
               },
             };
-            console.log("safely pulled");
+            console.log('safely pulled');
             return {
               changes: safeChanges,
               timestamp: data.timestamp || Date.now(),
@@ -144,10 +136,10 @@ export const useSync = () => {
           // 2️⃣ PUSH CHANGES
           // -------------------------
           pushChanges: async ({ changes, lastPulledAt }) => {
-            console.log("pushing changes");
+            console.log('pushing changes');
             await mutateAsync({
               body: {
-                changes: changes as PushSyncDto["changes"],
+                changes: changes as PushSyncDto['changes'],
                 lastPulledAt: lastPulledAt,
               },
             });
@@ -159,8 +151,9 @@ export const useSync = () => {
         // ✅ SUCCESS HANDLING
         // -------------------------
         setLastSynced(new Date().toISOString());
-        console.log("✅ Sync completed successfully!");
+        console.log('✅ Sync completed successfully!');
       } catch (err) {
+        console.error('Error syncing:', err);
       } finally {
         setSyncing(false);
       }

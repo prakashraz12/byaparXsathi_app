@@ -1,9 +1,6 @@
-
-import OnboardingScreen from "@/screen/onboarding/onboarding.screen";
+import OnboardingScreen from '@/screen/onboarding/onboarding.screen';
 
 const OnboardingPage = () => {
-    return (
-        <OnboardingScreen />
-    )
-}
+  return <OnboardingScreen />;
+};
 export default OnboardingPage;

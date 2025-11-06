@@ -1,21 +1,21 @@
-import { COLORS } from "@/constants/Colors";
-import React from "react";
+import React from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
   ScrollView,
-  ViewStyle,
+  StyleSheet,
+  Text,
   TextStyle,
-} from "react-native";
+  TouchableOpacity,
+  ViewStyle,
+} from 'react-native';
+
+import { COLORS } from '@/constants/Colors';
 
 export interface TabOption {
   value: string;
   label: string;
 }
 
-export type TabsVariant = "default" | "underline" | "pill";
+export type TabsVariant = 'default' | 'underline' | 'pill';
 
 interface RTabsProps {
   value: string;
@@ -38,18 +38,18 @@ const RTabs: React.FC<RTabsProps> = ({
   activeTabStyle = {},
   textStyle = {},
   activeTextStyle = {},
-  variant = "default",
+  variant = 'default',
 }) => {
   const getVariantStyles = () => {
     switch (variant) {
-      case "underline":
+      case 'underline':
         return {
           tab: styles.underlineTab,
           activeTab: styles.underlineActiveTab,
           text: styles.underlineText,
           activeText: styles.underlineActiveText,
         };
-      case "pill":
+      case 'pill':
         return {
           tab: styles.pillTab,
           activeTab: styles.pillActiveTab,
@@ -76,9 +76,9 @@ const RTabs: React.FC<RTabsProps> = ({
       contentContainerStyle={styles.contentContainer}
     >
       {tabsOptions.map((tab, index) => {
-        const isActive = value === (typeof tab === "string" ? tab : tab.value);
-        const tabValue = typeof tab === "string" ? tab : tab.value;
-        const tabLabel = typeof tab === "string" ? tab : tab.label;
+        const isActive = value === (typeof tab === 'string' ? tab : tab.value);
+        const tabValue = typeof tab === 'string' ? tab : tab.value;
+        const tabLabel = typeof tab === 'string' ? tab : tab.label;
 
         return (
           <TouchableOpacity
@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
     flexGrow: 0,
   },
   contentContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 8,
@@ -128,18 +128,18 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginHorizontal: 4,
     borderRadius: 8,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: '#f0f0f0',
   },
   defaultActiveTab: {
-    backgroundColor: "#007AFF",
+    backgroundColor: '#007AFF',
   },
   defaultText: {
     fontSize: 14,
-    fontWeight: "600",
-    color: "#666",
+    fontWeight: '600',
+    color: '#666',
   },
   defaultActiveText: {
-    color: "#fff",
+    color: '#fff',
   },
 
   // Underline variant
@@ -148,19 +148,19 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginHorizontal: 8,
     borderBottomWidth: 2,
-    borderBottomColor: "transparent",
+    borderBottomColor: 'transparent',
   },
   underlineActiveTab: {
-    borderBottomColor: "#007AFF",
+    borderBottomColor: '#007AFF',
   },
   underlineText: {
     fontSize: 14,
-    fontWeight: "500",
-    color: "#666",
+    fontWeight: '500',
+    color: '#666',
   },
   underlineActiveText: {
-    color: "#007AFF",
-    fontWeight: "700",
+    color: '#007AFF',
+    fontWeight: '700',
   },
 
   // Pill variant
@@ -169,21 +169,21 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginHorizontal: 6,
     borderRadius: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: '#f5f5f5',
     borderWidth: 1,
-    borderColor: "#e0e0e0",
+    borderColor: '#e0e0e0',
   },
   pillActiveTab: {
-    backgroundColor: "#007AFF",
-    borderColor: "#007AFF",
+    backgroundColor: '#007AFF',
+    borderColor: '#007AFF',
   },
   pillText: {
     fontSize: 13,
-    fontWeight: "600",
-    color: "#666",
+    fontWeight: '600',
+    color: '#666',
   },
   pillActiveText: {
-    color: "#fff",
+    color: '#fff',
   },
 });
 

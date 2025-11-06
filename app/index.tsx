@@ -1,7 +1,9 @@
-import { useUserStore } from "@/store/useUserStore";
-import OnboardingPage from "./(routes)/onboarding/index";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+
+import { useUserStore } from '@/store/useUserStore';
+
+import OnboardingPage from './(routes)/onboarding/index';
 
 const Home = () => {
   const user = useUserStore((state) => state.user);
@@ -16,12 +18,12 @@ const Home = () => {
   useEffect(() => {
     if (!mounted) return;
 
-    if (user?.stage === "CREATED") {
-      router.replace("/(routes)/complete-setup");
-    } else if (user?.stage === "SET_UP_COMPLETED" && !activeShopId) {
-      router.replace("/(routes)/shop/select");
-    } else if (user?.stage === "SET_UP_COMPLETED") {
-      router.replace("/(tabs)");
+    if (user?.stage === 'CREATED') {
+      router.replace('/(routes)/complete-setup');
+    } else if (user?.stage === 'SET_UP_COMPLETED' && !activeShopId) {
+      router.replace('/(routes)/shop/select');
+    } else if (user?.stage === 'SET_UP_COMPLETED') {
+      router.replace('/(tabs)');
     }
     setChecking(false);
   }, [mounted, user, activeShopId]);

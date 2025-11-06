@@ -1,9 +1,9 @@
-import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { Text } from "@/components/re-usables/text";
-import PXWrapper from "@/layouts/px-wrapper";
-import DashBoardTop from "@/components/dashbaord/sticky-top";
-import { LinearGradient } from "expo-linear-gradient";
-import * as BackgroundTask from "expo-background-task";
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text } from '@/components/re-usables/text';
+import PXWrapper from '@/layouts/px-wrapper';
+import DashBoardTop from '@/components/dashbaord/sticky-top';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as BackgroundTask from 'expo-background-task';
 import {
   ArrowDownCircle,
   ArrowUp,
@@ -15,21 +15,21 @@ import {
   UserPlus,
   Users,
   Wallet,
-} from "lucide-react-native";
-import { COLORS } from "@/constants/Colors";
-import UpgradeCard from "@/components/dashbaord/upgrade-card";
-import SalesOverviewChart from "@/components/dashbaord/sales-chart";
-import { useUserStore } from "@/store/useUserStore";
-import { router } from "expo-router";
-import SyncBanner from "@/components/sync-banner";
-import { Button } from "@/components/re-usables/button";
-import { syncDatabase } from "@/database/sync.service";
-import DashBoardAnalaytics from "@/components/dashbaord/analaytics-card";
-import { useSyncStore } from "@/store/useSync";
-import { useSync } from "@/database/hooks/useSync";
-import SalesSummary from "@/components/dashbaord/sales-summary";
-import SalesBreakdownByMethod from "@/components/dashbaord/sales-breakdownby-method";
-import TopSalesItems from "@/components/dashbaord/top-sales-items";
+} from 'lucide-react-native';
+import { COLORS } from '@/constants/Colors';
+import UpgradeCard from '@/components/dashbaord/upgrade-card';
+import SalesOverviewChart from '@/components/dashbaord/sales-chart';
+import { useUserStore } from '@/store/useUserStore';
+import { router } from 'expo-router';
+import SyncBanner from '@/components/sync-banner';
+import { Button } from '@/components/re-usables/button';
+import { syncDatabase } from '@/database/sync.service';
+import DashBoardAnalaytics from '@/components/dashbaord/analaytics-card';
+import { useSyncStore } from '@/store/useSync';
+import { useSync } from '@/database/hooks/useSync';
+import SalesSummary from '@/components/dashbaord/sales-summary';
+import SalesBreakdownByMethod from '@/components/dashbaord/sales-breakdownby-method';
+import TopSalesItems from '@/components/dashbaord/top-sales-items';
 
 const CARD_MARGIN = 12;
 
@@ -41,29 +41,29 @@ export const ACTION_BUTTONS = [
   //   href: "/(routes)/customer",
   // },
   {
-    id: "2",
-    title: "Quick Sales",
+    id: '2',
+    title: 'Quick Sales',
     icon: <Calculator size={20} color={COLORS.success} />,
-    href: "/(routes)/sales/quick",
+    href: '/(routes)/sales/quick',
   },
   {
-    id: "3",
-    title: "Purchase",
+    id: '3',
+    title: 'Purchase',
     icon: <TruckIcon size={20} color={COLORS.accent} />,
     onPress: () => {},
-    href: "/(routes)/purchase",
+    href: '/(routes)/purchase',
   },
   {
-    id: "4",
-    title: "Expenses",
+    id: '4',
+    title: 'Expenses',
     icon: <Wallet size={20} color={COLORS.error} />,
-    href: "/(routes)/finance/expenses",
+    href: '/(routes)/finance/expenses',
   },
   {
-    id: "5",
-    title: "Extra Income",
+    id: '5',
+    title: 'Extra Income',
     icon: <ArrowDownCircle size={20} color={COLORS.success} />,
-    href: "/(routes)/finance/extra-income",
+    href: '/(routes)/finance/extra-income',
   },
 ];
 
@@ -73,19 +73,16 @@ const DashboardScreen = () => {
   const { syncing } = useSyncStore();
   return (
     <>
-      <PXWrapper
-        header={<DashBoardTop />}
-        contentContainerStyle={{ paddingHorizontal: 0 }}
-      >
+      <PXWrapper header={<DashBoardTop />} contentContainerStyle={{ paddingHorizontal: 0 }}>
         {syncing && <SyncBanner />}
         <View style={{ padding: 12, marginBottom: 6 }}>
-          <Text style={{ fontSize: 15, fontFamily: "Poppins-SemiBold" }}>
+          <Text style={{ fontSize: 15, fontFamily: 'Poppins-SemiBold' }}>
             Hello, {user?.user?.fullName}
           </Text>
           <Text
             style={{
               fontSize: 14,
-              fontFamily: "Poppins-Regular",
+              fontFamily: 'Poppins-Regular',
               color: COLORS.textLight,
             }}
           >
@@ -101,7 +98,7 @@ const DashboardScreen = () => {
           <Text
             style={{
               fontSize: 15,
-              fontFamily: "Poppins-SemiBold",
+              fontFamily: 'Poppins-SemiBold',
               padding: 12,
             }}
           >
@@ -133,11 +130,11 @@ const DashboardScreen = () => {
 
 const styles = StyleSheet.create({
   quickActions: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     paddingHorizontal: CARD_MARGIN,
     paddingTop: 1,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     gap: 10,
   },
   quickActionCard: {
@@ -146,18 +143,18 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     borderWidth: 1,
     borderColor: COLORS.border,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    width: "48%",
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: '48%',
     gap: 12,
   },
   quickActionText: {
     fontSize: 14,
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: 'Poppins-SemiBold',
     color: COLORS.text,
     marginTop: 4,
-    textAlign: "center",
+    textAlign: 'center',
   },
 });
 

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import { registerRootComponent } from 'expo';
 
 import App from './App';

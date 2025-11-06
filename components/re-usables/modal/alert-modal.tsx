@@ -1,16 +1,17 @@
-import { useRef, useEffect } from "react";
+import { AlertTriangle } from 'lucide-react-native';
+import React, { useEffect,useRef } from 'react';
 import {
-  View,
-  Modal,
-  TouchableOpacity,
+  ActivityIndicator,
   Animated,
-  StyleSheet,
+  Modal,
   Platform,
   StatusBar,
-  ActivityIndicator,
-} from "react-native";
-import { AlertTriangle } from "lucide-react-native";
-import { Text } from "../text";
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+import { Text } from '../text';
 
 interface AlertModalProps {
   visible: boolean;
@@ -20,21 +21,21 @@ interface AlertModalProps {
   cancelText?: string;
   onConfirm: () => void;
   onCancel: () => void;
-  type?: "warning" | "danger" | "info";
+  type?: 'warning' | 'danger' | 'info';
   icon?: React.ReactNode;
   isLoading?: boolean;
 }
 
 const AlertModal = ({
   visible,
-  title = "Confirm Action",
+  title = 'Confirm Action',
   isLoading = false,
   message,
-  confirmText = "Yes",
-  cancelText = "No",
+  confirmText = 'Yes',
+  cancelText = 'No',
   onConfirm,
   onCancel,
-  type = "warning",
+  type = 'warning',
   icon,
 }: AlertModalProps) => {
   const scaleAnim = useRef(new Animated.Value(0)).current;
@@ -73,13 +74,13 @@ const AlertModal = ({
 
   const getTypeColor = (isLoading: boolean) => {
     switch (type) {
-      case "danger":
-        return isLoading ? "#fecaca" : "#ef4444";
-      case "info":
-        return isLoading ? "#bfdbfe" : "#3b82f6";
-      case "warning":
+      case 'danger':
+        return isLoading ? '#fecaca' : '#ef4444';
+      case 'info':
+        return isLoading ? '#bfdbfe' : '#3b82f6';
+      case 'warning':
       default:
-        return isLoading ? "#fde68a" : "#f59e0b";
+        return isLoading ? '#fde68a' : '#f59e0b';
     }
   };
 
@@ -92,12 +93,7 @@ const AlertModal = ({
   };
 
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="none"
-      onRequestClose={onCancel}
-    >
+    <Modal transparent visible={visible} animationType="none" onRequestClose={onCancel}>
       <View style={styles.overlay}>
         <Animated.View style={[styles.backdrop, { opacity: fadeAnim }]}>
           <TouchableOpacity
@@ -120,14 +116,9 @@ const AlertModal = ({
           <View style={styles.modalContent}>
             {/* Icon */}
             <View
-              style={[
-                styles.iconContainer,
-                { backgroundColor: `${getTypeColor(isLoading)}15` },
-              ]}
+              style={[styles.iconContainer, { backgroundColor: `${getTypeColor(isLoading)}15` }]}
             >
-              {icon || (
-                <AlertTriangle size={32} color={getTypeColor(isLoading)} />
-              )}
+              {icon || <AlertTriangle size={32} color={getTypeColor(isLoading)} />}
             </View>
 
             {/* Title */}
@@ -160,7 +151,7 @@ const AlertModal = ({
                 <Text style={styles.confirmButtonText}>
                   {isLoading ? (
                     <>
-                      <ActivityIndicator size={22} color={"white"} />
+                      <ActivityIndicator size={22} color={'white'} />
                     </>
                   ) : (
                     confirmText
@@ -178,32 +169,32 @@ const AlertModal = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   backdrop: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   backdropTouchable: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
   },
   modalContainer: {
-    width: "85%",
+    width: '85%',
     maxWidth: 400,
   },
   modalContent: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 24,
-    alignItems: "center",
-    shadowColor: "#000",
+    alignItems: 'center',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 4,
@@ -216,51 +207,51 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 16,
   },
   title: {
     fontSize: 20,
-    fontWeight: "700",
-    color: "#1f2937",
+    fontWeight: '700',
+    color: '#1f2937',
     marginBottom: 8,
-    textAlign: "center",
+    textAlign: 'center',
   },
   message: {
     fontSize: 15,
-    color: "#6b7280",
-    textAlign: "center",
+    color: '#6b7280',
+    textAlign: 'center',
     marginBottom: 24,
     lineHeight: 22,
   },
   buttonContainer: {
-    flexDirection: "row",
-    width: "100%",
+    flexDirection: 'row',
+    width: '100%',
     gap: 12,
   },
   button: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   cancelButton: {
-    backgroundColor: "#f3f4f6",
+    backgroundColor: '#f3f4f6',
   },
   confirmButton: {
-    backgroundColor: "#ef4444",
+    backgroundColor: '#ef4444',
   },
   cancelButtonText: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#4b5563",
+    fontWeight: '600',
+    color: '#4b5563',
   },
   confirmButtonText: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "white",
+    fontWeight: '600',
+    color: 'white',
   },
 });
 

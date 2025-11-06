@@ -1,24 +1,23 @@
-import { Button } from "@/components/re-usables/button";
-import HHeader from "@/components/re-usables/h-header";
-import CustomInput from "@/components/re-usables/input";
-import SalesFilterSlideUp from "@/components/sales/sales-filter";
-import { COLORS } from "@/constants/Colors";
-import { useSales } from "@/database/hooks/useSales";
-import type Sales from "@/database/model/sales.model";
-import PXWrapper from "@/layouts/px-wrapper";
-import {
-  dateRangeProvider,
-  DEFAULT_DATE_RANGE_OPTIONS_ENUMS,
-} from "@/utils/date-range-provider";
-import { useRouter } from "expo-router";
-import { Dot, ListFilter, Plus, Search } from "lucide-react-native";
-import { useEffect, useState } from "react";
-import { TouchableOpacity, View } from "react-native";
-import SalesCard from "../../components/sales/sales-card";
+import { useRouter } from 'expo-router';
+import { Dot, ListFilter, Plus, Search } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
+import { TouchableOpacity, View } from 'react-native';
+
+import { Button } from '@/components/re-usables/button';
+import HHeader from '@/components/re-usables/h-header';
+import CustomInput from '@/components/re-usables/input';
+import SalesFilterSlideUp from '@/components/sales/sales-filter';
+import { COLORS } from '@/constants/Colors';
+import { useSales } from '@/database/hooks/useSales';
+import type Sales from '@/database/model/sales.model';
+import PXWrapper from '@/layouts/px-wrapper';
+import { dateRangeProvider, DEFAULT_DATE_RANGE_OPTIONS_ENUMS } from '@/utils/date-range-provider';
+
+import SalesCard from '../../components/sales/sales-card';
 
 const SalesScreen = () => {
   const [filterOpen, setFilterOpen] = useState(false);
-  const [sortBy, setSortBy] = useState<"asc" | "desc">("desc");
+  const [sortBy, setSortBy] = useState<'asc' | 'desc'>('desc');
   const [dateRangeOptions, setDateRangeOptions] = useState<
     (typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS)[keyof typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS]
   >(DEFAULT_DATE_RANGE_OPTIONS_ENUMS.ALL_TIME);
@@ -26,19 +25,15 @@ const SalesScreen = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
-  const [searchParams, setSearchParams] = useState("");
-  const [paymentType, setPaymentType] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState("");
+  const [searchParams, setSearchParams] = useState('');
+  const [paymentType, setPaymentType] = useState('');
+  const [paymentStatus, setPaymentStatus] = useState('');
 
   const { sales } = useSales({
     searchParams,
     sort: sortBy,
-    startDate: startDate
-      ? new Date(new Date(startDate).setHours(0, 0, 0, 0))
-      : undefined,
-    endDate: endDate
-      ? new Date(new Date(endDate).setHours(23, 59, 59, 999))
-      : undefined,
+    startDate: startDate ? new Date(new Date(startDate).setHours(0, 0, 0, 0)) : undefined,
+    endDate: endDate ? new Date(new Date(endDate).setHours(23, 59, 59, 999)) : undefined,
     paymentType,
     paymentStatus,
   });
@@ -59,8 +54,7 @@ const SalesScreen = () => {
     }
   }, [dateRangeOptions]);
 
-  const isSalesApplied =
-    dateRangeOptions !== "ALL_TIME" || paymentType || paymentStatus;
+  const isSalesApplied = dateRangeOptions !== 'ALL_TIME' || paymentType || paymentStatus;
 
   return (
     <>
@@ -68,20 +62,20 @@ const SalesScreen = () => {
         data={sales}
         floatingAction={
           <Button
-           size="medium"
-            onPress={() => router.push("/sales/create")}
+            size="medium"
+            onPress={() => router.push('/sales/create')}
             variant="primary"
             leftIcon={<Plus size={20} color="#FFFFFF" />}
-           title="Add Sales"
+            title="Add Sales"
           />
         }
         renderItem={({ item }: { item: Sales }) => (
           <SalesCard
-            invoiceNumber={item.invoiceNumber || ""}
+            invoiceNumber={item.invoiceNumber || ''}
             invoiceDate={item.invoiceDate || 0}
             grandTotalAmount={item.grandTotalAmount || 0}
-            paymentStatus={item?.status || ""}
-            paymentType={item?.paymentType || ""}
+            paymentStatus={item?.status || ''}
+            paymentType={item?.paymentType || ''}
             id={item.id}
           />
         )}
@@ -90,10 +84,10 @@ const SalesScreen = () => {
             <HHeader title="Sales Transactions" />
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
+                flexDirection: 'row',
+                alignItems: 'center',
                 gap: 10,
-                width: "100%",
+                width: '100%',
               }}
             >
               <View style={{ flex: 1 }}>
@@ -108,8 +102,8 @@ const SalesScreen = () => {
                 style={{
                   width: 54,
                   height: 54,
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   backgroundColor: COLORS.cardBackground,
                   borderRadius: 5,
                   borderWidth: 1,
@@ -117,13 +111,13 @@ const SalesScreen = () => {
                 }}
                 onPress={() => setFilterOpen(true)}
               >
-                <View style={{ position: "relative" }}>
+                <View style={{ position: 'relative' }}>
                   <ListFilter size={20} color={COLORS.text} />
                   {isSalesApplied && (
                     <Dot
                       size={45}
                       color={COLORS.primary}
-                      style={{ position: "absolute", top: -19, right: -19 }}
+                      style={{ position: 'absolute', top: -19, right: -19 }}
                     />
                   )}
                 </View>

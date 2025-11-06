@@ -1,23 +1,15 @@
-import React, { useRef } from "react";
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  Animated,
-} from "react-native";
 import {
   CircleArrowUp,
-  Feather,
   Home,
   LayoutGrid,
   ToolCase,
-  User,
   Users,
-  Wallet,
-} from "lucide-react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { COLORS } from "@/constants/Colors";
+} from 'lucide-react-native';
+import React, { useRef } from 'react';
+import { Animated,StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { COLORS } from '@/constants/Colors';
 
 interface TabBarProps {
   state: any;
@@ -26,9 +18,7 @@ interface TabBarProps {
 
 const TabBar = ({ state, navigation }: TabBarProps) => {
   const insets = useSafeAreaInsets();
-  const animatedValues = useRef(
-    state.routes.map(() => new Animated.Value(1)),
-  ).current;
+  const animatedValues = useRef(state.routes.map(() => new Animated.Value(1))).current;
 
   const icons: { [key: string]: any } = {
     index: Home,
@@ -39,11 +29,11 @@ const TabBar = ({ state, navigation }: TabBarProps) => {
   };
 
   const labels: { [key: string]: string } = {
-    index: "Home",
-    sales: "Sales",
-    customer: "Customer",
-    items: "Items",
-    more: "More",
+    index: 'Home',
+    sales: 'Sales',
+    customer: 'Customer',
+    items: 'Items',
+    more: 'More',
   };
 
   const animateTab = (index: number) => {
@@ -71,7 +61,7 @@ const TabBar = ({ state, navigation }: TabBarProps) => {
           animateTab(index);
 
           const event = navigation.emit({
-            type: "tabPress",
+            type: 'tabPress',
             target: route.key,
             canPreventDefault: true,
           });
@@ -92,7 +82,7 @@ const TabBar = ({ state, navigation }: TabBarProps) => {
               styles.tabItem,
               {
                 borderTopWidth: isFocused ? 2 : 0,
-                borderTopColor: isFocused ? COLORS.primary : "transparent",
+                borderTopColor: isFocused ? COLORS.primary : 'transparent',
               },
             ]}
           >
@@ -104,15 +94,9 @@ const TabBar = ({ state, navigation }: TabBarProps) => {
                 },
               ]}
             >
-              <IconComponent
-                size={22}
-                color={isFocused ? COLORS.primary : COLORS.textLight}
-              />
+              <IconComponent size={22} color={isFocused ? COLORS.primary : COLORS.textLight} />
               <Text
-                style={[
-                  styles.tabLabel,
-                  { color: isFocused ? COLORS.primary : COLORS.textLight },
-                ]}
+                style={[styles.tabLabel, { color: isFocused ? COLORS.primary : COLORS.textLight }]}
               >
                 {labels[route.name]}
               </Text>
@@ -126,8 +110,8 @@ const TabBar = ({ state, navigation }: TabBarProps) => {
 
 const styles = StyleSheet.create({
   tabBar: {
-    flexDirection: "row",
-    backgroundColor: "#FFFFFF",
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 5,
     borderTopColor: COLORS.border,
     borderTopWidth: 1,
@@ -135,21 +119,21 @@ const styles = StyleSheet.create({
   },
   tabItem: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 8,
     marginHorizontal: 2,
   },
   tabContent: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tabLabel: {
     fontSize: 12,
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
     marginTop: 6,
-    textAlign: "center",
-    textAlignVertical: "center",
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
 });
 

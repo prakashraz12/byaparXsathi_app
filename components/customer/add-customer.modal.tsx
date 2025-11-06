@@ -1,45 +1,35 @@
-import { customerService } from "@/database/services/customer.service";
-import {
-  customerSchema,
-  TCustomerSchema,
-} from "@/forms/schema/customer.schema";
-import { useForm } from "@tanstack/react-form";
-import {
-  Mail,
-  MapPin,
-  Phone,
-  Plus,
-  User,
-} from "lucide-react-native";
-import { useState } from "react";
-import { Dimensions, View } from "react-native";
-import { Button } from "../re-usables/button";
-import Input from "../re-usables/input";
-import { SlideUpModal } from "../re-usables/modal/slide-up.modal";
-import { Text } from "../re-usables/text";
-import { Toast } from "../re-usables/custom-toaster/toast-service";
-import { useCustomers } from "@/database/hooks/useCustomer";
-import { COLORS } from "@/constants/Colors";
-import ImportContact from "./import-contact";
-import ContactList from "./contact-list";
-import { IContact } from "@/types/common";
-import { useUserStore } from "@/store/useUserStore";
+import { useForm } from '@tanstack/react-form';
+import { Mail, MapPin, Phone, Plus, User } from 'lucide-react-native';
+import { useState } from 'react';
+import { Dimensions, View } from 'react-native';
 
-const SCREEN_HEIGHT = Dimensions.get("window").height;
+import { customerService } from '@/database/services/customer.service';
+import { customerSchema, TCustomerSchema } from '@/forms/schema/customer.schema';
+import { useUserStore } from '@/store/useUserStore';
+import { IContact } from '@/types/common';
+
+import { Button } from '../re-usables/button';
+import { Toast } from '../re-usables/custom-toaster/toast-service';
+import Input from '../re-usables/input';
+import { SlideUpModal } from '../re-usables/modal/slide-up.modal';
+import ContactList from './contact-list';
+import ImportContact from './import-contact';
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 const AddCustomerModal = () => {
   const { activeShopId } = useUserStore();
   const [visible, setVisible] = useState<boolean>(false);
-  const [modalType, setModalType] = useState<"ADD" | "IMPORT">("ADD");
+  const [modalType, setModalType] = useState<'ADD' | 'IMPORT'>('ADD');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [contacts, setContacts] = useState<IContact[]>([]);
   const [importingContactLoading, setImportingContactLoading] = useState<boolean>(false);
 
   const { handleSubmit, Field, setFieldValue, reset } = useForm({
     defaultValues: {
-      name: "",
-      phone: "",
-      email: "",
-      address: "",
+      name: '',
+      phone: '',
+      email: '',
+      address: '',
     },
     validators: {
       onChange: customerSchema,
@@ -59,28 +49,29 @@ const AddCustomerModal = () => {
           if (res?.status === 201) {
             setIsLoading(false);
             setVisible(false);
-            Toast.success("Customer added successfully");
+            Toast.success('Customer added successfully');
             reset();
           }
           setIsLoading(false);
         })
         .catch((err) => {
+          console.log('Customer error:', err);
           setIsLoading(false);
-          Toast.error("Failed to add customer");
+          Toast.error('Failed to add customer');
           setIsLoading(false);
         });
     },
   });
 
   const handleImportContact = (contact: IContact) => {
-    setFieldValue("name", contact.name);
-    setFieldValue("phone", contact?.phoneNumbers?.[0]?.number);
-    setFieldValue("email", contact?.emails?.[0]?.email);
+    setFieldValue('name', contact.name);
+    setFieldValue('phone', contact?.phoneNumbers?.[0]?.number);
+    setFieldValue('email', contact?.emails?.[0]?.email);
     setFieldValue(
-      "address",
-      `${contact?.addresses?.[0]?.street !== undefined ? contact?.addresses?.[0]?.street : ""} ${contact?.addresses?.[0]?.city !== undefined ? contact?.addresses?.[0]?.city : ""} ${contact?.addresses?.[0]?.country !== undefined ? contact?.addresses?.[0]?.country : ""}`
+      'address',
+      `${contact?.addresses?.[0]?.street !== undefined ? contact?.addresses?.[0]?.street : ''} ${contact?.addresses?.[0]?.city !== undefined ? contact?.addresses?.[0]?.city : ''} ${contact?.addresses?.[0]?.country !== undefined ? contact?.addresses?.[0]?.country : ''}`,
     );
-    setModalType("ADD");
+    setModalType('ADD');
   };
   return (
     <>
@@ -96,15 +87,15 @@ const AddCustomerModal = () => {
       />
       <SlideUpModal
         visible={visible}
-        height={SCREEN_HEIGHT * (modalType === "ADD" ? 0.6 : 0.9)}
+        height={SCREEN_HEIGHT * (modalType === 'ADD' ? 0.6 : 0.9)}
         onClose={() => setVisible(false)}
         title="Customer Details"
         stickyFooter={
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
               paddingBottom: 16,
               gap: 16,
             }}
@@ -114,23 +105,21 @@ const AddCustomerModal = () => {
               setMode={setModalType}
               setContacts={setContacts}
               setImportingContactLoading={setImportingContactLoading}
-
             />
             <Button
               loading={isLoading}
               disabled={isLoading}
               title="Save Customer"
-              style={{ width: "45%" }}
+              style={{ width: '45%' }}
               onPress={() => handleSubmit()}
             />
           </View>
         }
       >
         <>
-          {modalType === "ADD" ? (
+          {modalType === 'ADD' ? (
             <>
-             
-              <View style={{ flexDirection: "column", gap: 16,marginTop:10 }}>
+              <View style={{ flexDirection: 'column', gap: 16, marginTop: 10 }}>
                 <Field name="name">
                   {(field) => {
                     return (
@@ -144,7 +133,7 @@ const AddCustomerModal = () => {
                         onBlur={field.handleBlur}
                         error={field.state.meta.errors
                           .map((err: any) => err.message || String(err))
-                          .join(", ")}
+                          .join(', ')}
                       />
                     );
                   }}
@@ -160,7 +149,7 @@ const AddCustomerModal = () => {
                       onBlur={field.handleBlur}
                       error={field.state.meta.errors
                         .map((err: any) => err.message || String(err))
-                        .join(", ")}
+                        .join(', ')}
                     />
                   )}
                 </Field>
@@ -177,7 +166,7 @@ const AddCustomerModal = () => {
                       onBlur={field.handleBlur}
                       error={field.state.meta.errors
                         .map((err: any) => err.message || String(err))
-                        .join(", ")}
+                        .join(', ')}
                     />
                   )}
                 </Field>
@@ -191,7 +180,7 @@ const AddCustomerModal = () => {
                       onBlur={field.handleBlur}
                       error={field.state.meta.errors
                         .map((err: any) => err.message || String(err))
-                        .join(", ")}
+                        .join(', ')}
                     />
                   )}
                 </Field>

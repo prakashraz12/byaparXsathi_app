@@ -1,45 +1,40 @@
-import { invoiceNumberGenerator } from "@/utils/invoice-number.util";
-import { Q } from "@nozbe/watermelondb";
-import database from "../index";
-import { DB_COLLECTION } from "../collection";
-import SalesItem from "../model/sales-item.model";
-import Sales from "../model/sales.model";
-import { responseHandler } from "../util/response-handler";
-import { normalizeToTimestamp } from "../util/normalizeToTimeStamp";
-import { idxGenerator } from "@/utils/idx.utils";
-import Customer from "../model/customer.model";
-import { PaymentStatus } from "@/constants/payment-status";
+import { Q } from '@nozbe/watermelondb';
+
+import { PaymentStatus } from '@/constants/payment-status';
+import { idxGenerator } from '@/utils/idx.utils';
+import { invoiceNumberGenerator } from '@/utils/invoice-number.util';
+
+import { DB_COLLECTION } from '../collection';
+import database from '../index';
+import Customer from '../model/customer.model';
+import Sales from '../model/sales.model';
+import SalesItem from '../model/sales-item.model';
+import { normalizeToTimestamp } from '../util/normalizeToTimeStamp';
+import { responseHandler } from '../util/response-handler';
 
 export const salesService = {
-  create: async (
-    salesData: Partial<Sales>,
-    shopId: string,
-    salesItems?: Partial<SalesItem>[],
-  ) => {
+  create: async (salesData: Partial<Sales>, shopId: string, salesItems?: Partial<SalesItem>[]) => {
     if (
       !salesData.invoiceDate ||
       !salesData.status ||
       (salesData?.status !== PaymentStatus.UNPAID && !salesData?.paymentType)
     ) {
       return responseHandler({
-        message: "Invoice date, payment status and payment type are required",
+        message: 'Invoice date, payment status and payment type are required',
         statusCode: 400,
         data: null,
         success: false,
       });
     }
+
+    console.log(salesData, "this sis sales sdata")
     try {
-      const invoiceTimestamp = normalizeToTimestamp(
-        (salesData as any).invoiceDate,
-      );
+      const invoiceTimestamp = normalizeToTimestamp((salesData as any).invoiceDate);
 
       //if customer attached then need works
       let customer: Customer | null = null;
       if (salesData?.customerId) {
-        customer =
-          ((await DB_COLLECTION.customer.find(
-            salesData?.customerId,
-          )) as Customer) || null;
+        customer = ((await DB_COLLECTION.customer.find(salesData?.customerId)) as Customer) || null;
       }
       const result = await database.write(async () => {
         const sales = await DB_COLLECTION.sales.create((s) => {
@@ -54,11 +49,13 @@ export const salesService = {
           s.oldDueAmount = salesData.oldDueAmount || 0;
           s.dueAmount = salesData.dueAmount || 0;
           s.paidAmount = salesData.paidAmount;
-          s.remarks = salesData.remarks || "";
-          s.status = salesData.status || "";
-          s.paymentType = salesData.paymentType || "";
+          s.remarks = salesData.remarks || '';
+          s.status = salesData.status || '';
+          s.paymentType = salesData.paymentType || '';
           s.customerId = customer?.id;
           s.customerName = customer?.name;
+          s.payableAmount = salesData.payableAmount || 0;
+          s.amountDeducted = salesData.amountDeducted || 0;
           s.created_at = new Date()?.getTime();
           s.updated_at = new Date()?.getTime();
         });
@@ -77,7 +74,7 @@ export const salesService = {
               si.created_at = new Date()?.getTime();
               si.updated_at = new Date()?.getTime();
             });
-            const item = await DB_COLLECTION.item.find(it.itemId || "");
+            const item = await DB_COLLECTION.item.find(it.itemId || '');
             if (item && item?.isStockEnabled) {
               await item.update((i) => {
                 i.currentStock = Number(i.currentStock) - Number(it.quantity);
@@ -90,10 +87,7 @@ export const salesService = {
         if (salesData?.paymentType) {
           try {
             const paymentAccounts = await DB_COLLECTION.paymentAccount
-              .query(
-                Q.where("shopId", shopId),
-                Q.where("name", salesData.paymentType || ""),
-              )
+              .query(Q.where('shopId', shopId), Q.where('name', salesData.paymentType || ''))
               .fetch();
 
             if (paymentAccounts.length === 1) {
@@ -103,45 +97,72 @@ export const salesService = {
               });
             }
           } catch (error) {
-            console.log("Failed to update payment account", error);
+            console.log('Failed to update payment account', error);
           }
         }
 
         if (customer && salesData.status === PaymentStatus.PARTIALLY_PAID) {
           await customer.update((c) => {
-            c.outstanding =
-              Number(c.outstanding) + Number(salesData.paidAmount);
+            c.outstanding = Number(c.outstanding) + Number(salesData.paidAmount);
             c.updated_at = new Date()?.getTime();
           });
         }
-        if (customer && salesData.status === PaymentStatus.UNPAID) {
+        if (customer && salesData.status === PaymentStatus.UNPAID && !salesData?.amountDeducted) {
           await customer.update((c) => {
-            c.outstanding =
-              Number(c.outstanding) + Number(salesData.grandTotalAmount);
+            c.outstanding = Number(c.outstanding) + Number(salesData.payableAmount);
             c.updated_at = new Date()?.getTime();
           });
         }
 
+        if (customer && salesData?.status === PaymentStatus.PAID && salesData?.oldDueAmount) {
+          await customer.update((c) => {
+            c.outstanding = Number(customer.outstanding) - Number(salesData.oldDueAmount);
+            c.updated_at = new Date()?.getTime();
+          });
+        }
+
+        if (customer && salesData.status === PaymentStatus.PAID && salesData?.amountDeducted) {
+          await customer.update((c) => {
+            c.available_credit =
+              Number(customer.available_credit) - Number(salesData.amountDeducted);
+            c.updated_at = new Date()?.getTime();
+          });
+        }
+
+        if (customer && salesData.status === PaymentStatus.UNPAID && salesData?.amountDeducted) {
+          await customer.update((c) => {
+            c.available_credit =
+              Number(customer.available_credit) - Number(salesData.amountDeducted);
+            c.updated_at = new Date()?.getTime();
+          });
+          if (salesData?.amountDeducted < (salesData?.payableAmount || 0)) {
+            await customer.update((c) => {
+              c.outstanding = Number(customer.outstanding) + Number(salesData.payableAmount);
+              c.updated_at = new Date()?.getTime();
+            });
+          }
+        }
+
         await DB_COLLECTION.activity.create((a) => {
-          a.title = "Sales";
+          a.title = 'Sales';
           a.description = `${salesData?.status === PaymentStatus.PAID ? `Sales made worth ${salesData.grandTotalAmount}` : `Sales Created amount ${salesData.grandTotalAmount}`}`;
-          a.type = "Sales";
+          a.type = 'Sales';
           a.shopId = shopId;
-          a.platform = "MOBILE";
+          a.platform = 'MOBILE';
           a.created_at = new Date()?.getTime();
           a.updated_at = new Date()?.getTime();
         });
         return responseHandler({
-          message: "Sales is created",
+          message: 'Sales is created',
           statusCode: 201,
           data: null,
         });
       });
       return result;
     } catch (error) {
-      console.log("Failed to create sales", error);
+      console.log('Failed to create sales', error);
       return responseHandler({
-        message: "Failed to create sales",
+        message: 'Failed to create sales',
         statusCode: 500,
         data: null,
       });
@@ -157,7 +178,7 @@ export const salesService = {
         const sales = await DB_COLLECTION.sales.find(id);
         if (!sales) {
           return responseHandler({
-            message: "Sales not found",
+            message: 'Sales not found',
             statusCode: 404,
             data: null,
           });
@@ -172,13 +193,13 @@ export const salesService = {
           s.oldDueAmount = salesData.oldDueAmount || 0;
           s.dueAmount = salesData.dueAmount || 0;
           s.paidAmount = salesData.paidAmount || 0;
-          s.remarks = salesData.remarks || "";
-          s.status = salesData.status || "";
-          s.paymentType = salesData.paymentType || "";
+          s.remarks = salesData.remarks || '';
+          s.status = salesData.status || '';
+          s.paymentType = salesData.paymentType || '';
         });
 
         const salesItems = await DB_COLLECTION.salesItem
-          .query(Q.where("salesId", sales._raw.id))
+          .query(Q.where('salesId', sales._raw.id))
           .fetch();
         for (const item of salesItems) {
           await item.destroyPermanently();
@@ -198,16 +219,16 @@ export const salesService = {
           }
         }
         return responseHandler({
-          message: "Sales updated successfully",
+          message: 'Sales updated successfully',
           statusCode: 200,
           data: null,
         });
       });
       return result;
     } catch (error) {
-      console.log("Failed to update sales", error);
+      console.log('Failed to update sales', error);
       return responseHandler({
-        message: "Failed to update sales",
+        message: 'Failed to update sales',
         statusCode: 500,
         success: false,
         data: null,
@@ -218,13 +239,11 @@ export const salesService = {
     try {
       const result = await database.read(async () => {
         const sales = await DB_COLLECTION.sales.find(id);
-        const salesItems = await DB_COLLECTION.salesItem
-          .query(Q.where("salesId", id))
-          .fetch();
-        const shop = await DB_COLLECTION.shop.find(sales.shopId || "");
+        const salesItems = await DB_COLLECTION.salesItem.query(Q.where('salesId', id)).fetch();
+        const shop = await DB_COLLECTION.shop.find(sales.shopId || '');
         return { sales, salesItems, shop };
       });
-      console.log(result, "result");
+      console.log(result, 'result');
       return responseHandler({
         data: {
           sale: result?.sales?._raw,
@@ -233,9 +252,9 @@ export const salesService = {
         },
       });
     } catch (error) {
-      console.log("Failed to fetch sales", error);
+      console.log('Failed to fetch sales', error);
       return responseHandler({
-        message: "Failed to fetch sales",
+        message: 'Failed to fetch sales',
         statusCode: 500,
         data: null,
       });
@@ -247,16 +266,16 @@ export const salesService = {
         const sales = await DB_COLLECTION.sales.find(id);
         await sales.markAsDeleted();
         return responseHandler({
-          message: "Sales is deleted",
+          message: 'Sales is deleted',
           statusCode: 200,
           data: null,
         });
       });
       return result;
     } catch (error) {
-      console.log("Failed to delete sales", error);
+      console.log('Failed to delete sales', error);
       return responseHandler({
-        message: "Failed to delete sales",
+        message: 'Failed to delete sales',
         statusCode: 500,
         data: null,
       });

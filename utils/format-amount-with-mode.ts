@@ -1,12 +1,11 @@
 export const formatNumberWithMode = (
   num: number,
-  locale: string = "in",
+  locale: string = 'in',
   decimals: number = 1,
 ): string => {
-  if (num === null || num === undefined || isNaN(num)) return "0";
+  if (num === null || num === undefined || isNaN(num)) return '0';
 
-  const isIndianSystem =
-    locale.toLowerCase() === "in" || locale.toLowerCase() === "np";
+  const isIndianSystem = locale.toLowerCase() === 'in' || locale.toLowerCase() === 'np';
 
   if (isIndianSystem) {
     // Indian Numbering System: K, Lakh, Crore

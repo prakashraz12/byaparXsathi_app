@@ -1,11 +1,12 @@
-import Sales from "@/database/model/sales.model";
-import { getDateFormat } from "../format-date";
-import SalesItem from "@/database/model/sales-item.model";
-import { formatNumberWithComma } from "../format-number";
-import Shop from "@/database/model/shop.model";
+import Sales from '@/database/model/sales.model';
+import SalesItem from '@/database/model/sales-item.model';
+import Shop from '@/database/model/shop.model';
+
+import { getDateFormat } from '../format-date';
+import { formatNumberWithComma } from '../format-number';
 
 export const salesInvoiceTemplate = (SALES: Sales, salesItems: SalesItem[], shopData: Shop) => {
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -324,7 +325,7 @@ export const salesInvoiceTemplate = (SALES: Sales, salesItems: SalesItem[], shop
                 <h3>Invoice Number</h3>
                 <p>${SALES.invoiceNumber}</p>
                 <h3 style="margin-top: 15px;">Date</h3>
-                <p>${getDateFormat(SALES.invoiceDate || 0, "BS", true, true)}</p>
+                <p>${getDateFormat(SALES.invoiceDate || 0, 'BS', true, true)}</p>
             </div>
             <div class="detail-section">
                 <h3>Bill To</h3>
@@ -348,7 +349,8 @@ export const salesInvoiceTemplate = (SALES: Sales, salesItems: SalesItem[], shop
             </thead>
             <tbody>
                 ${salesItems
-            .map((item: SalesItem, index: number) => `
+                  .map(
+                    (item: SalesItem, index: number) => `
                     <tr>
                         <td class="text-center">${index + 1}</td>
                         <td>${item.itemName}</td>
@@ -357,8 +359,9 @@ export const salesInvoiceTemplate = (SALES: Sales, salesItems: SalesItem[], shop
                         <td class="text-right">${item.discountAmount}</td>
                         <td class="text-right">${Number(item.quantity) * Number(item.price) - Number(item.discountAmount)}</td>
                     </tr>
-                `)
-            .join("")}
+                `,
+                  )
+                  .join('')}
 
             </tbody>
         </table>

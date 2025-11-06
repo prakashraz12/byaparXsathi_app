@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 type SyncState = {
   syncing: boolean;
@@ -14,17 +14,17 @@ export const useSyncStore = create<SyncState>()(
   persist(
     (set) => ({
       syncing: false,
-      lastSynced: "",
+      lastSynced: '',
 
       setSyncing: (value) => set({ syncing: value }),
       setLastSynced: (value) => set({ lastSynced: value }),
     }),
     {
-      name: "sync",
+      name: 'sync',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
         lastSynced: state.lastSynced, // persist only lastSynced
       }),
-    }
-  )
+    },
+  ),
 );

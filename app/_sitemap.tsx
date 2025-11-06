@@ -1,10 +1,6 @@
-import { View } from "react-native"
+import { View } from 'react-native';
 
-const SiteMap = ()=>{
-    return(
-        <View>
-
-        </View>
-    )
-}
+const SiteMap = () => {
+  return <View></View>;
+};
 export default SiteMap;

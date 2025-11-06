@@ -1,6 +1,6 @@
-import ItemScreen from "@/screen/items/items.screen"
+import ItemScreen from '@/screen/items/items.screen';
 
 const Items = () => {
-    return <ItemScreen/>
-}
-export default Items
+  return <ItemScreen />;
+};
+export default Items;

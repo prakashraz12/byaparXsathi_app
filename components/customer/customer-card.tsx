@@ -1,10 +1,11 @@
-import { View, Dimensions, TouchableOpacity } from "react-native";
-import AvatarCard from "../re-usables/avatar-card";
-import { Text } from "../re-usables/text";
-import { COLORS } from "@/constants/Colors";
-import Customer from "@/database/model/customer.model";
-import { customerService } from "@/database/services/customer.service";
-import { formatNumberWithComma } from "@/utils/format-number";
+import { TouchableOpacity, View } from 'react-native';
+
+import { COLORS } from '@/constants/Colors';
+import Customer from '@/database/model/customer.model';
+import { formatNumberWithComma } from '@/utils/format-number';
+
+import AvatarCard from '../re-usables/avatar-card';
+import { Text } from '../re-usables/text';
 
 const CustomerCard = ({
   customer,
@@ -15,9 +16,6 @@ const CustomerCard = ({
   onPress?: (customer: Customer) => void;
   selected?: boolean;
 }) => {
-  const handleUpdateCustomer = async () => {
-    await customerService.update(customer._raw.id, { name: "Updated" });
-  };
   return (
     <TouchableOpacity
       onPress={() => {
@@ -26,45 +24,42 @@ const CustomerCard = ({
     >
       <View
         style={{
-          flexDirection: "row",
-          alignItems: "center",
+          flexDirection: 'row',
+          alignItems: 'center',
           borderWidth: 0.5,
           borderColor: selected ? COLORS.success : COLORS.border,
           padding: 16,
           borderRadius: 5,
           marginBottom: 16,
-          backgroundColor: "#fff",
-          width: "100%",
+          backgroundColor: '#fff',
+          width: '100%',
         }}
       >
-        <AvatarCard name={customer.name || "UN"} size={50} />
+        <AvatarCard name={customer.name || 'UN'} size={50} />
 
         <View
           style={{
             flex: 1,
             marginLeft: 16,
-            flexDirection: "column",
+            flexDirection: 'column',
           }}
         >
           {/* Name + Rs.0 row */}
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}
           >
             <Text
-              style={{ fontSize: 15, fontFamily: "Poppins-Medium", flex: 1 }}
+              style={{ fontSize: 15, fontFamily: 'Poppins-Medium', flex: 1 }}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
               {customer.name}
             </Text>
-            <Text
-              style={{ fontSize: 14, color: COLORS.error, marginLeft: 8 }}
-              numberOfLines={1}
-            >
+            <Text style={{ fontSize: 14, color: COLORS.error, marginLeft: 8 }} numberOfLines={1}>
               {formatNumberWithComma(customer?.outstanding || 0)}
             </Text>
           </View>

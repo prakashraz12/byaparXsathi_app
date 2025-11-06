@@ -1,7 +1,7 @@
-import { Header } from "@/components/re-usables/header";
-import CreateShopForm from "@/components/shop/create-shop.form";
-import PXWrapper from "@/layouts/px-wrapper";
-import { router } from "expo-router";
+import { Header } from '@/components/re-usables/header';
+import CreateShopForm from '@/components/shop/create-shop.form';
+import PXWrapper from '@/layouts/px-wrapper';
+import { router } from 'expo-router';
 
 const CreateShopScreen = () => {
   return (
@@ -11,7 +11,7 @@ const CreateShopScreen = () => {
           title="Create Shop"
           style={{ marginTop: 10 }}
           onBackPress={() => {
-            router.push("/(tabs)");
+            router.push('/(tabs)');
           }}
         />
       }

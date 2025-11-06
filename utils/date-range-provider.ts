@@ -1,48 +1,48 @@
 export const DEFAULT_DATE_RANGE_OPTIONS_ENUMS = {
-  TODAY: "TODAY",
-  YESTERDAY: "YESTERDAY",
-  THIS_WEEK: "THIS_WEEK",
-  THIS_MONTH: "THIS_MONTH",
-  THIS_YEAR: "THIS_YEAR",
-  ALL_TIME: "ALL_TIME",
-  CUSTOM_RNAGE: "CUSTOM_RANGE",
+  TODAY: 'TODAY',
+  YESTERDAY: 'YESTERDAY',
+  THIS_WEEK: 'THIS_WEEK',
+  THIS_MONTH: 'THIS_MONTH',
+  THIS_YEAR: 'THIS_YEAR',
+  ALL_TIME: 'ALL_TIME',
+  CUSTOM_RNAGE: 'CUSTOM_RANGE',
 } as const;
 
 export const DEFAULT_DATE_RANGE_OPTIONS = [
   {
-    label: "All Time",
+    label: 'All Time',
     value: DEFAULT_DATE_RANGE_OPTIONS_ENUMS.ALL_TIME,
   },
 
   {
-    label: "Today",
+    label: 'Today',
     value: DEFAULT_DATE_RANGE_OPTIONS_ENUMS.TODAY,
   },
   {
-    label: "Yesterday",
+    label: 'Yesterday',
     value: DEFAULT_DATE_RANGE_OPTIONS_ENUMS.YESTERDAY,
   },
   {
-    label: "This Week",
+    label: 'This Week',
     value: DEFAULT_DATE_RANGE_OPTIONS_ENUMS.THIS_WEEK,
   },
   {
-    label: "This Month",
+    label: 'This Month',
     value: DEFAULT_DATE_RANGE_OPTIONS_ENUMS.THIS_MONTH,
   },
   {
-    label: "This Year",
+    label: 'This Year',
     value: DEFAULT_DATE_RANGE_OPTIONS_ENUMS.THIS_YEAR,
   },
 
   {
-    label: "Custom Range",
+    label: 'Custom Range',
     value: DEFAULT_DATE_RANGE_OPTIONS_ENUMS.CUSTOM_RNAGE,
   },
 ];
 
 export const dateRangeProvider = (
-  range: (typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS)[keyof typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS]
+  range: (typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS)[keyof typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS],
 ) => {
   const today = new Date();
 
@@ -75,7 +75,7 @@ export const dateRangeProvider = (
     };
   }
 
-  if(range === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.THIS_MONTH){
+  if (range === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.THIS_MONTH) {
     const startDate = new Date(today);
     startDate.setMonth(today.getMonth() - 1);
 

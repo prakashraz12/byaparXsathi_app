@@ -1,20 +1,15 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { SlideUpModal } from "@/components/re-usables/modal/slide-up.modal";
-import { COLORS } from "@/constants/Colors";
-import { PaymentStatus } from "@/constants/payment-status";
-import { formatNumberWithComma } from "@/utils/format-number";
-import { Button } from "../re-usables/button";
-import { ArrowLeft, RefreshCcw } from "lucide-react-native";
-import { useState } from "react";
-import Customer from "@/database/model/customer.model";
-import AvatarCard from "../re-usables/avatar-card";
+import { Ionicons } from '@expo/vector-icons';
+import { ArrowLeft, RefreshCcw } from 'lucide-react-native';
+import { StyleSheet, Text, TextInput,TouchableOpacity, View } from 'react-native';
+
+import { SlideUpModal } from '@/components/re-usables/modal/slide-up.modal';
+import { COLORS } from '@/constants/Colors';
+import { PaymentStatus } from '@/constants/payment-status';
+import Customer from '@/database/model/customer.model';
+import { formatNumberWithComma } from '@/utils/format-number';
+
+import AvatarCard from '../re-usables/avatar-card';
+import { Button } from '../re-usables/button';
 
 interface PaymentSlideUpProps {
   visible: boolean;
@@ -26,7 +21,7 @@ interface PaymentSlideUpProps {
   setPartiallyPaidAmount?: (amount: string) => void;
   partiallyPaidAmount?: string;
   totalAmount?: string;
-  mode?: "sales" | "quick-sale";
+  mode?: 'sales' | 'quick-sale';
   customerSelected?: Customer;
   setCustomer?: (customer: Customer | null) => void;
   setCustomerSelectionOpen?: (slideup: boolean) => void;
@@ -42,7 +37,7 @@ const PaymentStatusSlideUp = ({
   setPartiallyPaidAmount,
   partiallyPaidAmount,
   totalAmount,
-  mode = "sales",
+  mode = 'sales',
   customerSelected,
   setCustomer,
   setCustomerSelectionOpen,
@@ -55,11 +50,7 @@ const PaymentStatusSlideUp = ({
       onClose={() => {
         onClose();
       }}
-      title={
-        paymentStatus !== PaymentStatus.PARTIALLY_PAID
-          ? "Select Payment Status"
-          : ""
-      }
+      title={paymentStatus !== PaymentStatus.PARTIALLY_PAID ? 'Select Payment Status' : ''}
       height={paymentStatus === PaymentStatus.PARTIALLY_PAID ? 460 : 400}
     >
       <View
@@ -71,35 +62,34 @@ const PaymentStatusSlideUp = ({
         ]}
       >
         <>
-          {paymentStatus === PaymentStatus.PARTIALLY_PAID &&
-            mode === "quick-sale" && (
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 20,
-                  marginBottom: 20,
+          {paymentStatus === PaymentStatus.PARTIALLY_PAID && mode === 'quick-sale' && (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 20,
+                marginBottom: 20,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  setPaymentStatus(null);
+                  setPartiallyPaidAmount?.('');
+                  setCustomer?.(null);
                 }}
               >
-                <TouchableOpacity
-                  onPress={() => {
-                    setPaymentStatus(null);
-                    setPartiallyPaidAmount?.("");
-                    setCustomer?.(null);
-                  }}
-                >
-                  <ArrowLeft size={25} color={COLORS.primary} />
-                </TouchableOpacity>
-                <Text style={styles.title}>Select Payment Status</Text>
-              </View>
-            )}
+                <ArrowLeft size={25} color={COLORS.primary} />
+              </TouchableOpacity>
+              <Text style={styles.title}>Select Payment Status</Text>
+            </View>
+          )}
 
           <View style={styles.optionsList}>
             {paymentStatus !== PaymentStatus.PARTIALLY_PAID && (
               <TouchableOpacity
                 style={styles.optionCard}
                 onPress={() => {
-                  setPaymentStatus("PAID");
+                  setPaymentStatus('PAID');
                   paymentType === null &&
                     paymentType !== PaymentStatus.UNPAID &&
                     setPaymentModeSlideup(true);
@@ -116,8 +106,8 @@ const PaymentStatusSlideUp = ({
               <TouchableOpacity
                 style={styles.optionCard}
                 onPress={() => {
-                  setPaymentStatus("PARTIALLY_PAID");
-                  mode !== "quick-sale" && setPaymentModeSlideup(true);
+                  setPaymentStatus('PARTIALLY_PAID');
+                  mode !== 'quick-sale' && setPaymentModeSlideup(true);
                   !customerSelected && setCustomerSelectionOpen?.(true);
                 }}
               >
@@ -128,63 +118,51 @@ const PaymentStatusSlideUp = ({
               </TouchableOpacity>
             )}
 
-            {paymentStatus !== PaymentStatus.PAID &&
-              paymentStatus !== null &&
-              customerSelected && (
+            {paymentStatus !== PaymentStatus.PAID && paymentStatus !== null && customerSelected && (
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 10,
+                  justifyContent: 'space-between',
+                  borderWidth: 1,
+                  borderColor: COLORS.border,
+                  borderRadius: 5,
+                  padding: 20,
+                }}
+              >
+                <View style={{ flexDirection: 'row', gap: 10, flex: 1 }}>
+                  <AvatarCard name={customerSelected?.name || 'UN'} size={50} />
+                  <View style={{ flexDirection: 'column', gap: 2 }}>
+                    <Text style={{ fontSize: 16 }}>{customerSelected?.name}</Text>
+                    <Text style={{ fontSize: 14, color: COLORS.error }}>
+                      Due {formatNumberWithComma(customerSelected?.outstanding || 0)}
+                    </Text>
+                  </View>
+                </View>
                 <TouchableOpacity
+                  onPress={() => setCustomerSelectionOpen?.(true)}
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                    justifyContent: "space-between",
+                    flexDirection: 'row',
+                    gap: 5,
                     borderWidth: 1,
+                    borderRadius: 50,
                     borderColor: COLORS.border,
-                    borderRadius: 5,
-                    padding: 20,
+                    paddingHorizontal: 15,
+                    paddingVertical: 10,
                   }}
                 >
-                  <View style={{ flexDirection: "row", gap: 10, flex: 1 }}>
-                    <AvatarCard
-                      name={customerSelected?.name || "UN"}
-                      size={50}
-                    />
-                    <View style={{ flexDirection: "column", gap: 2 }}>
-                      <Text style={{ fontSize: 16 }}>
-                        {customerSelected?.name}
-                      </Text>
-                      <Text style={{ fontSize: 14, color: COLORS.error }}>
-                        Due{" "}
-                        {formatNumberWithComma(
-                          customerSelected?.outstanding || 0,
-                        )}
-                      </Text>
-                    </View>
-                  </View>
-                  <TouchableOpacity
-                    onPress={() => setCustomerSelectionOpen?.(true)}
-                    style={{
-                      flexDirection: "row",
-                      gap: 5,
-                      borderWidth: 1,
-                      borderRadius: 50,
-                      borderColor: COLORS.border,
-                      paddingHorizontal: 15,
-                      paddingVertical: 10,
-                    }}
-                  >
-                    <RefreshCcw size={18} />
-                    <Text style={{ fontSize: 13, fontWeight: "500" }}>
-                      Change
-                    </Text>
-                  </TouchableOpacity>
+                  <RefreshCcw size={18} />
+                  <Text style={{ fontSize: 13, fontWeight: '500' }}>Change</Text>
                 </TouchableOpacity>
-              )}
+              </TouchableOpacity>
+            )}
 
             {paymentStatus !== PaymentStatus.PARTIALLY_PAID && (
               <TouchableOpacity
                 style={styles.optionCard}
                 onPress={() => {
-                  setPaymentStatus("UNPAID");
+                  setPaymentStatus('UNPAID');
                   setCustomerSelectionOpen?.(true);
                 }}
               >
@@ -195,51 +173,46 @@ const PaymentStatusSlideUp = ({
               </TouchableOpacity>
             )}
           </View>
-          {paymentStatus === PaymentStatus.PARTIALLY_PAID &&
-            mode === "quick-sale" && (
-              <View style={{ marginTop: 15 }}>
-                <View style={styles.amountContainer}>
-                  <View style={styles.totalAmountRow}>
-                    <Text style={styles.labelText}>Total Amount</Text>
-                    <Text style={styles.amountText}>
-                      {formatNumberWithComma(totalAmount || "0")}
-                    </Text>
-                  </View>
-                  <View style={styles.receivedAmountRow}>
-                    <Text style={styles.labelText}>Received Amount</Text>
-                    <TextInput
-                      placeholder="0"
-                      placeholderTextColor="#9ca3af"
-                      keyboardType="numeric"
-                      autoFocus
-                      focusable
-                      value={partiallyPaidAmount}
-                      onChangeText={setPartiallyPaidAmount}
-                      style={styles.amountInput}
-                    />
-                  </View>
+          {paymentStatus === PaymentStatus.PARTIALLY_PAID && mode === 'quick-sale' && (
+            <View style={{ marginTop: 15 }}>
+              <View style={styles.amountContainer}>
+                <View style={styles.totalAmountRow}>
+                  <Text style={styles.labelText}>Total Amount</Text>
+                  <Text style={styles.amountText}>{formatNumberWithComma(totalAmount || '0')}</Text>
                 </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginTop: 20,
-                    marginBottom: 40,
-                    marginHorizontal: 10,
-                  }}
-                >
-                  <Text style={{ color: COLORS.error }}>Balance Due</Text>
-                  <Text style={{ color: COLORS.error }}>
-                    {formatNumberWithComma(balanceDue)}
-                  </Text>
+                <View style={styles.receivedAmountRow}>
+                  <Text style={styles.labelText}>Received Amount</Text>
+                  <TextInput
+                    placeholder="0"
+                    placeholderTextColor="#9ca3af"
+                    keyboardType="numeric"
+                    autoFocus
+                    focusable
+                    value={partiallyPaidAmount}
+                    onChangeText={setPartiallyPaidAmount}
+                    style={styles.amountInput}
+                  />
                 </View>
-                <Button
-                  disabled={balanceDue <= 0 || partiallyPaidAmount === ""}
-                  title="Continue"
-                  onPress={() => setPaymentModeSlideup(true)}
-                />
               </View>
-            )}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginTop: 20,
+                  marginBottom: 40,
+                  marginHorizontal: 10,
+                }}
+              >
+                <Text style={{ color: COLORS.error }}>Balance Due</Text>
+                <Text style={{ color: COLORS.error }}>{formatNumberWithComma(balanceDue)}</Text>
+              </View>
+              <Button
+                disabled={balanceDue <= 0 || partiallyPaidAmount === ''}
+                title="Continue"
+                onPress={() => setPaymentModeSlideup(true)}
+              />
+            </View>
+          )}
         </>
       </View>
     </SlideUpModal>
@@ -252,8 +225,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#1f2937",
+    fontWeight: '600',
+    color: '#1f2937',
   },
   optionsList: {
     gap: 12,
@@ -262,52 +235,52 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     padding: 16,
     borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 16,
     borderWidth: 1,
     borderColor: COLORS.border,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
   selectedCard: {
     borderColor: COLORS.primary,
-    backgroundColor: "#f0f9ff",
+    backgroundColor: '#f0f9ff',
   },
   iconContainer: {
     width: 50,
     height: 50,
     borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   paidIconBg: {
-    backgroundColor: "#d1fae5",
+    backgroundColor: '#d1fae5',
   },
   partialIconBg: {
-    backgroundColor: "#fef3c7",
+    backgroundColor: '#fef3c7',
   },
   unpaidIconBg: {
-    backgroundColor: "#fee2e2",
+    backgroundColor: '#fee2e2',
   },
   cashIconBg: {
-    backgroundColor: "#d1fae5",
+    backgroundColor: '#d1fae5',
   },
   chequeIconBg: {
-    backgroundColor: "#dbeafe",
+    backgroundColor: '#dbeafe',
   },
   onlineIconBg: {
-    backgroundColor: "#fce7f3",
+    backgroundColor: '#fce7f3',
   },
   optionText: {
     fontSize: 18,
-    color: "#374151",
+    color: '#374151',
     flex: 1,
   },
   backButton: {
     padding: 8,
     marginLeft: -8,
     marginBottom: 12,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
   },
   amountContainer: {
     borderWidth: 1,
@@ -316,36 +289,36 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   totalAmountRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 20,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
   },
   receivedAmountRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 16,
     paddingHorizontal: 20,
   },
   labelText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
     color: COLORS.text,
   },
   amountText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
     color: COLORS.success,
   },
   amountInput: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
     color: COLORS.text,
-    textAlign: "right",
+    textAlign: 'right',
     minWidth: 100,
     maxWidth: 150,
     marginLeft: 20,

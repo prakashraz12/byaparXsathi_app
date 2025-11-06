@@ -1,30 +1,29 @@
-import { Q } from "@nozbe/watermelondb";
-import { useCallback, useEffect, useState } from "react";
-import database from "../index";
-import Customer from "../model/customer.model";
-import { DB_COLLECTION } from "../collection";
-import { useUserStore } from "@/store/useUserStore";
+import { Q } from '@nozbe/watermelondb';
+import { useCallback, useEffect, useState } from 'react';
+
+import { useUserStore } from '@/store/useUserStore';
+
+import { DB_COLLECTION } from '../collection';
+import Customer from '../model/customer.model';
 
 export function useCustomers({
-  search = "",
-  sortBy = "name",
+  search = '',
+  sortBy = 'name',
 }: {
   search?: string;
-  sortBy?: keyof Omit<Customer, "table" | "createdAt" | "updatedAt">;
+  sortBy?: keyof Omit<Customer, 'table' | 'createdAt' | 'updatedAt'>;
 }) {
   const { activeShopId } = useUserStore();
 
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const buildQuery = useCallback(() => {
-    let query = DB_COLLECTION.customer.query(Q.where("shopId", activeShopId));
+    let query = DB_COLLECTION.customer.query(Q.where('shopId', activeShopId));
 
     if (search) {
-      query = query.extend(
-        Q.where("name", Q.like(`%${Q.sanitizeLikeString(search)}%`))
-      );
+      query = query.extend(Q.where('name', Q.like(`%${Q.sanitizeLikeString(search)}%`)));
     }
 
     if (sortBy) {
@@ -39,18 +38,18 @@ export function useCustomers({
       if (isRefresh) setIsRefreshing(true);
 
       try {
-        setLoading(true)
+        setLoading(true);
         const query = buildQuery();
         const records = await query.fetch();
         setCustomers(records);
       } catch (error) {
-        console.error("Error loading customers:", error);
+        console.error('Error loading customers:', error);
       } finally {
         if (isRefresh) setIsRefreshing(false);
-        setLoading(false)
+        setLoading(false);
       }
     },
-    [buildQuery]
+    [buildQuery],
   );
 
   const refresh = useCallback(() => {

@@ -1,12 +1,9 @@
-import { Q } from "@nozbe/watermelondb";
-import { combineLatest, from } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
-import { DB_COLLECTION } from "../collection";
-import {
-  dateRangeProvider,
-  DEFAULT_DATE_RANGE_OPTIONS_ENUMS,
-} from "@/utils/date-range-provider";
-import { PaymentStatus } from "@/constants/payment-status";
+import { Q } from '@nozbe/watermelondb';
+import { combineLatest, from } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { DB_COLLECTION } from '../collection';
+import { dateRangeProvider, DEFAULT_DATE_RANGE_OPTIONS_ENUMS } from '@/utils/date-range-provider';
+import { PaymentStatus } from '@/constants/payment-status';
 
 export const observeDashboardAnalytics = ({
   dateRangePreset,
@@ -15,44 +12,29 @@ export const observeDashboardAnalytics = ({
 }) => {
   const provider = dateRangeProvider(dateRangePreset);
   if (!provider?.startDate || !provider?.endDate) {
-    throw new Error("Invalid date range");
+    throw new Error('Invalid date range');
   }
 
   const start = provider.startDate.getTime();
   const end = provider.endDate.getTime();
 
   const sales$ = DB_COLLECTION.sales
-    .query(
-      Q.where("invoiceDate", Q.gte(start)),
-      Q.where("invoiceDate", Q.lte(end)),
-    )
+    .query(Q.where('invoiceDate', Q.gte(start)), Q.where('invoiceDate', Q.lte(end)))
     .observe();
 
   const expenses$ = DB_COLLECTION.expenses
-    .query(
-      Q.where("created_at", Q.gte(start)),
-      Q.where("created_at", Q.lte(end)),
-    )
+    .query(Q.where('created_at', Q.gte(start)), Q.where('created_at', Q.lte(end)))
     .observe();
 
   const customers$ = DB_COLLECTION.customer
-    .query(
-      Q.where("created_at", Q.gte(start)),
-      Q.where("created_at", Q.lte(end)),
-    )
+    .query(Q.where('created_at', Q.gte(start)), Q.where('created_at', Q.lte(end)))
     .observe();
 
   // Combine all three into one observable stream
   return combineLatest([sales$, expenses$, customers$]).pipe(
     map(([sales, expenses, customers]) => {
-      const totalSales = sales.reduce(
-        (sum, s) => sum + Number(s.grandTotalAmount || 0),
-        0,
-      );
-      const totalExpenses = expenses.reduce(
-        (sum, e) => sum + Number(e.amount || 0),
-        0,
-      );
+      const totalSales = sales.reduce((sum, s) => sum + Number(s.grandTotalAmount || 0), 0);
+      const totalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
       const totalCustomers = customers.length;
 
       return { totalSales, totalExpenses, totalCustomers };
@@ -67,7 +49,7 @@ export const observeSalesAnalytics = ({
 }) => {
   const provider = dateRangeProvider(dateRangePreset);
   if (!provider?.startDate || !provider?.endDate) {
-    throw new Error("Invalid date range");
+    throw new Error('Invalid date range');
   }
 
   const start = provider.startDate.getTime();
@@ -75,10 +57,7 @@ export const observeSalesAnalytics = ({
 
   // Observe sales in the given date range
   const sales$ = DB_COLLECTION.sales
-    .query(
-      Q.where("invoiceDate", Q.gte(start)),
-      Q.where("invoiceDate", Q.lte(end)),
-    )
+    .query(Q.where('invoiceDate', Q.gte(start)), Q.where('invoiceDate', Q.lte(end)))
     .observe();
 
   // Return reactive chart data
@@ -90,8 +69,7 @@ export const observeSalesAnalytics = ({
       sales.forEach((sale) => {
         const day = new Date(sale.invoiceDate || 0); // group key
         grouped[day.toDateString()] =
-          (grouped[day.toDateString()] || 0) +
-          Number(sale.grandTotalAmount || 0);
+          (grouped[day.toDateString()] || 0) + Number(sale.grandTotalAmount || 0);
       });
 
       // Sort days chronologically
@@ -115,7 +93,7 @@ export const observeSalesSummary = ({
 }) => {
   const provider = dateRangeProvider(dateRangePreset);
   if (!provider?.startDate || !provider?.endDate) {
-    throw new Error("Invalid date range");
+    throw new Error('Invalid date range');
   }
 
   const start = provider.startDate.getTime();
@@ -123,10 +101,7 @@ export const observeSalesSummary = ({
 
   // Observe sales in the given date range
   const sales$ = DB_COLLECTION.sales
-    .query(
-      Q.where("invoiceDate", Q.gte(start)),
-      Q.where("invoiceDate", Q.lte(end)),
-    )
+    .query(Q.where('invoiceDate', Q.gte(start)), Q.where('invoiceDate', Q.lte(end)))
     .observe();
 
   // Return reactive chart data
@@ -165,17 +140,14 @@ export const observeSalesByPayments = ({
 }) => {
   const provider = dateRangeProvider(dateRangePreset);
   if (!provider?.startDate || !provider?.endDate) {
-    throw new Error("Invalid date range");
+    throw new Error('Invalid date range');
   }
 
   const start = provider.startDate.getTime();
   const end = provider.endDate.getTime();
 
   const sales$ = DB_COLLECTION.sales
-    .query(
-      Q.where("invoiceDate", Q.gte(start)),
-      Q.where("invoiceDate", Q.lte(end)),
-    )
+    .query(Q.where('invoiceDate', Q.gte(start)), Q.where('invoiceDate', Q.lte(end)))
     .observe();
 
   return sales$.pipe(
@@ -185,7 +157,7 @@ export const observeSalesByPayments = ({
 
       sales.forEach((sale) => {
         if (!sale?.paymentType) return;
-        const paymentType = sale?.paymentType || "Unknown";
+        const paymentType = sale?.paymentType || 'Unknown';
         const total = Number(sale?.grandTotalAmount || 0);
         grouped[paymentType] = (grouped[paymentType] || 0) + total;
       });
@@ -208,17 +180,14 @@ export const observeTopSaleItems = ({
 }) => {
   const provider = dateRangeProvider(dateRangePreset);
   if (!provider?.startDate || !provider?.endDate) {
-    throw new Error("Invalid date range");
+    throw new Error('Invalid date range');
   }
 
   const start = provider.startDate.getTime();
   const end = provider.endDate.getTime();
 
   const sales$ = DB_COLLECTION.sales
-    .query(
-      Q.where("invoiceDate", Q.gte(start)),
-      Q.where("invoiceDate", Q.lte(end)),
-    )
+    .query(Q.where('invoiceDate', Q.gte(start)), Q.where('invoiceDate', Q.lte(end)))
     .observe();
 
   return sales$.pipe(
@@ -227,28 +196,17 @@ export const observeTopSaleItems = ({
       if (salesIds.length === 0) return from([[]]);
 
       // fetch all sales items for these sales
-      return from(
-        DB_COLLECTION.salesItem
-          .query(Q.where("salesId", Q.oneOf(salesIds)))
-          .fetch(),
-      );
+      return from(DB_COLLECTION.salesItem.query(Q.where('salesId', Q.oneOf(salesIds))).fetch());
     }),
     switchMap(async (salesItems) => {
       if (!salesItems.length) return [];
 
       // fetch all items data (for cost/selling price)
-      const itemIds = salesItems
-        .map((si) => si.itemId)
-        .filter((id) => typeof id === "string");
+      const itemIds = salesItems.map((si) => si.itemId).filter((id) => typeof id === 'string');
 
-      const items = await DB_COLLECTION.item
-        .query(Q.where("id", Q.oneOf(itemIds)))
-        .fetch();
+      const items = await DB_COLLECTION.item.query(Q.where('id', Q.oneOf(itemIds))).fetch();
 
-      const itemPriceMap: Record<
-        string,
-        { sellingPrice: number; costPrice: number }
-      > = {};
+      const itemPriceMap: Record<string, { sellingPrice: number; costPrice: number }> = {};
       items.forEach((it) => {
         itemPriceMap[it.id] = {
           sellingPrice: Number(it.sellingPrice || 0),
@@ -263,7 +221,7 @@ export const observeTopSaleItems = ({
       > = {};
 
       salesItems.forEach((item) => {
-        const name = item?.itemName || "Unknown";
+        const name = item?.itemName || 'Unknown';
         const total = Number(item?.price || 0) * Number(item?.quantity || 0);
         const quantity = Number(item?.quantity || 1);
 

@@ -1,9 +1,7 @@
-import CreateShopScreen from "@/screen/shop/create-shop.screen";
+import CreateShopScreen from '@/screen/shop/create-shop.screen';
 
 const CreateShop = () => {
-    return (
-        <CreateShopScreen/>
-    )
-}
+  return <CreateShopScreen />;
+};
 
 export default CreateShop;

@@ -1,21 +1,20 @@
-import { Text } from "@/components/re-usables/text";
-import { WINDOW_WIDTH } from "@/config/app.config";
-import { COLORS } from "@/constants/Colors";
-import { observeSalesAnalytics } from "@/database/services/analaytics.service";
-import { formatNumberWithMode } from "@/utils/format-amount-with-mode";
-import { getDateFormat } from "@/utils/format-date";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { BarChart } from "react-native-chart-kit";
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { BarChart } from 'react-native-chart-kit';
+
+import { Text } from '@/components/re-usables/text';
+import { WINDOW_WIDTH } from '@/config/app.config';
+import { COLORS } from '@/constants/Colors';
+import { observeSalesAnalytics } from '@/database/services/analaytics.service';
+import { formatNumberWithMode } from '@/utils/format-amount-with-mode';
+import { getDateFormat } from '@/utils/format-date';
 
 const SalesOverviewChart = () => {
-  const [chartData, setChartData] = useState<
-    { label: string; value: number }[]
-  >([]);
+  const [chartData, setChartData] = useState<{ label: string; value: number }[]>([]);
 
   useEffect(() => {
     const sub = observeSalesAnalytics({
-      dateRangePreset: "THIS_MONTH",
+      dateRangePreset: 'THIS_MONTH',
     }).subscribe(setChartData);
     return () => sub.unsubscribe();
   }, []);
@@ -39,12 +38,12 @@ const SalesOverviewChart = () => {
           <BarChart
             data={{
               labels: chartData.map((item) =>
-                getDateFormat(Number(new Date(item.label)), "BS", false, false),
+                getDateFormat(Number(new Date(item.label)), 'BS', false, false),
               ),
               datasets: [
                 {
                   data: chartData.map((item) => Number(item.value?.toFixed(2))),
-                  color: (opacity = 1) => COLORS.primary,
+                  color: () => COLORS.primary,
                   strokeWidth: 3,
                 },
               ],
@@ -54,33 +53,31 @@ const SalesOverviewChart = () => {
             yAxisLabel="Rs "
             yAxisSuffix=""
             chartConfig={{
-              backgroundColor: "#ffffff",
-              backgroundGradientFrom: "#ffffff",
-              backgroundGradientTo: "#ffffff",
+              backgroundColor: '#ffffff',
+              backgroundGradientFrom: '#ffffff',
+              backgroundGradientTo: '#ffffff',
               decimalPlaces: 0,
-              color: (opacity = 1) =>
-                `rgba(${hexToRgb(COLORS.primary)}, ${opacity})`,
-              labelColor: (opacity = 1) => COLORS.textLight || "#666",
+              color: (opacity = 1) => `rgba(${hexToRgb(COLORS.primary)}, ${opacity})`,
+              labelColor: () => COLORS.textLight || '#666',
               style: {
                 borderRadius: 16,
               },
               propsForDots: {
-                r: "5",
-                strokeWidth: "2",
+                r: '5',
+                strokeWidth: '2',
                 stroke: COLORS.primary,
-                fill: "#fff",
+                fill: '#fff',
               },
               propsForBackgroundLines: {
-                strokeDasharray: "4",
-                stroke: "#ebe9e9ff",
+                strokeDasharray: '4',
+                stroke: '#ebe9e9ff',
                 strokeWidth: 1,
               },
               propsForLabels: {
                 fontSize: 11,
-                fontFamily: "Poppins-Regular",
+                fontFamily: 'Poppins-Regular',
               },
-              formatYLabel: (value) =>
-                formatNumberWithMode(Number(value), "in", 0),
+              formatYLabel: (value) => formatNumberWithMode(Number(value), 'in', 0),
             }}
             style={styles.chart}
             withInnerLines={true}
@@ -98,7 +95,7 @@ const hexToRgb = (hex: string) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
-    : "0, 0, 0";
+    : '0, 0, 0';
 };
 
 const styles = StyleSheet.create({
@@ -107,42 +104,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     marginBottom: 16,
   },
   title: {
     fontSize: 18,
-    fontFamily: "Poppins-SemiBold",
-    color: COLORS.text || "#000",
+    fontFamily: 'Poppins-SemiBold',
+    color: COLORS.text || '#000',
   },
   subtitle: {
     fontSize: 12,
-    fontFamily: "Poppins-Regular",
-    color: COLORS.textLight || "#666",
+    fontFamily: 'Poppins-Regular',
+    color: COLORS.textLight || '#666',
     marginTop: 2,
   },
   totalCard: {
-    backgroundColor: COLORS.primary + "15" || "#f0f0f0",
+    backgroundColor: COLORS.primary + '15' || '#f0f0f0',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
   totalLabel: {
     fontSize: 10,
-    fontFamily: "Poppins-Regular",
-    color: COLORS.textLight || "#666",
-    textAlign: "center",
+    fontFamily: 'Poppins-Regular',
+    color: COLORS.textLight || '#666',
+    textAlign: 'center',
   },
   totalValue: {
     fontSize: 14,
-    fontFamily: "Poppins-SemiBold",
+    fontFamily: 'Poppins-SemiBold',
     color: COLORS.primary,
-    textAlign: "center",
+    textAlign: 'center',
   },
   chartContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 8,
     paddingHorizontal: 1,
     paddingTop: 20,
@@ -151,12 +148,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   statsRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 16,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 1,
@@ -167,23 +164,23 @@ const styles = StyleSheet.create({
   },
   statItem: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
   },
   statItemBorder: {
     borderLeftWidth: 1,
     borderRightWidth: 1,
-    borderColor: "#e0e0e0",
+    borderColor: '#e0e0e0',
   },
   statLabel: {
     fontSize: 11,
-    fontFamily: "Poppins-Regular",
-    color: COLORS.textLight || "#666",
+    fontFamily: 'Poppins-Regular',
+    color: COLORS.textLight || '#666',
     marginBottom: 4,
   },
   statValue: {
     fontSize: 14,
-    fontFamily: "Poppins-SemiBold",
-    color: COLORS.text || "#000",
+    fontFamily: 'Poppins-SemiBold',
+    color: COLORS.text || '#000',
   },
 });
 

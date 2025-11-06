@@ -1,31 +1,33 @@
-"use client";
+'use client';
 
-import { PaymentStatusOptions } from "@/constants/payment-status";
+import { View } from 'react-native';
+
+import { PaymentStatusOptions } from '@/constants/payment-status';
 import {
   DEFAULT_DATE_RANGE_OPTIONS,
   DEFAULT_DATE_RANGE_OPTIONS_ENUMS,
-} from "@/utils/date-range-provider";
-import { View } from "react-native";
-import BadgeSelector from "../re-usables/badge-selector";
-import { Button } from "../re-usables/button";
-import DatePicker from "../re-usables/date-picker/date-picker";
-import { SlideUpModal } from "../re-usables/modal/slide-up.modal";
-import { Text } from "../re-usables/text";
+} from '@/utils/date-range-provider';
+
+import BadgeSelector from '../re-usables/badge-selector';
+import { Button } from '../re-usables/button';
+import DatePicker from '../re-usables/date-picker/date-picker';
+import { SlideUpModal } from '../re-usables/modal/slide-up.modal';
+import { Text } from '../re-usables/text';
 
 interface SalesFilterSlideUpProps {
   visible: boolean;
   onClose: () => void;
-  sortBy: "asc" | "desc";
-  setSortBy: (sortBy: "asc" | "desc") => void;
+  sortBy: 'asc' | 'desc';
+  setSortBy: (sortBy: 'asc' | 'desc') => void;
   dateRangeOptions: (typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS)[keyof typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS];
   setDateRangeOptions: (
-    dateRangeOptions: (typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS)[keyof typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS]
+    dateRangeOptions: (typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS)[keyof typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS],
   ) => void;
   startDate: Date | null;
   endDate: Date | null;
   setStartDate: (date: Date | null) => void;
   setEndDate: (date: Date | null) => void;
-  paymentType: string;
+  paymentType?: string;
   setPaymentType: (paymentType: string) => void;
   paymentStatus: string;
   setPaymentStatus: (paymentStatus: string) => void;
@@ -41,7 +43,6 @@ const SalesFilterSlideUp = ({
   startDate,
   endDate,
   setStartDate,
-  paymentType,
   setPaymentType,
   paymentStatus,
   setPaymentStatus,
@@ -51,20 +52,19 @@ const SalesFilterSlideUp = ({
     <SlideUpModal
       visible={visible}
       onClose={onClose}
-      height={600 + (dateRangeOptions === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.CUSTOM_RNAGE ? 20 :0)}
+      height={600 + (dateRangeOptions === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.CUSTOM_RNAGE ? 20 : 0)}
       stickyFooter={
-        <View style={{ flexDirection: "row", gap: 12 }}>
-         
+        <View style={{ flexDirection: 'row', gap: 12 }}>
           <Button
             style={{ flex: 1 }}
             title="Reset"
             onPress={() => {
-              setSortBy("asc");
+              setSortBy('asc');
               setDateRangeOptions(DEFAULT_DATE_RANGE_OPTIONS_ENUMS.ALL_TIME);
               setStartDate(null);
               setEndDate(null);
-              setPaymentType("");
-              setPaymentStatus("");
+              setPaymentType('');
+              setPaymentStatus('');
               onClose();
             }}
           />
@@ -76,18 +76,18 @@ const SalesFilterSlideUp = ({
           style={{
             fontSize: 16,
             marginBottom: 12,
-            fontFamily: "Poppins-SemiBold",
+            fontFamily: 'Poppins-SemiBold',
           }}
         >
           Sort By
         </Text>
         <BadgeSelector
           options={[
-            { label: "Asc", value: "asc" },
-            { label: "Desc", value: "desc" },
+            { label: 'Asc', value: 'asc' },
+            { label: 'Desc', value: 'desc' },
           ]}
           value={sortBy}
-          onChange={(value) => setSortBy(value as "asc" | "desc")}
+          onChange={(value) => setSortBy(value as 'asc' | 'desc')}
         />
       </View>
 
@@ -96,7 +96,7 @@ const SalesFilterSlideUp = ({
           style={{
             fontSize: 16,
             marginBottom: 12,
-            fontFamily: "Poppins-SemiBold",
+            fontFamily: 'Poppins-SemiBold',
           }}
         >
           Date Range
@@ -106,7 +106,7 @@ const SalesFilterSlideUp = ({
           value={dateRangeOptions}
           onChange={(value) => {
             setDateRangeOptions(
-              value as (typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS)[keyof typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS]
+              value as (typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS)[keyof typeof DEFAULT_DATE_RANGE_OPTIONS_ENUMS],
             );
             if (dateRangeOptions === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.CUSTOM_RNAGE) {
               onClose();
@@ -117,10 +117,8 @@ const SalesFilterSlideUp = ({
 
       {dateRangeOptions === DEFAULT_DATE_RANGE_OPTIONS_ENUMS.CUSTOM_RNAGE && (
         <View>
-        
-          <View style={{ flexDirection: "row", gap: 12 }}>
+          <View style={{ flexDirection: 'row', gap: 12 }}>
             <View style={{ flex: 1 }}>
-             
               <DatePicker
                 selectedDate={(startDate ?? new Date()) as Date}
                 onDateChange={(d) => setStartDate(d)}
@@ -129,7 +127,6 @@ const SalesFilterSlideUp = ({
             </View>
 
             <View style={{ flex: 1 }}>
-            
               <DatePicker
                 selectedDate={(endDate ?? new Date()) as Date}
                 onDateChange={(d) => setEndDate(d)}
@@ -144,7 +141,7 @@ const SalesFilterSlideUp = ({
           style={{
             fontSize: 16,
             marginBottom: 12,
-            fontFamily: "Poppins-SemiBold",
+            fontFamily: 'Poppins-SemiBold',
           }}
         >
           Payment Status

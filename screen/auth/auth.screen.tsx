@@ -1,33 +1,32 @@
-import { Button } from "@/components/re-usables/button";
-import { Header } from "@/components/re-usables/header";
-import CustomInput from "@/components/re-usables/input";
-import { Text } from "@/components/re-usables/text";
-import { COLORS } from "@/constants/Colors";
-import { withEmailSchema } from "@/forms/schema/with-email.schema";
-import PXWrapper from "@/layouts/px-wrapper";
-import { useAuthControllerWithEmail } from "@/service/queries-components";
-import { apiOptions } from "@/utils/api-options.util";
-import { getUserLocation } from "@/utils/get-user-info";
-import { useForm } from "@tanstack/react-form";
-import { router } from "expo-router";
-import { Mail } from "lucide-react-native";
-import { useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Button } from '@/components/re-usables/button';
+import { Header } from '@/components/re-usables/header';
+import CustomInput from '@/components/re-usables/input';
+import { Text } from '@/components/re-usables/text';
+import { COLORS } from '@/constants/Colors';
+import { withEmailSchema } from '@/forms/schema/with-email.schema';
+import PXWrapper from '@/layouts/px-wrapper';
+import { useAuthControllerWithEmail } from '@/service/queries-components';
+import { apiOptions } from '@/utils/api-options.util';
+import { getUserLocation } from '@/utils/get-user-info';
+import { useForm } from '@tanstack/react-form';
+import { router } from 'expo-router';
+import { Mail } from 'lucide-react-native';
+import { useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 const AuthScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
     defaultValues: {
-      email: "",
+      email: '',
     },
     validators: {
       onChangeAsync: withEmailSchema,
     },
     onSubmit: async (data) => {
       setIsLoading(true);
-      const { country, city, region, timezone, latitude, longitude } =
-        await getUserLocation();
+      const { country, city, region, timezone, latitude, longitude } = await getUserLocation();
       login({
         body: {
           email: data?.value?.email,
@@ -45,7 +44,7 @@ const AuthScreen = () => {
   const { mutateAsync: login, isPending } = useAuthControllerWithEmail(
     apiOptions(undefined, () => {
       router.push({
-        pathname: "/(routes)/otp",
+        pathname: '/(routes)/otp',
         params: { email: form.state.values.email },
       });
     }),
@@ -53,18 +52,18 @@ const AuthScreen = () => {
 
   return (
     <PXWrapper>
-      <Header title="Welcome Back!" onBackPress={() => router.replace("/")} />
+      <Header title="Welcome Back!" onBackPress={() => router.replace('/')} />
       <Text
         variant="h5"
         style={{
           marginTop: 30,
-          textAlign: "center",
-          fontFamily: "Poppins-Bold",
+          textAlign: 'center',
+          fontFamily: 'Poppins-Bold',
         }}
       >
         Let&apos;s get started
       </Text>
-      <Text variant="h6" style={{ marginTop: 2, textAlign: "center" }}>
+      <Text variant="h6" style={{ marginTop: 2, textAlign: 'center' }}>
         Enter your email to continue
       </Text>
 
@@ -81,9 +80,7 @@ const AuthScreen = () => {
             keyboardType="email-address"
             autoCapitalize="none"
             autoCorrect={false}
-            error={field.state.meta.errors
-              .map((err: any) => err.message || String(err))
-              .join(", ")}
+            error={field.state.meta.errors.map((err: any) => err.message || String(err)).join(', ')}
           />
         )}
       </form.Field>
@@ -113,18 +110,16 @@ const AuthScreen = () => {
       <View
         style={{
           marginTop: 20,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
           gap: 5,
-          flexWrap: "wrap",
+          flexWrap: 'wrap',
         }}
       >
         <Text style={{ fontSize: 13 }}>By signing up, you agree to our </Text>
         <Pressable onPress={() => {}}>
-          <Text style={{ color: COLORS.primary, fontSize: 12 }}>
-            Terms and Conditions.
-          </Text>
+          <Text style={{ color: COLORS.primary, fontSize: 12 }}>Terms and Conditions.</Text>
         </Pressable>
       </View>
     </PXWrapper>
@@ -133,26 +128,26 @@ const AuthScreen = () => {
 
 const styles = StyleSheet.create({
   dividerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 24,
     marginBottom: 8,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: "#E5E5E5",
+    backgroundColor: '#E5E5E5',
   },
   dividerText: {
     marginHorizontal: 16,
-    color: "#666",
+    color: '#666',
     fontSize: 14,
   },
   googleButton: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderWidth: 1,
     marginTop: 18,
-    borderColor: "#E5E5E5",
+    borderColor: '#E5E5E5',
   },
 });
 

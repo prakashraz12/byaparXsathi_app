@@ -1,72 +1,63 @@
-import { WINDOW_HEIGHT } from "@/config/app.config";
-import { COLORS } from "@/constants/Colors";
-import { SHOP_TYPES_OPTIONS } from "@/constants/shop-types";
-import { shopService } from "@/database/services/shop.service";
-import { shopSchema } from "@/forms/schema/shop.schema";
-import { useUserStore } from "@/store/useUserStore";
-import { useForm } from "@tanstack/react-form";
-import { router } from "expo-router";
-import { ChevronDown, ChevronUp } from "lucide-react-native";
-import { useState } from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
-import BadgeSelector from "../re-usables/badge-selector";
-import { Button } from "../re-usables/button";
-import CustomInput from "../re-usables/input";
-import { Text } from "../re-usables/text";
-import { Toast } from "../re-usables/custom-toaster/toast-service";
-import { MEASURING_UNITS } from "@/constants/measuring-units";
-import { SHOP_TYPE } from "@/types/shop";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useForm } from '@tanstack/react-form';
+import { ChevronDown, ChevronUp } from 'lucide-react-native';
+import { useState } from 'react';
+import { TouchableOpacity, View } from 'react-native';
+
+// import { MEASURING_UNITS } from '@/constants/measuring-units';
+import { SHOP_TYPES_OPTIONS } from '@/constants/shop-types';
+import { shopSchema } from '@/forms/schema/shop.schema';
+
+// import { SHOP_TYPE } from '@/types/shop';
+import BadgeSelector from '../re-usables/badge-selector';
+import { Button } from '../re-usables/button';
+import CustomInput from '../re-usables/input';
+import { Text } from '../re-usables/text';
 
 const CreateShopForm = () => {
-  const { user, setActiveShopId } = useUserStore();
-  const insets = useSafeAreaInsets();
-  const [hideAddinationalFields, setHideAddinationalFields] =
-    useState<boolean>(false);
+  
+  const [hideAddinationalFields, setHideAddinationalFields] = useState<boolean>(false);
   const { Field, handleSubmit } = useForm({
     defaultValues: {
-      shopName: "",
-      email: "",
-      phoneNumber: "",
-      address: "",
-      panNumber: "",
-      registrationNumber: "",
-      shopType: "",
+      shopName: '',
+      email: '',
+      phoneNumber: '',
+      address: '',
+      panNumber: '',
+      registrationNumber: '',
+      shopType: '',
     },
     validators: {
       onChangeAsync: shopSchema,
     },
-    onSubmit: async ({ value }) => {
-      try {
-        const measuringUnits = MEASURING_UNITS[value.shopType as SHOP_TYPE];
-        // const response = await shopService.createShop(
-        //   {
-        //     shopEmail: value.email,
-        //     shopName: value.shopName,
-        //     shopPhoneNumber: value.phoneNumber,
-        //     address: value.address,
-        //     panNumber: value.panNumber,
-        //     registrationNumber: value.registrationNumber,
-        //     shopType: value.shopType,
-        //     measuringUnits: JSON.stringify(measuringUnits),
-        //   },
-        //   user?.id?.toString() || ""
-        // );
-        // if (response?.status === 201) {
-        //   Toast.success("Shop Created");
-        //   setActiveShopId(response?.shop?.id || "");
-        //   router.replace("/(tabs)");
-        // }
-      } catch (error) {
-        console.log(error);
-      }
-    },
+    // onSubmit: async ({ value }) => {
+    //   try {
+    //     const measuringUnits = MEASURING_UNITS[value.shopType as SHOP_TYPE];
+    //     // const response = await shopService.createShop(
+    //     //   {
+    //     //     shopEmail: value.email,
+    //     //     shopName: value.shopName,
+    //     //     shopPhoneNumber: value.phoneNumber,
+    //     //     address: value.address,
+    //     //     panNumber: value.panNumber,
+    //     //     registrationNumber: value.registrationNumber,
+    //     //     shopType: value.shopType,
+    //     //     measuringUnits: JSON.stringify(measuringUnits),
+    //     //   },
+    //     //   user?.id?.toString() || ""
+    //     // );
+    //     // if (response?.status === 201) {
+    //     //   Toast.success("Shop Created");
+    //     //   setActiveShopId(response?.shop?.id || "");
+    //     //   router.replace("/(tabs)");
+    //     // }
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // },
   });
 
   return (
-    <View
-      
-    >
+    <View>
       <Field name="shopName">
         {(field) => (
           <CustomInput
@@ -80,9 +71,7 @@ const CreateShopForm = () => {
             onBlur={field.handleBlur}
             autoCapitalize="none"
             autoCorrect={false}
-            error={field.state.meta.errors
-              .map((err: any) => err.message || String(err))
-              .join(", ")}
+            error={field.state.meta.errors.map((err: any) => err.message || String(err)).join(', ')}
           />
         )}
       </Field>
@@ -100,9 +89,7 @@ const CreateShopForm = () => {
             keyboardType="phone-pad"
             autoCapitalize="none"
             autoCorrect={false}
-            error={field.state.meta.errors
-              .map((err: any) => err.message || String(err))
-              .join(", ")}
+            error={field.state.meta.errors.map((err: any) => err.message || String(err)).join(', ')}
           />
         )}
       </Field>
@@ -120,9 +107,7 @@ const CreateShopForm = () => {
             onBlur={field.handleBlur}
             autoCapitalize="none"
             autoCorrect={false}
-            error={field.state.meta.errors
-              .map((err: any) => err.message || String(err))
-              .join(", ")}
+            error={field.state.meta.errors.map((err: any) => err.message || String(err)).join(', ')}
           />
         )}
       </Field>
@@ -140,8 +125,8 @@ const CreateShopForm = () => {
       </Field>
       <TouchableOpacity
         style={{
-          flexDirection: "row",
-          alignItems: "center",
+          flexDirection: 'row',
+          alignItems: 'center',
           marginTop: 15,
           flex: 1,
         }}
@@ -152,12 +137,12 @@ const CreateShopForm = () => {
         <Text
           style={{
             fontSize: 18,
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection: 'row',
+            alignItems: 'center',
             gap: 5,
           }}
         >
-          Additional Information{" "}
+          Additional Information{' '}
         </Text>
         <Text>
           {!hideAddinationalFields ? (
@@ -183,7 +168,7 @@ const CreateShopForm = () => {
                 autoCorrect={false}
                 error={field.state.meta.errors
                   .map((err: any) => err.message || String(err))
-                  .join(", ")}
+                  .join(', ')}
               />
             )}
           </Field>
@@ -201,7 +186,7 @@ const CreateShopForm = () => {
                 autoCorrect={false}
                 error={field.state.meta.errors
                   .map((err: any) => err.message || String(err))
-                  .join(", ")}
+                  .join(', ')}
               />
             )}
           </Field>
@@ -220,7 +205,7 @@ const CreateShopForm = () => {
                 autoCorrect={false}
                 error={field.state.meta.errors
                   .map((err: any) => err.message || String(err))
-                  .join(", ")}
+                  .join(', ')}
               />
             )}
           </Field>

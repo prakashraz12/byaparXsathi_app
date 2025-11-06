@@ -1,30 +1,30 @@
-"use client"
+import { useEffect, useRef } from 'react';
+import { Animated, Easing, View } from 'react-native';
 
-import { Text } from "./text"
-import { Animated, Easing, View } from "react-native"
-import { COLORS } from "@/constants/Colors"
-import { Button } from "./button"
-import { useEffect, useRef } from "react"
+import { COLORS } from '@/constants/Colors';
+
+import { Button } from './button';
+import { Text } from './text';
 
 interface INotFound {
-  title?: string
-  description?: string
+  title?: string;
+  description?: string;
   renderButton?: {
-    buttonTitle: string
-    onPress: () => void
-  }
+    buttonTitle: string;
+    onPress: () => void;
+  };
 }
 
 const NotFound = ({
-  title = "Data Not Found",
+  title = 'Data Not Found',
   description = "The information you're looking for doesn't exist or has been removed.",
   renderButton,
 }: INotFound) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current
-  const scaleAnim = useRef(new Animated.Value(0.8)).current
-  const floatAnim = useRef(new Animated.Value(0)).current
-  const slideAnim = useRef(new Animated.Value(50)).current
-  const rotateAnim = useRef(new Animated.Value(0)).current
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  const floatAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(50)).current;
+  const rotateAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -32,21 +32,21 @@ const NotFound = ({
       duration: 600,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
-    }).start()
+    }).start();
 
     Animated.timing(scaleAnim, {
       toValue: 1,
       duration: 700,
       easing: Easing.out(Easing.back(1.2)),
       useNativeDriver: true,
-    }).start()
+    }).start();
 
     Animated.timing(slideAnim, {
       toValue: 0,
       duration: 800,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
-    }).start()
+    }).start();
 
     Animated.loop(
       Animated.timing(rotateAnim, {
@@ -55,7 +55,7 @@ const NotFound = ({
         easing: Easing.linear,
         useNativeDriver: true,
       }),
-    ).start()
+    ).start();
 
     Animated.loop(
       Animated.sequence([
@@ -72,25 +72,25 @@ const NotFound = ({
           useNativeDriver: true,
         }),
       ]),
-    ).start()
-  }, [fadeAnim, scaleAnim, floatAnim, slideAnim, rotateAnim])
+    ).start();
+  }, [fadeAnim, scaleAnim, floatAnim, slideAnim, rotateAnim]);
 
   const floatOffset = floatAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 8],
-  })
+  });
 
   const rotateInterpolate = rotateAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"],
-  })
+    outputRange: ['0deg', '360deg'],
+  });
 
   return (
     <Animated.View
       style={{
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+        justifyContent: 'center',
+        alignItems: 'center',
         minHeight: 420,
         paddingHorizontal: 16,
         paddingVertical: 24,
@@ -99,15 +99,15 @@ const NotFound = ({
     >
       <View
         style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          pointerEvents: "none",
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
         }}
       >
         <View
           style={{
-            position: "absolute",
+            position: 'absolute',
             width: 200,
             height: 200,
             backgroundColor: COLORS.primary,
@@ -119,7 +119,7 @@ const NotFound = ({
         />
         <View
           style={{
-            position: "absolute",
+            position: 'absolute',
             width: 150,
             height: 150,
             backgroundColor: COLORS.primary,
@@ -135,22 +135,19 @@ const NotFound = ({
         style={{
           transform: [{ translateY: slideAnim }],
           opacity: fadeAnim,
-          width: "100%",
+          width: '100%',
           maxWidth: 480,
         }}
       >
         {/* Outer card shadow layer */}
-        <View
-          
-        >
-          
+        <View>
           {/* Main content container */}
           <View
             style={{
               paddingHorizontal: 32,
               paddingTop: 40,
               paddingBottom: 32,
-              alignItems: "center",
+              alignItems: 'center',
             }}
           >
             <Animated.View
@@ -161,17 +158,21 @@ const NotFound = ({
                 backgroundColor: COLORS.primary,
                 opacity: 0.08,
                 marginBottom: 24,
-                justifyContent: "center",
-                alignItems: "center",
-                transform: [{ scale: scaleAnim }, { translateY: floatOffset }, { rotate: rotateInterpolate }],
+                justifyContent: 'center',
+                alignItems: 'center',
+                transform: [
+                  { scale: scaleAnim },
+                  { translateY: floatOffset },
+                  { rotate: rotateInterpolate },
+                ],
               }}
             >
               <Text
                 style={{
                   fontSize: 48,
-                  fontWeight: "800",
+                  fontWeight: '800',
                   color: COLORS.primary,
-                  fontFamily: "Poppins-Bold",
+                  fontFamily: 'Poppins-Bold',
                   opacity: 0.6,
                 }}
               >
@@ -182,11 +183,11 @@ const NotFound = ({
             <Text
               style={{
                 fontSize: 24,
-                fontWeight: "700",
+                fontWeight: '700',
                 color: COLORS.text,
-                fontFamily: "Poppins-Bold",
+                fontFamily: 'Poppins-Bold',
                 marginBottom: 12,
-                textAlign: "center",
+                textAlign: 'center',
                 letterSpacing: -0.3,
               }}
             >
@@ -209,9 +210,9 @@ const NotFound = ({
               style={{
                 fontSize: 14,
                 color: COLORS.textLight,
-                fontFamily: "Poppins-Regular",
+                fontFamily: 'Poppins-Regular',
                 marginBottom: 32,
-                textAlign: "center",
+                textAlign: 'center',
                 lineHeight: 22,
                 letterSpacing: 0.2,
               }}
@@ -221,11 +222,11 @@ const NotFound = ({
 
             <View
               style={{
-                flexDirection: "row",
+                flexDirection: 'row',
                 gap: 12,
                 marginBottom: 32,
-                justifyContent: "center",
-                alignItems: "center",
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
             >
               <View
@@ -262,28 +263,27 @@ const NotFound = ({
                 title={renderButton.buttonTitle}
                 onPress={renderButton.onPress}
                 style={{
-                  width: "100%",
+                  width: '100%',
                   paddingVertical: 14,
                 }}
               />
             )}
           </View>
 
-          
           <View
             style={{
               paddingHorizontal: 32,
               paddingVertical: 12,
               backgroundColor: COLORS.primary,
               opacity: 0.02,
-              alignItems: "center",
+              alignItems: 'center',
             }}
           >
             <Text
               style={{
                 fontSize: 11,
                 color: COLORS.textLight,
-                fontFamily: "Poppins-Regular",
+                fontFamily: 'Poppins-Regular',
                 opacity: 0.5,
                 letterSpacing: 0.5,
               }}
@@ -294,7 +294,7 @@ const NotFound = ({
         </View>
       </Animated.View>
     </Animated.View>
-  )
-}
+  );
+};
 
-export default NotFound
+export default NotFound;

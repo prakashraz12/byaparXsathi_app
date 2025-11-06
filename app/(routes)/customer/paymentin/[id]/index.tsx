@@ -1,36 +1,30 @@
-import { Button } from "@/components/re-usables/button";
-import { Toast } from "@/components/re-usables/custom-toaster/toast-service";
-import DatePicker from "@/components/re-usables/date-picker/date-picker";
-import { Header } from "@/components/re-usables/header";
-import CustomInput from "@/components/re-usables/input";
-import { SlideUpModal } from "@/components/re-usables/modal/slide-up.modal";
-import NotFound from "@/components/re-usables/not-found";
-import { COLORS } from "@/constants/Colors";
-import useShops from "@/database/hooks/useShops";
-import { customerService } from "@/database/services/customer.service";
-import PXWrapper from "@/layouts/px-wrapper";
-import { useUserStore } from "@/store/useUserStore";
-import { formatNumberWithComma } from "@/utils/format-number";
-import { Ionicons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
-import { Calendar, ChevronLeft, ChevronRight } from "lucide-react-native";
-import { useEffect, useRef, useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Ionicons } from '@expo/vector-icons';
+import { router, useLocalSearchParams } from 'expo-router';
+import { Calendar, ChevronRight } from 'lucide-react-native';
+import { useEffect, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
+import { Button } from '@/components/re-usables/button';
+import { Toast } from '@/components/re-usables/custom-toaster/toast-service';
+import DatePicker from '@/components/re-usables/date-picker/date-picker';
+import { Header } from '@/components/re-usables/header';
+import CustomInput from '@/components/re-usables/input';
+import { SlideUpModal } from '@/components/re-usables/modal/slide-up.modal';
+import NotFound from '@/components/re-usables/not-found';
+import { COLORS } from '@/constants/Colors';
+import useShops from '@/database/hooks/useShops';
+import { customerService } from '@/database/services/customer.service';
+import PXWrapper from '@/layouts/px-wrapper';
+import { useUserStore } from '@/store/useUserStore';
+import { formatNumberWithComma } from '@/utils/format-number';
 
 const PaymentIn = () => {
   const { id } = useLocalSearchParams();
   const { activeShopId } = useUserStore();
   const [paymentId, setPaymentId] = useState<string | null>(null);
   const [paymentInDate, setPaymentInDate] = useState<Date>(new Date());
-  const [remarks, setRemarks] = useState<string | null>(null);
-  const [amount, setAmount] = useState<string>("");
+  const [remarks, setRemarks] = useState<string>("");
+  const [amount, setAmount] = useState<string>('');
 
   const [visible, setVisible] = useState(false);
   const amountInputRef = useRef<TextInput>(null);
@@ -38,7 +32,7 @@ const PaymentIn = () => {
   const { currentPaymentAccount } = useShops();
 
   const handleAddPaymentIn = async () => {
-    if (!activeShopId || !paymentId || !paymentInDate || !amount) {
+    if (!activeShopId || !paymentId || !paymentInDate || !amount || !id) {
       return;
     }
 
@@ -46,11 +40,10 @@ const PaymentIn = () => {
       shopId: activeShopId,
       paymentId,
       paymentInDate: new Date(paymentInDate)?.getTime()?.toString(),
-      remarks: remarks || "",
+      remarks: remarks,
       amount: Number(amount),
+      customerId: id as string,
     });
-
-    console.log(response);
 
     if (response && response?.success) {
       Toast.success(response?.message);
@@ -59,33 +52,25 @@ const PaymentIn = () => {
   };
 
   useEffect(() => {
-    if (
-      currentPaymentAccount &&
-      currentPaymentAccount.length > 0 &&
-      paymentId === null
-    ) {
-      const findCashAccountId = currentPaymentAccount?.find(
-        (account) => account?.name === "Cash",
-      );
+    if (currentPaymentAccount && currentPaymentAccount.length > 0 && paymentId === null) {
+      const findCashAccountId = currentPaymentAccount?.find((account) => account?.name === 'Cash');
       if (findCashAccountId) {
         setPaymentId(findCashAccountId?.id);
       }
     }
   }, [currentPaymentAccount]);
 
-  const isDisabled = !paymentId || !paymentInDate || !amount;
+  const isDisabled = !paymentId || !paymentInDate || !amount || !id;
   return (
-    <PXWrapper
-      header={<Header title="Payment In" onBackPress={() => router.back()} />}
-    >
+    <PXWrapper header={<Header title="Payment In" onBackPress={() => router.back()} />}>
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: 'row',
           gap: 10,
           borderWidth: 1,
           borderRadius: 6,
           borderColor: COLORS.border,
-          backgroundColor: "white",
+          backgroundColor: 'white',
           marginTop: 15,
           flex: 1,
         }}
@@ -100,7 +85,7 @@ const PaymentIn = () => {
             flex: 1,
           }}
         >
-          <Text style={{ fontSize: 14, fontWeight: "500", color: COLORS.text }}>
+          <Text style={{ fontSize: 14, fontWeight: '500', color: COLORS.text }}>
             Amount Received
           </Text>
           <TextInput
@@ -125,17 +110,17 @@ const PaymentIn = () => {
                 onPress={onPress}
                 style={{
                   padding: 15,
-                  alignItems: "flex-end",
-                  justifyContent: "center",
-                  flexDirection: "column",
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                  flexDirection: 'column',
                   gap: 5,
-                  height: "100%",
+                  height: '100%',
                 }}
               >
                 <Text
                   style={{
                     fontSize: 14,
-                    fontWeight: "500",
+                    fontWeight: '500',
                     color: COLORS.text,
                   }}
                 >
@@ -143,8 +128,8 @@ const PaymentIn = () => {
                 </Text>
                 <View
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
+                    flexDirection: 'row',
+                    alignItems: 'center',
                     gap: 5,
                     marginTop: 10,
                   }}
@@ -152,7 +137,7 @@ const PaymentIn = () => {
                   <Text
                     style={{
                       fontSize: 14,
-                      fontWeight: "500",
+                      fontWeight: '500',
                       color: COLORS.text,
                     }}
                   >
@@ -170,33 +155,27 @@ const PaymentIn = () => {
       <TouchableOpacity
         onPress={() => setVisible(true)}
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
+          flexDirection: 'row',
+          justifyContent: 'space-between',
           gap: 10,
           marginTop: 15,
           marginBottom: 15,
           borderWidth: 1,
           borderRadius: 6,
           borderColor: COLORS.border,
-          backgroundColor: "white",
+          backgroundColor: 'white',
           padding: 20,
         }}
       >
-        <Text style={{ fontSize: 16, fontWeight: "500", color: COLORS.text }}>
-          Payment Mode
-        </Text>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-          <Text style={{ fontSize: 16, fontWeight: "500", color: COLORS.text }}>
-            {
-              currentPaymentAccount?.find(
-                (account) => account?.id === paymentId,
-              )?.name
-            }
+        <Text style={{ fontSize: 16, fontWeight: '500', color: COLORS.text }}>Payment Mode</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+          <Text style={{ fontSize: 16, fontWeight: '500', color: COLORS.text }}>
+            {currentPaymentAccount?.find((account) => account?.id === paymentId)?.name}
           </Text>
           <ChevronRight size={20} color={COLORS.text} />
         </View>
       </TouchableOpacity>
-      <CustomInput placeholder="Remarks or Notes" />
+      <CustomInput placeholder="Remarks or Notes" value={remarks} onChangeText={setRemarks} />
       <Button
         disabled={isDisabled}
         title="Save"
@@ -209,8 +188,8 @@ const PaymentIn = () => {
         <View style={styles.container}>
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
+              flexDirection: 'row',
+              alignItems: 'center',
               gap: 20,
               marginBottom: 20,
             }}
@@ -233,10 +212,7 @@ const PaymentIn = () => {
                 currentPaymentAccount?.map((account) => (
                   <TouchableOpacity
                     key={account.id}
-                    style={[
-                      styles.optionCard,
-                      paymentId === account.id && styles.selectedCard,
-                    ]}
+                    style={[styles.optionCard, paymentId === account.id && styles.selectedCard]}
                     onPress={() => {
                       setPaymentId(account?.id);
                       setVisible(false);
@@ -244,8 +220,8 @@ const PaymentIn = () => {
                   >
                     <View
                       style={{
-                        flexDirection: "row",
-                        alignItems: "center",
+                        flexDirection: 'row',
+                        alignItems: 'center',
                         gap: 10,
                         flex: 1,
                       }}
@@ -253,23 +229,23 @@ const PaymentIn = () => {
                       <View style={[styles.iconContainer]}>
                         <Ionicons
                           name={
-                            account.name === "Bank"
-                              ? "business"
-                              : account.name === "Cash"
-                                ? "cash"
-                                : account?.name === "Online Wallet"
-                                  ? "wallet"
-                                  : "newspaper"
+                            account.name === 'Bank'
+                              ? 'business'
+                              : account.name === 'Cash'
+                                ? 'cash'
+                                : account?.name === 'Online Wallet'
+                                  ? 'wallet'
+                                  : 'newspaper'
                           }
                           size={24}
                           color={
-                            account.name === "Bank"
-                              ? "#3b82f6"
-                              : account.name === "Cash"
-                                ? "#10b981"
-                                : account?.name === "Online Wallet"
-                                  ? "#f59e0b"
-                                  : "#ef4444"
+                            account.name === 'Bank'
+                              ? '#3b82f6'
+                              : account.name === 'Cash'
+                                ? '#10b981'
+                                : account?.name === 'Online Wallet'
+                                  ? '#f59e0b'
+                                  : '#ef4444'
                           }
                         />
                       </View>
@@ -297,9 +273,9 @@ const PaymentIn = () => {
 const styles = StyleSheet.create({
   amountInput: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
     color: COLORS.success,
-    textAlign: "right",
+    textAlign: 'right',
     minWidth: 100,
     maxWidth: 150,
     marginLeft: 20,
@@ -308,11 +284,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   title: {
     fontSize: 15,
-    fontFamily: "Poppins-Medium",
+    fontFamily: 'Poppins-Medium',
   },
   scrollView: {
     flex: 1,
@@ -325,73 +301,73 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     padding: 16,
     borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 16,
     borderWidth: 1,
-    borderColor: "#f3f4f6",
-    justifyContent: "space-between",
+    borderColor: '#f3f4f6',
+    justifyContent: 'space-between',
   },
   selectedCard: {
-    borderColor: "#3b82f6",
-    backgroundColor: "#f0f9ff",
+    borderColor: '#3b82f6',
+    backgroundColor: '#f0f9ff',
   },
   iconContainer: {
     width: 50,
     height: 50,
     borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   paidIconBg: {
-    backgroundColor: "#d1fae5",
+    backgroundColor: '#d1fae5',
   },
   partialIconBg: {
-    backgroundColor: "#fef3c7",
+    backgroundColor: '#fef3c7',
   },
   unpaidIconBg: {
-    backgroundColor: "#fee2e2",
+    backgroundColor: '#fee2e2',
   },
   cashIconBg: {
-    backgroundColor: "#d1fae5",
+    backgroundColor: '#d1fae5',
   },
   chequeIconBg: {
-    backgroundColor: "#dbeafe",
+    backgroundColor: '#dbeafe',
   },
   onlineIconBg: {
-    backgroundColor: "#fce7f3",
+    backgroundColor: '#fce7f3',
   },
   optionText: {
     fontSize: 16,
-    color: "#374151",
+    color: '#374151',
     flex: 1,
   },
   balanceText: {
     fontSize: 16,
     color: COLORS.text,
-    fontFamily: "Poppins-Medium",
+    fontFamily: 'Poppins-Medium',
   },
   backButton: {
     padding: 8,
     marginLeft: -8,
     marginBottom: 12,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
   },
   addAccountButton: {
-    backgroundColor: "#3b82f6",
+    backgroundColor: '#3b82f6',
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: 8,
-    marginTop: "auto",
+    marginTop: 'auto',
   },
   addAccountButtonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 });
 

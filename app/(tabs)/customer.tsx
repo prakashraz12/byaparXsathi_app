@@ -1,9 +1,7 @@
 import { CustomerScreen } from '@/screen/customer/customer.screen';
 
 const Customer = () => {
-  return (
-   <CustomerScreen/>
-  );
-}
+  return <CustomerScreen />;
+};
 
 export default Customer;

@@ -1,16 +1,15 @@
+import { Link2, Minus, Plus } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
-import { SlideUpModal } from "@/components/re-usables/modal/slide-up.modal";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import type Item from "@/database/model/item.model";
-import { Link2, Minus, Plus } from "lucide-react-native";
-import { Text } from "@/components/re-usables/text";
-import AvatarCard from "@/components/re-usables/avatar-card";
-import { COLORS } from "@/constants/Colors";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/re-usables/button";
-import { SalesItemDraft, useSalesItemStore } from "@/store/useSalesItem";
-import { formatNumberWithComma } from "@/utils/format-number";
-import { useItems } from "@/database/hooks/useItem";
+import AvatarCard from '@/components/re-usables/avatar-card';
+import { Button } from '@/components/re-usables/button';
+import { SlideUpModal } from '@/components/re-usables/modal/slide-up.modal';
+import { Text } from '@/components/re-usables/text';
+import { COLORS } from '@/constants/Colors';
+import { useItems } from '@/database/hooks/useItem';
+import { SalesItemDraft, useSalesItemStore } from '@/store/useSalesItem';
+import { formatNumberWithComma } from '@/utils/format-number';
 
 interface AddItemsSlideupProps {
   visible: boolean;
@@ -22,13 +21,11 @@ interface AddItemsSlideupProps {
 
 const EditSalesItem = ({ visible, onClose, item, itemId, onSave }: AddItemsSlideupProps) => {
   const { updateSalesItem } = useSalesItemStore();
-  const {items} = useItems({})
-  const [discountPercentage, setDiscountPercentage] = useState("");
-  const [discountAmount, setDiscountAmount] = useState("");
-  const [itemPrice, setItemPrice] = useState(
-    ""
-  );
-  const [qantity, setQuantity] = useState("1");
+  const { items } = useItems({});
+  const [discountPercentage, setDiscountPercentage] = useState('');
+  const [discountAmount, setDiscountAmount] = useState('');
+  const [itemPrice, setItemPrice] = useState('');
+  const [qantity, setQuantity] = useState('1');
 
   const onDiscountPercentageChange = (value: string) => {
     setDiscountPercentage(value);
@@ -37,7 +34,7 @@ const EditSalesItem = ({ visible, onClose, item, itemId, onSave }: AddItemsSlide
       const amount = (Number(itemPrice) * percentage) / 100;
       setDiscountAmount(amount.toFixed(2));
     } else {
-      setDiscountAmount("");
+      setDiscountAmount('');
     }
   };
 
@@ -48,56 +45,48 @@ const EditSalesItem = ({ visible, onClose, item, itemId, onSave }: AddItemsSlide
       const percentage = (amount / Number(itemPrice)) * 100;
       setDiscountPercentage(percentage.toFixed(2));
     } else {
-      setDiscountPercentage("");
+      setDiscountPercentage('');
     }
   };
 
   const discountValue = discountAmount ? Number(discountAmount) : 0;
 
-  useEffect(()=>{
-  if(item){
-    setItemPrice(item.price?.toString() || "0")
-    setQuantity(item.quantity?.toString() || "1")
+  useEffect(() => {
+    if (item) {
+      setItemPrice(item.price?.toString() || '0');
+      setQuantity(item.quantity?.toString() || '1');
+    }
+  }, [item]);
 
-  }
-  },[item]);
-
-  const handleSave = ()=>{
-    updateSalesItem(itemId,{
+  const handleSave = () => {
+    updateSalesItem(itemId, {
       itemId: item.itemId,
       quantity: Number(qantity),
       price: Number(itemPrice),
       discountAmount: discountValue,
       itemName: item.itemName,
-    })
+    });
     onSave();
-    onClose()
-  }
+    onClose();
+  };
 
-  const findItem = items.find((item)=>item.id === itemId)
+  const findItem = items.find((item) => item.id === itemId);
   return (
-    <SlideUpModal
-      visible={visible}
-      onClose={onClose}
-      showHandle={true}
-      height={525}
-    >
+    <SlideUpModal visible={visible} onClose={onClose} showHandle={true} height={525}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Edit Item</Text>
-          <Text style={styles.headerSubtitle}>
-            Edit item details and discount
-          </Text>
+          <Text style={styles.headerSubtitle}>Edit item details and discount</Text>
         </View>
 
         <View style={styles.section}>
           <View style={styles.itemCard}>
             <View style={styles.itemContent}>
-              <AvatarCard name={findItem?.itemName || ""} size={50} />
+              <AvatarCard name={findItem?.itemName || ''} size={50} />
               <View style={styles.itemInfo}>
-                <Text style={styles.itemName}>{findItem?.itemName || ""}</Text>
+                <Text style={styles.itemName}>{findItem?.itemName || ''}</Text>
                 <Text style={styles.itemPrice}>
-                  {formatNumberWithComma(Number(findItem?.sellingPrice || "0"))}
+                  {formatNumberWithComma(Number(findItem?.sellingPrice || '0'))}
                 </Text>
               </View>
             </View>
@@ -107,18 +96,18 @@ const EditSalesItem = ({ visible, onClose, item, itemId, onSave }: AddItemsSlide
                 onPress={() =>
                   setQuantity((prev) => {
                     const n = Number(prev);
-                    return n > 1 ? `${n - 1}` : "1";
+                    return n > 1 ? `${n - 1}` : '1';
                   })
                 }
               >
-                <Minus size={16} color={"white"} />
+                <Minus size={16} color={'white'} />
               </TouchableOpacity>
-              <Text style={styles.quantityText}>{qantity || "1"}</Text>
+              <Text style={styles.quantityText}>{qantity || '1'}</Text>
               <TouchableOpacity
                 style={styles.quantityButton}
                 onPress={() => setQuantity((prev) => `${Number(prev) + 1}`)}
               >
-                <Plus size={16} color={"white"} />
+                <Plus size={16} color={'white'} />
               </TouchableOpacity>
             </View>
           </View>
@@ -179,12 +168,7 @@ const EditSalesItem = ({ visible, onClose, item, itemId, onSave }: AddItemsSlide
             variant="destructive"
             style={styles.cancelButton}
           />
-          <Button
-            title="Save"
-            onPress={handleSave}
-            style={styles.saveButton}
-            
-          />
+          <Button title="Save" onPress={handleSave} style={styles.saveButton} />
         </View>
       </View>
     </SlideUpModal>
@@ -202,13 +186,13 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: "700",
+    fontWeight: '700',
     color: COLORS.text,
-    marginBottom: 1
+    marginBottom: 1,
   },
   headerSubtitle: {
     fontSize: 13,
-    color: "#6B7280",
+    color: '#6B7280',
   },
   section: {
     gap: 10,
@@ -219,10 +203,10 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   itemCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#FFFFFF",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 12,
@@ -231,8 +215,8 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
   },
   itemInfo: {
@@ -245,12 +229,12 @@ const styles = StyleSheet.create({
   },
   itemPrice: {
     fontSize: 14,
-    color: "#6B7280",
-    fontWeight: "500",
+    color: '#6B7280',
+    fontWeight: '500',
   },
   quantityControl: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 10,
     backgroundColor: COLORS.primary,
     borderRadius: 8,
@@ -259,25 +243,25 @@ const styles = StyleSheet.create({
   },
   quantityButton: {
     padding: 4,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   quantityText: {
-    color: "white",
+    color: 'white',
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
     minWidth: 24,
-    textAlign: "center",
+    textAlign: 'center',
   },
   discountContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 10,
   },
   inputWithUnit: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
     borderWidth: 1,
     borderColor: COLORS.border,
@@ -285,81 +269,81 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 14,
     paddingVertical: 15,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
   },
   discountInput: {
     flex: 1,
     fontSize: 14,
     color: COLORS.text,
     padding: 0,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   unitText: {
     fontSize: 14,
-    color: "#6B7280",
-    fontWeight: "600",
+    color: '#6B7280',
+    fontWeight: '600',
   },
   linkIconContainer: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 4,
   },
   discountHint: {
     fontSize: 12,
-    color: "#9CA3AF",
-    fontStyle: "italic",
+    color: '#9CA3AF',
+    fontStyle: 'italic',
     marginTop: 4,
   },
   priceSection: {
-    backgroundColor: "#F9FAFB",
+    backgroundColor: '#F9FAFB',
     borderRadius: 12,
     padding: 14,
     gap: 10,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: '#E5E7EB',
   },
   priceRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   priceRowFinal: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
+    borderTopColor: '#E5E7EB',
   },
   priceLabel: {
     fontSize: 13,
-    color: "#6B7280",
-    fontWeight: "500",
+    color: '#6B7280',
+    fontWeight: '500',
   },
   priceLabelFinal: {
     fontSize: 14,
     color: COLORS.text,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   priceValue: {
     fontSize: 13,
     color: COLORS.text,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   priceValueFinal: {
     fontSize: 16,
     color: COLORS.primary,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   discountValue: {
     fontSize: 13,
-    color: "#EF4444",
-    fontWeight: "600",
+    color: '#EF4444',
+    fontWeight: '600',
   },
   buttonContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 10,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
     marginTop: 8,
   },
   cancelButton: {

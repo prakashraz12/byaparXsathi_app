@@ -1,8 +1,6 @@
-import ExpensesScreen from "@/screen/finance/expenses/expenses.screen";
+import ExpensesScreen from '@/screen/finance/expenses/expenses.screen';
 
 const Expenses = () => {
-    return (
-        <ExpensesScreen/>
-    )
+  return <ExpensesScreen />;
 };
 export default Expenses;

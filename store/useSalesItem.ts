@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 export type SalesItemDraft = {
   itemId: string;
@@ -14,23 +14,20 @@ type SalesItemState = {
   addSalesItem: (salesItem: SalesItemDraft) => void;
   removeSalesItem: (salesItemId: string) => void;
   updateSalesItem: (salesItemId: string, salesItem: SalesItemDraft) => void;
+  clearSalesItems: () => void;
 };
 
-
-export const useSalesItemStore = create<SalesItemState>()(
-    (set) => ({
-        salesItems: [],
-        addSalesItem: (salesItem: SalesItemDraft) =>
-          set((state) => ({ salesItems: [...state.salesItems, salesItem] })),
-        removeSalesItem: (salesItemId: string) =>
-          set((state) => ({
-            salesItems: state.salesItems.filter((item) => item.itemId !== salesItemId),
-          })),
-        updateSalesItem: (salesItemId: string, salesItem: SalesItemDraft) =>
-          set((state) => ({
-            salesItems: state.salesItems.map((item) =>
-              item.itemId === salesItemId ? salesItem : item
-            ),
-          })),
-    })
-)
+export const useSalesItemStore = create<SalesItemState>()((set) => ({
+  salesItems: [],
+  addSalesItem: (salesItem: SalesItemDraft) =>
+    set((state) => ({ salesItems: [...state.salesItems, salesItem] })),
+  removeSalesItem: (salesItemId: string) =>
+    set((state) => ({
+      salesItems: state.salesItems.filter((item) => item.itemId !== salesItemId),
+    })),
+  updateSalesItem: (salesItemId: string, salesItem: SalesItemDraft) =>
+    set((state) => ({
+      salesItems: state.salesItems.map((item) => (item.itemId === salesItemId ? salesItem : item)),
+    })),
+  clearSalesItems: () => set({ salesItems: [] }),
+}));

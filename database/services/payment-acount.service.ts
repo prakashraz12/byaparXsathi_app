@@ -1,13 +1,14 @@
-import { Q } from "@nozbe/watermelondb";
-import database from "..";
-import { DB_COLLECTION } from "../collection";
+import { Q } from '@nozbe/watermelondb';
+
+import database from '..';
+import { DB_COLLECTION } from '../collection';
 
 export const paymentAccountService = {
   addAmount: async (amount: number, shopId: string, name: string) => {
     try {
       const result = await database.write(async () => {
         const paymentAccounts = await DB_COLLECTION.paymentAccount
-          .query(Q.where("shopId", shopId), Q.where("name", name))
+          .query(Q.where('shopId', shopId), Q.where('name', name))
           .fetch();
 
         if (paymentAccounts.length > 0) {
@@ -18,27 +19,26 @@ export const paymentAccountService = {
             p.balance = currentBalance + amount;
           });
 
-          console.log("✅ Payment account updated:", paymentAccount._raw);
 
           return {
             success: true,
-            message: "Payment account balance updated",
+            message: 'Payment account balance updated',
           };
         } else {
-          console.warn("⚠️ No payment account found for this payment type");
+          console.warn('⚠️ No payment account found for this payment type');
           return {
             success: false,
-            message: "No payment account found",
+            message: 'No payment account found',
           };
         }
       });
 
       return result;
     } catch (error) {
-      console.error("❌ Failed to update payment account:", error);
+      console.error('❌ Failed to update payment account:', error);
       return {
         success: false,
-        message: "Error updating payment account",
+        message: 'Error updating payment account',
       };
     }
   },

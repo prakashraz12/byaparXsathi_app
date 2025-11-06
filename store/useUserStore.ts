@@ -1,9 +1,10 @@
 // store/useUserStore.ts
-import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SecureStore from "expo-secure-store";
-import { UserStage } from "@/service/types-schemas";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
+
+import { UserStage } from '@/service/types-schemas';
 
 type User = {
   fullName: string;
@@ -44,11 +45,11 @@ export const useUserStore = create<UserState>()(
       clearUser: () => set({ user: null }),
 
       setToken: async (token: string) => {
-        await SecureStore.setItemAsync("token", token);
+        await SecureStore.setItemAsync('token', token);
         set({ token });
       },
       clearToken: async () => {
-        await SecureStore.deleteItemAsync("token");
+        await SecureStore.deleteItemAsync('token');
         set({ token: null });
       },
 
@@ -56,7 +57,7 @@ export const useUserStore = create<UserState>()(
       clearActiveShopId: () => set({ activeShopId: null }),
     }),
     {
-      name: "user-storage",
+      name: 'user-storage',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
         user: state.user,

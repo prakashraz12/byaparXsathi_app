@@ -1,40 +1,39 @@
-import AvatarCard from "@/components/re-usables/avatar-card";
-import { Button } from "@/components/re-usables/button";
-import CustomSwitch from "@/components/re-usables/custom-switch";
-import { Toast } from "@/components/re-usables/custom-toaster/toast-service";
-import { Header } from "@/components/re-usables/header";
-import HoverSelector from "@/components/re-usables/hover-selector";
-import CustomInput from "@/components/re-usables/input";
-import { Text } from "@/components/re-usables/text";
-import { COLORS } from "@/constants/Colors";
-import useShops from "@/database/hooks/useShops";
-import { itemService } from "@/database/services/item.service";
-import { itemSchema, TItemSchema } from "@/forms/schema/add-items.schema";
-import useGetMeasuringUnits from "@/hooks/useGetMeasuringUnits";
-import PXWrapper from "@/layouts/px-wrapper";
-import { useUserStore } from "@/store/useUserStore";
-import { useForm } from "@tanstack/react-form";
-import { router } from "expo-router";
-import { Check } from "lucide-react-native";
-import { TouchableOpacity, View, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useForm } from '@tanstack/react-form';
+import { router } from 'expo-router';
+import { Check } from 'lucide-react-native';
+import { StyleSheet,TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import AvatarCard from '@/components/re-usables/avatar-card';
+import { Button } from '@/components/re-usables/button';
+import CustomSwitch from '@/components/re-usables/custom-switch';
+import { Toast } from '@/components/re-usables/custom-toaster/toast-service';
+import { Header } from '@/components/re-usables/header';
+import HoverSelector from '@/components/re-usables/hover-selector';
+import CustomInput from '@/components/re-usables/input';
+import { Text } from '@/components/re-usables/text';
+import { COLORS } from '@/constants/Colors';
+import { itemService } from '@/database/services/item.service';
+import { itemSchema, TItemSchema } from '@/forms/schema/add-items.schema';
+import useGetMeasuringUnits from '@/hooks/useGetMeasuringUnits';
+import PXWrapper from '@/layouts/px-wrapper';
+import { useUserStore } from '@/store/useUserStore';
 
 const AddItemScreen = () => {
-  const {activeShopId} = useUserStore()
-  console.log(activeShopId)
+  const { activeShopId } = useUserStore();
   const { measuringUnits } = useGetMeasuringUnits({});
 
   const insets = useSafeAreaInsets();
 
   const form = useForm({
     defaultValues: {
-      itemName: "",
-      costPrice: "",
-      sellingPrice: "",
-      measurementUnit: "",
-      openingStock: "",
-      currentStock: "",
-      lowStockAlert: "",
+      itemName: '',
+      costPrice: '',
+      sellingPrice: '',
+      measurementUnit: '',
+      openingStock: '',
+      currentStock: '',
+      lowStockAlert: '',
       isStockEnabled: false,
       isActive: true,
     },
@@ -42,7 +41,7 @@ const AddItemScreen = () => {
       onChangeAsync: itemSchema as any,
     },
     onSubmit: async ({ value }: { value: TItemSchema }) => {
-      if(!activeShopId) return;
+      if (!activeShopId) return;
       const response = await itemService.create(
         {
           itemName: value.itemName,
@@ -55,7 +54,7 @@ const AddItemScreen = () => {
           isStockEnabled: value.isStockEnabled,
           isActive: value.isActive,
         },
-        activeShopId
+        activeShopId,
       );
       if (response?.statusCode === 201) {
         Toast.success(response?.message);
@@ -65,9 +64,7 @@ const AddItemScreen = () => {
   });
 
   return (
-    <PXWrapper
-      header={<Header title="Add Item" onBackPress={() => router.back()} />}
-    >
+    <PXWrapper header={<Header title="Add Item" onBackPress={() => router.back()} />}>
       <View style={[styles.content, { paddingBottom: insets.bottom + 0.8 }]}>
         <form.Field name="itemName">
           {(field) => (
@@ -80,7 +77,7 @@ const AddItemScreen = () => {
               onBlur={field.handleBlur}
               error={field.state.meta.errors
                 .map((err: any) => err.message || String(err))
-                .join(", ")}
+                .join(', ')}
             />
           )}
         </form.Field>
@@ -108,7 +105,7 @@ const AddItemScreen = () => {
                     </View>
                   </View>
                   {field?.state.value === item?.shortForm && (
-                    <Check size={20} color={COLORS.primary || "#007AFF"} />
+                    <Check size={20} color={COLORS.primary || '#007AFF'} />
                   )}
                 </TouchableOpacity>
               )}
@@ -127,7 +124,7 @@ const AddItemScreen = () => {
               keyboardType="numeric"
               error={field.state.meta.errors
                 .map((err: any) => err.message || String(err))
-                .join(", ")}
+                .join(', ')}
             />
           )}
         </form.Field>
@@ -144,7 +141,7 @@ const AddItemScreen = () => {
               keyboardType="numeric"
               error={field.state.meta.errors
                 .map((err: any) => err.message || String(err))
-                .join(", ")}
+                .join(', ')}
             />
           )}
         </form.Field>
@@ -163,9 +160,7 @@ const AddItemScreen = () => {
           </form.Field>
         </View>
 
-        <form.Subscribe
-          selector={(state) => state.values.isStockEnabled === true}
-        >
+        <form.Subscribe selector={(state) => state.values.isStockEnabled === true}>
           {(isStockEnabled) =>
             isStockEnabled && (
               <>
@@ -180,7 +175,7 @@ const AddItemScreen = () => {
                       keyboardType="numeric"
                       error={field.state.meta.errors
                         .map((err: any) => err.message || String(err))
-                        .join(", ")}
+                        .join(', ')}
                     />
                   )}
                 </form.Field>
@@ -197,7 +192,7 @@ const AddItemScreen = () => {
                       keyboardType="numeric"
                       error={field.state.meta.errors
                         .map((err: any) => err.message || String(err))
-                        .join(", ")}
+                        .join(', ')}
                     />
                   )}
                 </form.Field>
@@ -214,7 +209,7 @@ const AddItemScreen = () => {
                       keyboardType="numeric"
                       error={field.state.meta.errors
                         .map((err: any) => err.message || String(err))
-                        .join(", ")}
+                        .join(', ')}
                     />
                   )}
                 </form.Field>
@@ -223,11 +218,7 @@ const AddItemScreen = () => {
           }
         </form.Subscribe>
         <View style={styles.footerContainer}>
-          <Button
-            title="Save Item"
-            style={styles.saveButton}
-            onPress={form.handleSubmit}
-          />
+          <Button title="Save Item" style={styles.saveButton} onPress={form.handleSubmit} />
         </View>
       </View>
     </PXWrapper>
@@ -239,25 +230,25 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
     marginTop: 8,
     marginBottom: 4,
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#1A1A1A",
+    fontWeight: '600',
+    color: '#1A1A1A',
   },
   fieldLabel: {
     fontSize: 13,
-    fontWeight: "500",
-    color: "#666",
+    fontWeight: '500',
+    color: '#666',
     marginBottom: 6,
   },
   priceRow: {
-    flexDirection: "column",
+    flexDirection: 'column',
     gap: 12,
   },
   priceField: {
@@ -265,34 +256,34 @@ const styles = StyleSheet.create({
   },
   unitItem: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 10,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 10,
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: COLORS.border || "#E5E5E5",
+    borderColor: COLORS.border || '#E5E5E5',
     padding: 10,
     borderRadius: 8,
-    backgroundColor: "#FFF",
+    backgroundColor: '#FFF',
   },
   unitContent: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
   },
   unitText: {
-    flexDirection: "column",
+    flexDirection: 'column',
     gap: 2,
   },
   unitLabel: {
     fontSize: 15,
-    fontWeight: "500",
-    color: "#1A1A1A",
+    fontWeight: '500',
+    color: '#1A1A1A',
   },
   unitShortForm: {
     fontSize: 13,
-    color: COLORS.textLight || "#888",
+    color: COLORS.textLight || '#888',
   },
   switchContainer: {
     paddingVertical: 0,
@@ -301,15 +292,15 @@ const styles = StyleSheet.create({
     gap: 1,
   },
   stockRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 1,
   },
   stockField: {
     flex: 1,
   },
   footerContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
   },
   cancelButton: {

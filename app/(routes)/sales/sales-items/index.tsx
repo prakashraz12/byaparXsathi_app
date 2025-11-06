@@ -1,23 +1,24 @@
-import ItemCard from "@/components/items/item-card";
-import CustomInput from "@/components/re-usables/input";
-import AddItemsSlideup from "@/components/sales/add-items-slideup";
-import { COLORS } from "@/constants/Colors";
-import { useItems } from "@/database/hooks/useItem";
-import Item from "@/database/model/item.model";
-import PXWrapper from "@/layouts/px-wrapper";
-import { router } from "expo-router";
-import { ArrowLeft, Search } from "lucide-react-native";
-import { useState } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { router } from 'expo-router';
+import { ArrowLeft, Search } from 'lucide-react-native';
+import { useState } from 'react';
+import { TouchableOpacity, View } from 'react-native';
+
+import ItemCard from '@/components/items/item-card';
+import CustomInput from '@/components/re-usables/input';
+import AddItemsSlideup from '@/components/sales/add-items-slideup';
+import { COLORS } from '@/constants/Colors';
+import { useItems } from '@/database/hooks/useItem';
+import Item from '@/database/model/item.model';
+import PXWrapper from '@/layouts/px-wrapper';
 
 const SalesItem = () => {
   const [openSelectItemConfig, setOpenSelectItemConfig] = useState(false);
-  const [searchParams, setSearchParams] = useState<string>("");
+  const [searchParams, setSearchParams] = useState<string>('');
   const [item, setItem] = useState<Item | null>(null);
 
   const { items } = useItems({
     search: searchParams,
-    sortBy: "desc",
+    sortBy: 'desc',
   });
 
   return (
@@ -32,22 +33,22 @@ const SalesItem = () => {
             }}
           >
             <ItemCard
-              itemName={item.itemName || ""}
+              itemName={item.itemName || ''}
               sellingPrice={item.sellingPrice || 0}
               costPrice={item.costPrice || 0}
               currentLevel={item.currentStock || 0}
               openingLevel={item.openingStock || 0}
               isActive={item.isActive || false}
               isStockEnable={item.isStockEnabled || false}
-              measurementUnit={item.measurementUnit || ""}
+              measurementUnit={item.measurementUnit || ''}
             />
           </TouchableOpacity>
         )}
         header={
           <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
+              flexDirection: 'row',
+              alignItems: 'center',
               gap: 10,
               paddingHorizontal: 10,
             }}

@@ -1,28 +1,25 @@
-import { Ionicons } from "@expo/vector-icons";
-import type React from "react";
-import { useEffect, useRef } from "react";
+import { Ionicons } from '@expo/vector-icons';
+import  React,{useEffect, useRef } from 'react';
 import {
-  Modal,
-  View,
-  Text,
   Animated,
   Dimensions,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
   KeyboardAvoidingView,
+  Modal,
   Platform,
-} from "react-native";
-import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
+import { GestureHandlerRootView,
   PanGestureHandler,
-  State,
-  GestureHandlerRootView,
-  ScrollView,
-} from "react-native-gesture-handler";
-import type { PanGestureHandlerGestureEvent } from "react-native-gesture-handler";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+PanGestureHandlerGestureEvent,  ScrollView,
+  State, } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface SlideUpModalProps {
   visible: boolean;
@@ -122,11 +119,7 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
   };
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-    >
+    <Modal visible={visible} animationType="slide" transparent>
       <GestureHandlerRootView style={styles.container}>
         <TouchableWithoutFeedback onPress={handleBackdropPress}>
           <Animated.View
@@ -144,8 +137,8 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
           onHandlerStateChange={handleGestureStateChange}
         >
           <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "height" : "padding"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+            behavior={Platform.OS === 'ios' ? 'height' : 'padding'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
           >
             <Animated.View
               style={[
@@ -171,16 +164,9 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
                 </View>
               )}
 
-              <ScrollView keyboardShouldPersistTaps="handled">
-                {children}
-              </ScrollView>
+              <ScrollView keyboardShouldPersistTaps="handled">{children}</ScrollView>
               {stickyFooter ? (
-                <View
-                  style={[
-                    styles.stickyFooter,
-                    { paddingVertical: insets.bottom + 4 },
-                  ]}
-                >
+                <View style={[styles.stickyFooter, { paddingVertical: insets.bottom + 4 }]}>
                   {stickyFooter}
                 </View>
               ) : null}
@@ -195,48 +181,48 @@ export const SlideUpModal: React.FC<SlideUpModalProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "black",
+    backgroundColor: 'black',
   },
   modalContainer: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 20,
     paddingBottom: 20,
   },
   handleContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     paddingVertical: 12,
   },
   handle: {
     width: 40,
     height: 4,
-    backgroundColor: "#E5E5E5",
+    backgroundColor: '#E5E5E5',
     borderRadius: 2,
   },
   titleContainer: {
     paddingBottom: 3,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   title: {
     fontSize: 16,
-    fontFamily: "Poppins-Medium",
-    textAlign: "center",
+    fontFamily: 'Poppins-Medium',
+    textAlign: 'center',
   },
   stickyFooter: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
     paddingHorizontal: 20,
     borderTopWidth: 1,
-    borderTopColor: "#F0F0F0",
-    backgroundColor: "white",
+    borderTopColor: '#F0F0F0',
+    backgroundColor: 'white',
   },
 });

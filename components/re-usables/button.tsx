@@ -1,5 +1,5 @@
-import { COLORS } from "@/constants/Colors"
-import type React from "react"
+import { COLORS } from '@/constants/Colors';
+import type React from 'react';
 import {
   TouchableOpacity,
   Text,
@@ -9,26 +9,33 @@ import {
   type ViewStyle,
   type TextStyle,
   type TouchableOpacityProps,
-} from "react-native"
+} from 'react-native';
 
-interface ButtonProps extends Omit<TouchableOpacityProps, "style"> {
-  title?: string
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive" | "success" | "destructiveOutline"
-  size?: "small" | "medium" | "large" | "xl"
-  loading?: boolean
-  disabled?: boolean
-  leftIcon?: React.ReactNode
-  rightIcon?: React.ReactNode
-  iconOnly?: boolean
-  fullWidth?: boolean
-  style?: ViewStyle
-  textStyle?: TextStyle
+interface ButtonProps extends Omit<TouchableOpacityProps, 'style'> {
+  title?: string;
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'outline'
+    | 'ghost'
+    | 'destructive'
+    | 'success'
+    | 'destructiveOutline';
+  size?: 'small' | 'medium' | 'large' | 'xl';
+  loading?: boolean;
+  disabled?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  iconOnly?: boolean;
+  fullWidth?: boolean;
+  style?: ViewStyle;
+  textStyle?: TextStyle;
 }
 
 export const Button: React.FC<ButtonProps> = ({
   title,
-  variant = "primary",
-  size = "medium",
+  variant = 'primary',
+  size = 'medium',
   loading = false,
   disabled = false,
   leftIcon,
@@ -49,15 +56,15 @@ export const Button: React.FC<ButtonProps> = ({
     (disabled || loading) && styles.disabled,
     (disabled || loading) && styles[`${variant}Disabled`],
     style,
-  ]
+  ];
 
-  const textStyles = [styles.text, styles[`${variant}Text`], styles[`${size}Text`], textStyle]
+  const textStyles = [styles.text, styles[`${variant}Text`], styles[`${size}Text`], textStyle];
 
   const handlePress = (event: any) => {
     if (!disabled && !loading && onPress) {
-      onPress(event)
+      onPress(event);
     }
-  }
+  };
 
   return (
     <TouchableOpacity
@@ -71,11 +78,13 @@ export const Button: React.FC<ButtonProps> = ({
         {loading ? (
           <ActivityIndicator
             size="small"
-            color={variant === "outline" || variant === "ghost" ? COLORS.primary : "#FFFFFF"}
+            color={variant === 'outline' || variant === 'ghost' ? COLORS.primary : '#FFFFFF'}
             style={!iconOnly && title ? styles.loadingIcon : undefined}
           />
         ) : (
-          leftIcon && <View style={!iconOnly && title ? styles.leftIcon : undefined}>{leftIcon}</View>
+          leftIcon && (
+            <View style={!iconOnly && title ? styles.leftIcon : undefined}>{leftIcon}</View>
+          )
         )}
 
         {!iconOnly && title && (
@@ -84,23 +93,25 @@ export const Button: React.FC<ButtonProps> = ({
           </Text>
         )}
 
-        {!loading && rightIcon && <View style={!iconOnly && title ? styles.rightIcon : undefined}>{rightIcon}</View>}
+        {!loading && rightIcon && (
+          <View style={!iconOnly && title ? styles.rightIcon : undefined}>{rightIcon}</View>
+        )}
       </View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   base: {
     borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row"
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
   content: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   // Variants
@@ -110,35 +121,35 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary,
   },
   secondary: {
-    backgroundColor: "#F1F5F9",
+    backgroundColor: '#F1F5F9',
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: '#E2E8F0',
   },
   outline: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderWidth: 1.5,
     borderColor: COLORS.primary,
   },
   ghost: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderWidth: 0,
     shadowOpacity: 0,
     elevation: 0,
   },
   destructive: {
-    backgroundColor: "#EF4444",
+    backgroundColor: '#EF4444',
     borderWidth: 1,
-    borderColor: "#EF4444",
+    borderColor: '#EF4444',
   },
   destructiveOutline: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderWidth: 1.5,
     borderColor: COLORS.error,
   },
   success: {
-    backgroundColor: "#10B981",
+    backgroundColor: '#10B981',
     borderWidth: 1,
-    borderColor: "#10B981",
+    borderColor: '#10B981',
   },
 
   // Sizes
@@ -171,34 +182,34 @@ const styles = StyleSheet.create({
 
   // Full width
   fullWidth: {
-    width: "100%",
+    width: '100%',
   },
 
   // Text styles
   text: {
-    textAlign: "center",
-    fontFamily: "Poppins-Regular",
+    textAlign: 'center',
+    fontFamily: 'Poppins-Regular',
   },
   primaryText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
   },
   secondaryText: {
-    color: "#475569",
+    color: '#475569',
   },
   outlineText: {
     color: COLORS.primary,
   },
   ghostText: {
-    color: "#6366F1",
+    color: '#6366F1',
   },
   destructiveText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
   },
   destructiveOutlineText: {
     color: COLORS.error,
   },
   successText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
   },
 
   // Text sizes
@@ -226,29 +237,29 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   primaryDisabled: {
-    backgroundColor: "#CBD5E1",
-    borderColor: "#CBD5E1",
+    backgroundColor: '#CBD5E1',
+    borderColor: '#CBD5E1',
   },
   secondaryDisabled: {
-    backgroundColor: "#F8FAFC",
-    borderColor: "#F1F5F9",
+    backgroundColor: '#F8FAFC',
+    borderColor: '#F1F5F9',
   },
   outlineDisabled: {
-    borderColor: "#CBD5E1",
+    borderColor: '#CBD5E1',
   },
   ghostDisabled: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
   destructiveOutlineDisabled: {
-    borderColor: "#FCA5A5",
+    borderColor: '#FCA5A5',
   },
   destructiveDisabled: {
-    backgroundColor: "#FCA5A5",
-    borderColor: "#FCA5A5",
+    backgroundColor: '#FCA5A5',
+    borderColor: '#FCA5A5',
   },
   successDisabled: {
-    backgroundColor: "#86EFAC",
-    borderColor: "#86EFAC",
+    backgroundColor: '#86EFAC',
+    borderColor: '#86EFAC',
   },
 
   // Icon spacing
@@ -261,4 +272,4 @@ const styles = StyleSheet.create({
   loadingIcon: {
     marginRight: 8,
   },
-})
+});

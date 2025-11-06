@@ -4,8 +4,8 @@ import {
   type Enabled,
   type QueryKey,
   type UseQueryOptions,
-} from "@tanstack/react-query";
-import { QueryOperation } from "./queries-components";
+} from '@tanstack/react-query';
+import { QueryOperation } from './queries-components';
 
 export type QueriesContext<
   TQueryFnData = unknown,
@@ -45,7 +45,7 @@ export function useQueriesContext<
 >(
   _queryOptions?: Omit<
     UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
-    "queryKey" | "queryFn"
+    'queryKey' | 'queryFn'
   >,
 ): QueriesContext<TQueryFnData, TError, TData, TQueryKey> {
   return {
@@ -57,10 +57,10 @@ export function useQueriesContext<
 export const queryKeyFn = (operation: QueryOperation): QueryKey => {
   const queryKey: unknown[] = hasPathParams(operation)
     ? operation.path
-        .split("/")
+        .split('/')
         .filter(Boolean)
         .map((i) => resolvePathParam(i, operation.variables.pathParams))
-    : operation.path.split("/").filter(Boolean);
+    : operation.path.split('/').filter(Boolean);
 
   if (hasQueryParams(operation)) {
     queryKey.push(operation.variables.queryParams);
@@ -75,7 +75,7 @@ export const queryKeyFn = (operation: QueryOperation): QueryKey => {
 
 // Helpers
 const resolvePathParam = (key: string, pathParams: Record<string, string>) => {
-  if (key.startsWith("{") && key.endsWith("}")) {
+  if (key.startsWith('{') && key.endsWith('}')) {
     return pathParams[key.slice(1, -1)];
   }
   return key;
@@ -87,7 +87,7 @@ const hasPathParams = (
   variables: { pathParams: Record<string, string> };
 } => {
   if (operation.variables === skipToken) return false;
-  return "variables" in operation && "pathParams" in operation.variables;
+  return 'variables' in operation && 'pathParams' in operation.variables;
 };
 
 const hasBody = (
@@ -96,7 +96,7 @@ const hasBody = (
   variables: { body: Record<string, unknown> };
 } => {
   if (operation.variables === skipToken) return false;
-  return "variables" in operation && "body" in operation.variables;
+  return 'variables' in operation && 'body' in operation.variables;
 };
 
 const hasQueryParams = (
@@ -105,5 +105,5 @@ const hasQueryParams = (
   variables: { queryParams: Record<string, unknown> };
 } => {
   if (operation.variables === skipToken) return false;
-  return "variables" in operation && "queryParams" in operation.variables;
+  return 'variables' in operation && 'queryParams' in operation.variables;
 };

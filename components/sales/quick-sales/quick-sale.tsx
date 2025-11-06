@@ -1,31 +1,26 @@
-import { Header } from "@/components/re-usables/header";
-import { COLORS } from "@/constants/Colors";
-import Customer from "@/database/model/customer.model";
-import PXWrapper from "@/layouts/px-wrapper";
-import { PaymentStatusType } from "@/types/payment-status";
-import { router } from "expo-router";
-import { Calendar, ChevronRight } from "lucide-react-native";
-import { useMemo, useState } from "react";
-import {
-  Dimensions,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Platform,
-} from "react-native";
-import PaymentModeSlideup from "../payment-mode-slideup";
-import PaymentStatusSlideUp from "../payment-status-slide-up";
-import { salesService } from "@/database/services/sales.service";
-import { useUserStore } from "@/store/useUserStore";
-import { Toast } from "@/components/re-usables/custom-toaster/toast-service";
-import AddCustomerSlideup from "../add-customer-slideup";
-import DatePicker from "@/components/re-usables/date-picker/date-picker";
-import { Button as OGButton } from "@/components/re-usables/button";
-import { formatNumberWithComma } from "@/utils/format-number";
-import { PaymentStatus } from "@/constants/payment-status";
+import { router } from 'expo-router';
+import { Calendar, ChevronRight } from 'lucide-react-native';
+import { useMemo, useState } from 'react';
+import { Dimensions,StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+import { Button as OGButton } from '@/components/re-usables/button';
+import { Toast } from '@/components/re-usables/custom-toaster/toast-service';
+import DatePicker from '@/components/re-usables/date-picker/date-picker';
+import { Header } from '@/components/re-usables/header';
+import { COLORS } from '@/constants/Colors';
+import { PaymentStatus } from '@/constants/payment-status';
+import Customer from '@/database/model/customer.model';
+import { salesService } from '@/database/services/sales.service';
+import PXWrapper from '@/layouts/px-wrapper';
+import { useUserStore } from '@/store/useUserStore';
+import { PaymentStatusType } from '@/types/payment-status';
+import { formatNumberWithComma } from '@/utils/format-number';
+
+import AddCustomerSlideup from '../add-customer-slideup';
+import PaymentModeSlideup from '../payment-mode-slideup';
+import PaymentStatusSlideUp from '../payment-status-slide-up';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Responsive dimensions
 const isSmallDevice = SCREEN_HEIGHT < 700;
@@ -37,35 +32,32 @@ const DISPLAY_MIN_HEIGHT = isSmallDevice ? 80 : isMediumDevice ? 100 : 120;
 const QuickSaleScreen = () => {
   const { activeShopId } = useUserStore();
 
-  const [expression, setExpression] = useState("");
-  const [result, setResult] = useState("0");
+  const [expression, setExpression] = useState('');
+  const [result, setResult] = useState('0');
 
   //billing
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [paymentType, setPaymentType] = useState<string | null>(null);
-  const [paymentStatus, setPaymentStatus] = useState<PaymentStatusType | null>(
-    null,
-  );
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatusType | null>(null);
   const [invoiceDate, setInvoiceDate] = useState<Date>(new Date());
-  const [partiallyPaidAmount, setPartiallyPaidAmount] = useState<string>("");
+  const [partiallyPaidAmount, setPartiallyPaidAmount] = useState<string>('');
 
   //states
-  const [customerSelectionOpen, setCustomerSelectionOpen] =
-    useState<boolean>(false);
-  const [paymentModeSelectionOpen, setPaymentModeSelectionOpen] =
-    useState<boolean>(false);
+  const [customerSelectionOpen, setCustomerSelectionOpen] = useState<boolean>(false);
+  const [paymentModeSelectionOpen, setPaymentModeSelectionOpen] = useState<boolean>(false);
   const [paymentStatusOpen, setPaymentStatusOpen] = useState<boolean>(false);
 
   const calculateResult = useMemo(
     () => (expr: string) => {
       try {
-        if (!expr) return "0";
-        let cleanExpr = expr.replace(/[+\-×÷]$/, "");
-        cleanExpr = cleanExpr.replace(/×/g, "*").replace(/÷/g, "/");
+        if (!expr) return '0';
+        let cleanExpr = expr.replace(/[+\-×÷]$/, '');
+        cleanExpr = cleanExpr.replace(/×/g, '*').replace(/÷/g, '/');
         const calculated = eval(cleanExpr);
         return calculated.toString();
       } catch (error) {
-        return "0";
+        console.log(error);
+        return '0';
       }
     },
     [expression],
@@ -81,7 +73,7 @@ const QuickSaleScreen = () => {
     if (!expression) return;
 
     const lastChar = expression[expression.length - 1];
-    if (["+", "-", "×", "÷"].includes(lastChar)) {
+    if (['+', '-', '×', '÷'].includes(lastChar)) {
       const newExpression = expression.slice(0, -1) + operator;
       setExpression(newExpression);
     } else {
@@ -91,8 +83,8 @@ const QuickSaleScreen = () => {
   };
 
   const handleClear = () => {
-    setExpression("");
-    setResult("0");
+    setExpression('');
+    setResult('0');
   };
 
   const handleBackspace = () => {
@@ -111,10 +103,7 @@ const QuickSaleScreen = () => {
   const createQuickSales = async (propsToPaymentType?: string) => {
     if (paymentStatus === null) {
       return setPaymentStatusOpen(true);
-    } else if (
-      propsToPaymentType === null &&
-      paymentStatus !== PaymentStatus.UNPAID
-    ) {
+    } else if (propsToPaymentType === null && paymentStatus !== PaymentStatus.UNPAID) {
       return setPaymentModeSelectionOpen(true);
     } else if (!activeShopId) return;
 
@@ -123,8 +112,8 @@ const QuickSaleScreen = () => {
         subTotalAmount: Number(result),
         grandTotalAmount: Number(result),
         invoiceDate: invoiceDate?.getTime(),
-        customerId: customer ? customer?.id : "",
-        customerName: customer?.name || "",
+        customerId: customer ? customer?.id : '',
+        customerName: customer?.name || '',
         paymentType: propsToPaymentType || paymentType,
         status: paymentStatus,
         paidAmount:
@@ -134,7 +123,7 @@ const QuickSaleScreen = () => {
               ? Number(result)
               : 0,
       },
-      activeShopId || "",
+      activeShopId || '',
     );
 
     if (response?.success) {
@@ -150,11 +139,7 @@ const QuickSaleScreen = () => {
   };
 
   const Button = ({ value, onPress, style, textStyle }: any) => (
-    <TouchableOpacity
-      style={[styles.button, style]}
-      onPress={onPress}
-      activeOpacity={0.7}
-    >
+    <TouchableOpacity style={[styles.button, style]} onPress={onPress} activeOpacity={0.7}>
       <Text style={[styles.buttonText, textStyle]}>{value}</Text>
     </TouchableOpacity>
   );
@@ -171,9 +156,7 @@ const QuickSaleScreen = () => {
             style={{ marginBottom: 10 }}
           />
         }
-        header={
-          <Header title="Quick Sales" onBackPress={() => router.back()} />
-        }
+        header={<Header title="Quick Sales" onBackPress={() => router.back()} />}
       >
         <View style={styles.content}>
           <View style={styles.topSection}>
@@ -192,8 +175,7 @@ const QuickSaleScreen = () => {
                         <ChevronRight size={18} />
                       </View>
                       <Text style={styles.customerDue} numberOfLines={1}>
-                        Old Due{" "}
-                        {formatNumberWithComma(customer?.outstanding || 0)}
+                        Old Due {formatNumberWithComma(customer?.outstanding || 0)}
                       </Text>
                     </>
                   ) : (
@@ -211,10 +193,7 @@ const QuickSaleScreen = () => {
                   selectedDate={invoiceDate}
                   onDateChange={setInvoiceDate}
                   renderCustomSelection={({ onPress, formattedDate }) => (
-                    <TouchableOpacity
-                      onPress={onPress}
-                      style={styles.dateSection}
-                    >
+                    <TouchableOpacity onPress={onPress} style={styles.dateSection}>
                       <Text style={styles.sectionTitle}>Invoice Date</Text>
                       <View style={styles.dateInfo}>
                         <Calendar size={14} />
@@ -229,18 +208,10 @@ const QuickSaleScreen = () => {
             </View>
 
             <View style={styles.display}>
-              <Text
-                style={styles.expression}
-                numberOfLines={2}
-                adjustsFontSizeToFit
-              >
-                {expression || "0"}
+              <Text style={styles.expression} numberOfLines={2} adjustsFontSizeToFit>
+                {expression || '0'}
               </Text>
-              <Text
-                style={styles.result}
-                numberOfLines={1}
-                adjustsFontSizeToFit
-              >
+              <Text style={styles.result} numberOfLines={1} adjustsFontSizeToFit>
                 = {formatNumberWithComma(result)}
               </Text>
             </View>
@@ -248,68 +219,56 @@ const QuickSaleScreen = () => {
 
           <View style={styles.calculator}>
             <View style={styles.row}>
-              <Button
-                value="AC"
-                onPress={handleClear}
-                style={styles.functionButton}
-              />
+              <Button value="AC" onPress={handleClear} style={styles.functionButton} />
               <Button
                 value="%"
-                onPress={() => handleOperatorPress("%")}
+                onPress={() => handleOperatorPress('%')}
                 style={styles.functionButton}
               />
               <Button
                 value="÷"
-                onPress={() => handleOperatorPress("÷")}
+                onPress={() => handleOperatorPress('÷')}
                 style={styles.functionButton}
               />
-              <Button
-                value="⌫"
-                onPress={handleBackspace}
-                style={styles.functionButton}
-              />
+              <Button value="⌫" onPress={handleBackspace} style={styles.functionButton} />
             </View>
 
             <View style={styles.row}>
-              <Button value="7" onPress={() => handleNumberPress("7")} />
-              <Button value="8" onPress={() => handleNumberPress("8")} />
-              <Button value="9" onPress={() => handleNumberPress("9")} />
+              <Button value="7" onPress={() => handleNumberPress('7')} />
+              <Button value="8" onPress={() => handleNumberPress('8')} />
+              <Button value="9" onPress={() => handleNumberPress('9')} />
               <Button
                 value="×"
-                onPress={() => handleOperatorPress("×")}
+                onPress={() => handleOperatorPress('×')}
                 style={styles.operatorButton}
               />
             </View>
 
             <View style={styles.row}>
-              <Button value="4" onPress={() => handleNumberPress("4")} />
-              <Button value="5" onPress={() => handleNumberPress("5")} />
-              <Button value="6" onPress={() => handleNumberPress("6")} />
+              <Button value="4" onPress={() => handleNumberPress('4')} />
+              <Button value="5" onPress={() => handleNumberPress('5')} />
+              <Button value="6" onPress={() => handleNumberPress('6')} />
               <Button
                 value="-"
-                onPress={() => handleOperatorPress("-")}
+                onPress={() => handleOperatorPress('-')}
                 style={styles.operatorButton}
               />
             </View>
 
             <View style={styles.row}>
-              <Button value="1" onPress={() => handleNumberPress("1")} />
-              <Button value="2" onPress={() => handleNumberPress("2")} />
-              <Button value="3" onPress={() => handleNumberPress("3")} />
+              <Button value="1" onPress={() => handleNumberPress('1')} />
+              <Button value="2" onPress={() => handleNumberPress('2')} />
+              <Button value="3" onPress={() => handleNumberPress('3')} />
               <Button
                 value="+"
-                onPress={() => handleOperatorPress("+")}
+                onPress={() => handleOperatorPress('+')}
                 style={styles.operatorButton}
               />
             </View>
 
             <View style={styles.row}>
-              <Button
-                value="0"
-                onPress={() => handleNumberPress("0")}
-                style={styles.zeroButton}
-              />
-              <Button value="." onPress={() => handleNumberPress(".")} />
+              <Button value="0" onPress={() => handleNumberPress('0')} style={styles.zeroButton} />
+              <Button value="." onPress={() => handleNumberPress('.')} />
               <Button
                 value="="
                 onPress={handleEquals}
@@ -326,7 +285,7 @@ const QuickSaleScreen = () => {
         onClose={() => {
           setPaymentModeSelectionOpen(false);
           setPaymentType(null);
-          setPartiallyPaidAmount("0");
+          setPartiallyPaidAmount('0');
           setPaymentStatus(null);
         }}
         paymentType={paymentType}
@@ -358,7 +317,7 @@ const QuickSaleScreen = () => {
         visible={customerSelectionOpen}
         onClose={() => {
           setCustomerSelectionOpen(false);
-          setPartiallyPaidAmount("0");
+          setPartiallyPaidAmount('0');
           setPaymentStatus(null);
         }}
         onSelectCustomer={() => {
@@ -378,43 +337,43 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingBottom: 16,
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   topSection: {
     flex: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
     marginBottom: 10,
   },
   cashSaleButton: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    borderColor: '#E5E5E5',
     flexShrink: 0,
     marginBottom: isSmallDevice ? 10 : 15,
     marginTop: isSmallDevice ? 10 : 15,
   },
   cashSaleContent: {
-    flexDirection: "row",
-    alignItems: "stretch",
+    flexDirection: 'row',
+    alignItems: 'stretch',
   },
   customerSection: {
-    flexDirection: "column",
+    flexDirection: 'column',
     gap: isSmallDevice ? 6 : 10,
     borderRightWidth: 1,
     borderRightColor: COLORS.border,
     padding: isSmallDevice ? 12 : 16,
-    justifyContent: "center",
-    width: "50%",
+    justifyContent: 'center',
+    width: '50%',
   },
   customerInfo: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
   customerName: {
     fontSize: isSmallDevice ? 14 : 15,
-    fontWeight: "500",
+    fontWeight: '500',
     flex: 1,
   },
   customerDue: {
@@ -423,23 +382,23 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: isSmallDevice ? 14 : 15,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   selectText: {
     fontSize: isSmallDevice ? 14 : 15,
-    color: "#666",
+    color: '#666',
   },
   dateSection: {
-    flexDirection: "column",
+    flexDirection: 'column',
     gap: isSmallDevice ? 6 : 10,
     flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "baseline",
+    justifyContent: 'flex-end',
+    alignItems: 'baseline',
     padding: isSmallDevice ? 12 : 16,
   },
   dateInfo: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
   dateText: {
@@ -448,54 +407,54 @@ const styles = StyleSheet.create({
   display: {
     flex: 1,
     marginTop: 16,
-    backgroundColor: "#FAFAFA",
+    backgroundColor: '#FAFAFA',
     borderRadius: 12,
     padding: isSmallDevice ? 20 : 24,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
     borderWidth: 1,
     height: DISPLAY_MIN_HEIGHT + 60,
-    borderColor: "#E5E5E5",
+    borderColor: '#E5E5E5',
     marginBottom: 5,
   },
   expression: {
     fontSize: isSmallDevice ? 20 : isMediumDevice ? 22 : 24,
-    fontWeight: "600",
+    fontWeight: '600',
     color: COLORS.text,
-    textAlign: "right",
+    textAlign: 'right',
     marginBottom: 8,
   },
   result: {
     fontSize: isSmallDevice ? 20 : isMediumDevice ? 22 : 24,
-    color: "#666",
-    textAlign: "right",
+    color: '#666',
+    textAlign: 'right',
   },
   calculator: {
     flexShrink: 0,
     marginTop: 16,
   },
   row: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: isSmallDevice ? 8 : 12,
     marginBottom: isSmallDevice ? 8 : 12,
   },
   button: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 12,
     height: BUTTON_HEIGHT,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonText: {
     fontSize: isSmallDevice ? 20 : isMediumDevice ? 22 : 24,
-    color: "#000",
-    fontWeight: "500",
+    color: '#000',
+    fontWeight: '500',
   },
   functionButton: {
-    backgroundColor: "#E8E8E8",
+    backgroundColor: '#E8E8E8',
   },
   operatorButton: {
-    backgroundColor: "#ffff",
+    backgroundColor: '#ffff',
   },
   zeroButton: {
     flex: 2,
@@ -504,7 +463,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   equalsText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: isSmallDevice ? 24 : isMediumDevice ? 26 : 28,
   },
 });

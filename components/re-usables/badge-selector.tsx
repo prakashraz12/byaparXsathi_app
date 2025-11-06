@@ -1,7 +1,9 @@
-import { TouchableOpacity, View } from "react-native";
-import { Text } from "./text";
-import { Check } from "lucide-react-native";
-import { COLORS } from "@/constants/Colors";
+import { Check } from 'lucide-react-native';
+import { TouchableOpacity, View } from 'react-native';
+
+import { COLORS } from '@/constants/Colors';
+
+import { Text } from './text';
 
 interface BadgeSelectorProps {
   options: {
@@ -11,9 +13,9 @@ interface BadgeSelectorProps {
   value: string;
   onChange: (value: string) => void;
   label?: string;
-  required?:boolean
-  checkedUnchecked?:boolean
-  errorMessage?:string
+  required?: boolean;
+  checkedUnchecked?: boolean;
+  errorMessage?: string;
 }
 
 const BadgeSelector = ({
@@ -25,42 +27,43 @@ const BadgeSelector = ({
   checkedUnchecked,
 }: BadgeSelectorProps) => {
   return (
-    <View style={{ flex: 1, flexDirection: "column", gap: 8, marginTop: 5 }}>
-      {label && <Text style={{ fontSize: 16, marginBottom: 4,marginLeft:4, fontFamily: "Poppins-Medium" }}>{label}{" "}{required ? <Text style={{color:"red"}}>*</Text> :""}</Text>}
-      <View 
-        style={{ 
-          flexDirection: "row", 
-          flexWrap: "wrap", 
-          gap: 10 
+    <View style={{ flex: 1, flexDirection: 'column', gap: 8, marginTop: 5 }}>
+      {label && (
+        <Text
+          style={{ fontSize: 16, marginBottom: 4, marginLeft: 4, fontFamily: 'Poppins-Medium' }}
+        >
+          {label} {required ? <Text style={{ color: 'red' }}>*</Text> : ''}
+        </Text>
+      )}
+      <View
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          gap: 10,
         }}
       >
-        {options.map((item) => (
+        {options.map((item,index) => (
           <TouchableOpacity
             style={{
-              flexDirection: "row",
-              alignItems: "center",
+              flexDirection: 'row',
+              alignItems: 'center',
               paddingHorizontal: 15,
               paddingVertical: 6,
-              borderRadius: 8,
+              borderRadius: 6,
               borderWidth: 1,
               borderColor: COLORS.border,
-              backgroundColor:
-                value === item?.value ? COLORS.primary : "white",
+              backgroundColor: value === item?.value ? COLORS.primary : 'white',
             }}
-            key={item.value}
-            onPress={() => value === item?.value && checkedUnchecked ? onChange("") : onChange(item.value)}
+            key={index}
+            onPress={() =>
+              value === item?.value && checkedUnchecked ? onChange('') : onChange(item.value)
+            }
           >
-            {value === item?.value && (
-              <Check 
-                size={15} 
-                color="white" 
-                style={{ marginRight: 4 }} 
-              />
-            )}
+            {value === item?.value && <Check size={15} color="white" style={{ marginRight: 4 }} />}
             <Text
               style={{
-                color: value === item?.value ? "white" : COLORS.text,
-                fontSize:15
+                color: value === item?.value ? 'white' : COLORS.text,
+                fontSize: 16,
               }}
             >
               {item.label}
@@ -68,7 +71,7 @@ const BadgeSelector = ({
           </TouchableOpacity>
         ))}
       </View>
-          </View>
+    </View>
   );
 };
 

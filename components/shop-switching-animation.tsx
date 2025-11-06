@@ -1,10 +1,6 @@
-import { View } from "react-native"
+import { View } from 'react-native';
 
-const ShopSwitching = ()=>{
-    return(
-        <View style={{flex:1}}>
-        
-        </View>
-    )
-}
+const ShopSwitching = () => {
+  return <View style={{ flex: 1 }}></View>;
+};
 export default ShopSwitching;

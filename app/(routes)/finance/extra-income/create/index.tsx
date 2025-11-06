@@ -1,9 +1,7 @@
-import IncomeCreateScreen from "@/screen/finance/income/create/income-create.screen";
+import IncomeCreateScreen from '@/screen/finance/income/create/income-create.screen';
 
 const ExtraIncomeCreate = () => {
-    return (
-       <IncomeCreateScreen/>
-    )
-}
+  return <IncomeCreateScreen />;
+};
 
 export default ExtraIncomeCreate;

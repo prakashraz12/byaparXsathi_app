@@ -88,7 +88,7 @@ const Dropdown = <T extends DropdownItem | string = DropdownItem | string>({
 
   const toggleDropdown = (): void => {
     if (disabled) return;
-    
+
     visible ? setVisible(false) : openDropdown();
   };
 
@@ -114,27 +114,22 @@ const Dropdown = <T extends DropdownItem | string = DropdownItem | string>({
   const renderDropdownItem = ({ item, index }: { item: T; index: number }): React.ReactElement => {
     if (renderItem) {
       return (
-        <TouchableOpacity
-          style={[styles.item, itemStyle]}
-          onPress={() => onItemPress(item)}
-        >
+        <TouchableOpacity style={[styles.item, itemStyle]} onPress={() => onItemPress(item)}>
           {renderItem(item, index)}
         </TouchableOpacity>
       );
     }
 
-    const displayValue = typeof item === 'object' 
-      ? (item as DropdownItem).label || 
-        (item as DropdownItem).name || 
-        (item as DropdownItem).title || 
-        'Unknown'
-      : String(item);
-    
+    const displayValue =
+      typeof item === 'object'
+        ? (item as DropdownItem).label ||
+          (item as DropdownItem).name ||
+          (item as DropdownItem).title ||
+          'Unknown'
+        : String(item);
+
     return (
-      <TouchableOpacity
-        style={[styles.item, itemStyle]}
-        onPress={() => onItemPress(item)}
-      >
+      <TouchableOpacity style={[styles.item, itemStyle]} onPress={() => onItemPress(item)}>
         <Text style={[styles.itemText, itemTextStyle]}>{displayValue}</Text>
       </TouchableOpacity>
     );
@@ -149,7 +144,7 @@ const Dropdown = <T extends DropdownItem | string = DropdownItem | string>({
     return String(value);
   };
 
-  const getKeyExtractor = (): (item: T, index: number) => string => {
+  const getKeyExtractor = (): ((item: T, index: number) => string) => {
     if (keyExtractor) return keyExtractor;
     return (item: T, index: number) => {
       if (typeof item === 'object') {
@@ -216,10 +211,7 @@ const Dropdown = <T extends DropdownItem | string = DropdownItem | string>({
         animationType="fade"
         onRequestClose={() => setVisible(false)}
       >
-        <TouchableOpacity
-          style={styles.overlay}
-          onPress={() => setVisible(false)}
-        >
+        <TouchableOpacity style={styles.overlay} onPress={() => setVisible(false)}>
           <View
             style={[
               styles.dropdown,
@@ -309,7 +301,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: '#fff',
     borderRadius: 5,
-    marginTop:5,
+    marginTop: 5,
     borderWidth: 1,
     borderColor: '#ddd',
     shadowColor: '#000',
@@ -353,4 +345,3 @@ interface Category {
   name: string;
   description?: string;
 }
-

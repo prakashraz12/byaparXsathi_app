@@ -1,17 +1,19 @@
-import { LinearGradient } from "expo-linear-gradient";
-import { Text } from "../re-usables/text";
-import { Dimensions, View, StyleSheet } from "react-native";
-import { ArrowUp, TruckIcon, Wallet, Users } from "lucide-react-native";
-import { observeDashboardAnalytics } from "@/database/services/analaytics.service";
-import { useEffect, useState } from "react";
-import { formatNumberWithComma } from "@/utils/format-number";
+import { LinearGradient } from 'expo-linear-gradient';
+import { ArrowUp, TruckIcon, Users,Wallet } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
+import { Dimensions, StyleSheet,View } from 'react-native';
 
-const { width } = Dimensions.get("window");
+import { observeDashboardAnalytics } from '@/database/services/analaytics.service';
+import { formatNumberWithComma } from '@/utils/format-number';
+
+import { Text } from '../re-usables/text';
+
+const { width } = Dimensions.get('window');
 const CARD_MARGIN = 12;
 const CARD_WIDTH = width / 2 - CARD_MARGIN * 2.3;
 
 const DashBoardAnalaytics = () => {
-  const DEFAULT_PRESET = "THIS_MONTH";
+  const DEFAULT_PRESET = 'THIS_MONTH';
   const [stats, setStats] = useState({
     totalSales: 0,
     totalExpenses: 0,
@@ -29,36 +31,36 @@ const DashBoardAnalaytics = () => {
   }, []);
   const cardData = [
     {
-      id: "1",
-      title: "Sales",
+      id: '1',
+      title: 'Sales',
       value: stats.totalSales,
-      colors: ["#2AA63E", "#4CD964"],
+      colors: ['#2AA63E', '#4CD964'],
       icon: <ArrowUp size={18} color="#2AA63E" />,
-      type: "value",
+      type: 'value',
     },
     {
-      id: "2",
-      title: "Purchases",
-      value: "000",
-      colors: ["#4D96FF", "#6EB8FF"],
+      id: '2',
+      title: 'Purchases',
+      value: '000',
+      colors: ['#4D96FF', '#6EB8FF'],
       icon: <TruckIcon size={18} color="#4D96FF" />,
-      type: "value",
+      type: 'value',
     },
     {
-      id: "3",
-      title: "Expenses",
+      id: '3',
+      title: 'Expenses',
       value: stats.totalExpenses,
-      colors: ["#FF6B6B", "#FF8787"],
+      colors: ['#FF6B6B', '#FF8787'],
       icon: <Wallet size={18} color="#FF6B6B" />,
-      type: "value",
+      type: 'value',
     },
     {
-      id: "4",
-      title: "Customers",
+      id: '4',
+      title: 'Customers',
       value: stats.totalCustomers,
-      colors: ["#A78BFA", "#6366F1"],
+      colors: ['#A78BFA', '#6366F1'],
       icon: <Users size={18} color="#A78BFA" />,
-      type: "count",
+      type: 'count',
     },
   ];
   return (
@@ -96,9 +98,9 @@ const DashBoardAnalaytics = () => {
 
             <View
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               }}
             >
               <Text style={styles.cardTitle}>{item.title}</Text>
@@ -107,25 +109,23 @@ const DashBoardAnalaytics = () => {
                   width: 30,
                   height: 30,
                   borderRadius: 25,
-                  backgroundColor: "#fff",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  backgroundColor: '#fff',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
                 {item.icon}
               </View>
             </View>
             <Text style={styles.cardValue} numberOfLines={1}>
-              {item.type === "value"
-                ? formatNumberWithComma(item.value)
-                : item.value}
+              {item.type === 'value' ? formatNumberWithComma(item.value) : item.value}
             </Text>
             <Text
               style={{
                 fontSize: 12,
                 marginTop: 3,
-                color: "#e2e2e2ff",
-                fontFamily: "Poppins-Regular",
+                color: '#e2e2e2ff',
+                fontFamily: 'Poppins-Regular',
               }}
             >
               {item.title} of Month
@@ -139,9 +139,9 @@ const DashBoardAnalaytics = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
     paddingHorizontal: CARD_MARGIN,
     paddingTop: 2,
     marginTop: 10,
@@ -153,13 +153,13 @@ const styles = StyleSheet.create({
   card: {
     height: 90,
     borderRadius: 5,
-    overflow: "hidden",
+    overflow: 'hidden',
     padding: 15,
 
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   circle: {
-    position: "absolute",
+    position: 'absolute',
     width: 100,
     height: 100,
     borderRadius: 50,
@@ -167,13 +167,13 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 14,
     marginBottom: 2,
-    color: "#fff",
-    fontFamily: "Poppins-SemiBold",
+    color: '#fff',
+    fontFamily: 'Poppins-SemiBold',
   },
   cardValue: {
     fontSize: 15,
-    color: "#fff",
-    fontFamily: "Poppins-SemiBold",
+    color: '#fff',
+    fontFamily: 'Poppins-SemiBold',
   },
 });
 export default DashBoardAnalaytics;

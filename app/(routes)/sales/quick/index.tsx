@@ -1,8 +1,6 @@
-import QuickSaleScreen from "@/components/sales/quick-sales/quick-sale"
+import QuickSaleScreen from '@/components/sales/quick-sales/quick-sale';
 
-const QuickSales = ()=>{
-    return(
-        <QuickSaleScreen/>
-    )
-}
-export default QuickSales
+const QuickSales = () => {
+  return <QuickSaleScreen />;
+};
+export default QuickSales;

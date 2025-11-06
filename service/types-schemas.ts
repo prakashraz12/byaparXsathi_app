@@ -45,7 +45,7 @@ export type LoginDto = {
   otp: string;
 };
 
-export type UserStage = "CREATED" | "SET_UP_COMPLETED";
+export type UserStage = 'CREATED' | 'SET_UP_COMPLETED';
 
 export type LoginWithOtpResponse = {
   fullName: string;
@@ -195,13 +195,7 @@ export type CreateShopDto = {
   /**
    * Type of the shop
    */
-  shopType:
-    | "CLOTHING_STORE"
-    | "JEWELRY_STORE"
-    | "BAKERY"
-    | "CAFE"
-    | "RESTAURANT"
-    | "GROCERY";
+  shopType: 'CLOTHING_STORE' | 'JEWELRY_STORE' | 'BAKERY' | 'CAFE' | 'RESTAURANT' | 'GROCERY';
   /**
    * PAN number of the shop
    */
@@ -220,7 +214,7 @@ export type CreateShopDto = {
    *
    * @default ACTIVE
    */
-  status?: "ACTIVE" | "INACTIVE" | "SCHEDULED_FOR_DELETE";
+  status?: 'ACTIVE' | 'INACTIVE' | 'SCHEDULED_FOR_DELETE';
   /**
    * List of measuring units used in the shop
    */

@@ -1,15 +1,10 @@
-import { COLORS } from "@/constants/Colors";
-import { AlertCircle } from "lucide-react-native";
-import type React from "react";
-import {
-  Text,
-  TextInput,
-  View,
-  type TextInputProps,
-  type ViewStyle,
-} from "react-native";
+import { AlertCircle } from 'lucide-react-native';
+import type React from 'react';
+import { Text, TextInput, type TextInputProps, View, type ViewStyle } from 'react-native';
 
-interface CustomInputProps extends Omit<TextInputProps, "style"> {
+import { COLORS } from '@/constants/Colors';
+
+interface CustomInputProps extends Omit<TextInputProps, 'style'> {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   error?: string;
@@ -34,14 +29,14 @@ const CustomInput: React.FC<CustomInputProps> = ({
       {label && (
         <Text
           style={{
-            fontFamily: "Poppins-Medium",
+            fontFamily: 'Poppins-Medium',
             fontSize: 16,
             marginTop: 10,
             marginLeft: 4,
             color: COLORS.text,
           }}
         >
-          {label} {required ? <Text style={{ color: "red" }}>*</Text> : ""}
+          {label} {required ? <Text style={{ color: 'red' }}>*</Text> : ''}
         </Text>
       )}
       <View
@@ -76,9 +71,9 @@ const CustomInput: React.FC<CustomInputProps> = ({
 
 const styles = {
   inputContainer: {
-    flexDirection: "row" as const,
-    alignItems: "center" as const,
-    backgroundColor: "white",
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    backgroundColor: 'white',
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 7,
@@ -88,30 +83,30 @@ const styles = {
   },
   inputError: {
     borderColor: COLORS.error,
-    backgroundColor: "#FFF1F0",
+    backgroundColor: '#FFF1F0',
   },
   iconContainer: {
     paddingHorizontal: 16,
-    justifyContent: "center" as const,
-    alignItems: "center" as const,
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
   },
   input: {
     flex: 1,
     height: 54,
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
     fontSize: 14,
     color: COLORS.text,
   },
   fieldErrorContainer: {
-    flexDirection: "row" as const,
-    alignItems: "center" as const,
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
     marginBottom: 12,
     marginLeft: 4,
   },
   fieldErrorText: {
-    fontFamily: "Poppins-Regular",
+    fontFamily: 'Poppins-Regular',
     fontSize: 14,
-    color: "#FF4D4F",
+    color: '#FF4D4F',
     marginLeft: 4,
     marginTop: 2,
   },

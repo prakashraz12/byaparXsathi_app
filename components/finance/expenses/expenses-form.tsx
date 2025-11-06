@@ -1,58 +1,49 @@
-import BadgeSelector from "@/components/re-usables/badge-selector";
-import { Button } from "@/components/re-usables/button";
-import { Toast } from "@/components/re-usables/custom-toaster/toast-service";
-import DatePicker from "@/components/re-usables/date-picker/date-picker";
-import CustomInput from "@/components/re-usables/input";
-import { ExpensesHeadings } from "@/constants/expenses-headings";
-import useShops from "@/database/hooks/useShops";
-import { financeService } from "@/database/services/finance.service";
-import { normalizeToTimestamp } from "@/database/util/normalizeToTimeStamp";
-import {
-  AddExpensesSchema,
-  addExpensesSchema,
-} from "@/forms/schema/add-expenses.schema";
-import { useForm } from "@tanstack/react-form";
-import { View } from "react-native";
-import { useRouter } from "expo-router";
-import Expenses from "@/database/model/expenses.model";
-import { useEffect } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import BadgeSelector from '@/components/re-usables/badge-selector';
+import { Button } from '@/components/re-usables/button';
+import { Toast } from '@/components/re-usables/custom-toaster/toast-service';
+import DatePicker from '@/components/re-usables/date-picker/date-picker';
+import CustomInput from '@/components/re-usables/input';
+import { ExpensesHeadings } from '@/constants/expenses-headings';
+import useShops from '@/database/hooks/useShops';
+import { financeService } from '@/database/services/finance.service';
+import { normalizeToTimestamp } from '@/database/util/normalizeToTimeStamp';
+import { AddExpensesSchema, addExpensesSchema } from '@/forms/schema/add-expenses.schema';
+import { useForm } from '@tanstack/react-form';
+import { View } from 'react-native';
+import { useRouter } from 'expo-router';
+import Expenses from '@/database/model/expenses.model';
+import { useEffect } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const ExpensesForm = ({
-  expenses,
-  mode,
-}: {
-  expenses?: Expenses;
-  mode?: "create" | "edit";
-}) => {
+const ExpensesForm = ({ expenses, mode }: { expenses?: Expenses; mode?: 'create' | 'edit' }) => {
   const insets = useSafeAreaInsets();
   const { activeShop } = useShops();
   const router = useRouter();
   const form = useForm({
     defaultValues: {
-      amount: "",
-      title: "",
+      amount: '',
+      title: '',
       createdAt: new Date(),
-      remarks: "",
+      remarks: '',
     },
     validators: {
       onChangeAsync: addExpensesSchema as any,
     },
     onSubmit: async ({ value }: { value: AddExpensesSchema }) => {
-      if (mode === "create") {
+      if (mode === 'create') {
         const response = await financeService.createExpenses({
           amount: Number(value.amount),
           title: value.title,
           created_at: normalizeToTimestamp(value?.createdAt),
           remarks: value.remarks,
-          shopId: activeShop?.id || "",
+          shopId: activeShop?.id || '',
         });
         if (response && response?.success) {
           Toast.success(response?.message);
           router.back();
         }
       }
-      if (mode === "edit" && expenses) {
+      if (mode === 'edit' && expenses) {
         const response = await financeService.updateExpenses(expenses.id, {
           amount: Number(value.amount),
           title: value.title,
@@ -67,24 +58,19 @@ const ExpensesForm = ({
     },
   });
 
- 
-
   useEffect(() => {
-    if (mode === "edit" && expenses) {
-      form.setFieldValue("amount", expenses.amount?.toString() || "");
-      form.setFieldValue("title", expenses?.title || "");
-      form.setFieldValue(
-        "createdAt",
-        new Date(expenses?.created_at || Date.now())
-      );
-      form.setFieldValue("remarks", expenses?.remarks || "");
+    if (mode === 'edit' && expenses) {
+      form.setFieldValue('amount', expenses.amount?.toString() || '');
+      form.setFieldValue('title', expenses?.title || '');
+      form.setFieldValue('createdAt', new Date(expenses?.created_at || Date.now()));
+      form.setFieldValue('remarks', expenses?.remarks || '');
     }
   }, [mode, expenses]);
 
   return (
     <View
       style={{
-        flexDirection: "column",
+        flexDirection: 'column',
         gap: 15,
         marginBottom: insets.bottom * 0.8,
       }}
@@ -106,9 +92,7 @@ const ExpensesForm = ({
             value={field.state.value}
             onChangeText={field.handleChange}
             onBlur={field.handleBlur}
-            error={field.state.meta.errors
-              .map((err: any) => err.message || String(err))
-              .join(", ")}
+            error={field.state.meta.errors.map((err: any) => err.message || String(err)).join(', ')}
           />
         )}
       </form.Field>
@@ -121,7 +105,7 @@ const ExpensesForm = ({
             onChange={(value) => field.handleChange(value)}
             errorMessage={field.state.meta.errors
               .map((err: any) => err.message || String(err))
-              .join(", ")}
+              .join(', ')}
           />
         )}
       </form.Field>
@@ -133,9 +117,7 @@ const ExpensesForm = ({
             value={field.state.value}
             onChangeText={field.handleChange}
             onBlur={field.handleBlur}
-            error={field.state.meta.errors
-              .map((err: any) => err.message || String(err))
-              .join(", ")}
+            error={field.state.meta.errors.map((err: any) => err.message || String(err)).join(', ')}
           />
         )}
       </form.Field>
@@ -143,7 +125,7 @@ const ExpensesForm = ({
         loading={form.state.isSubmitting}
         onPress={form.handleSubmit}
         disabled={form.state.isSubmitting}
-        title={mode === "edit" ? "Update" : "Save"}
+        title={mode === 'edit' ? 'Update' : 'Save'}
       />
     </View>
   );

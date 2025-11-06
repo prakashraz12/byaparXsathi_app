@@ -1,9 +1,7 @@
-import SelectShopScreen from "@/screen/shop/select-shop-screen";
+import SelectShopScreen from '@/screen/shop/select-shop-screen';
 
 const SelectShop = () => {
-    return (
-       <SelectShopScreen/>
-    );
+  return <SelectShopScreen />;
 };
 
 export default SelectShop;
