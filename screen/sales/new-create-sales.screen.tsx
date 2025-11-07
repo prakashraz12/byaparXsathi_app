@@ -67,7 +67,7 @@ const NewSalesScreen = () => {
             </Text>
           </View>
         )}
-        <AvatarCard name={item?.itemName || ''} size={50} />
+        <AvatarCard name={item?.itemName || ''} size={50} borderRedius={6} />
         <Text style={{ fontSize: 16, fontWeight: '600', marginTop: 10 }}>{item?.itemName}</Text>
         <Text style={{ fontSize: 13, marginTop: 4 }}>Rs. {item?.sellingPrice}</Text>
         <Text
@@ -111,6 +111,7 @@ const NewSalesScreen = () => {
               {formatNumberWithComma(totalPayment)}
             </Text>
             <Button
+            disabled={salesItems?.length === 0}
               title="Proceed To Sale"
               onPress={() => {
                 router.push('/checkout');

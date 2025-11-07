@@ -9,8 +9,6 @@ import { formatNumberWithComma } from '@/utils/format-number';
 import { nepaliCalendar } from '../re-usables/date-picker/calender-config';
 import { Text } from '../re-usables/text';
 
-
-
 interface ThermalBillProps {
   invoiceNumber: string;
   date: number | undefined;

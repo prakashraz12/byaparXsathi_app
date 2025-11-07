@@ -14,30 +14,32 @@ import PaymentInCard from '../paymentin-card';
 const CustomerTransitions = ({ id }: { id: string }) => {
   const [searchParams, setSearchParams] = useState<string>('');
 
-  const { sales, isLoading } = useSales({
+  const { sales, isLoading: isLoadingSales } = useSales({
     customerId: id,
     searchParams,
     sort: 'desc',
   });
 
-  const { paymentIn } = usePaymentIn({ searchParams, sort: 'desc', customerId: id });
+  const { paymentIn, isLoading: isLoadingPayments } = usePaymentIn({
+    customerId: id,
+    searchParams,
+    sort: 'desc',
+  });
 
-  const data = [
-    ...sales?.map((sale) => ({ ...sale, type: 'sale' })),
-    ...paymentIn?.map((payment) => ({ ...payment, type: 'paymentIn' })),
-  ];
+  const isLoading = isLoadingSales || isLoadingPayments;
 
-  console.log(paymentIn)
+  const data =
+    [...(sales || []).map((s) => ({ ...s, type: 'sale' })), ...(paymentIn || []).map((p) => ({ ...p, type: 'paymentIn' }))]
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
   return (
     <View>
       <View
         style={{
-          flex: 1,
-          marginTop: 10,
           flexDirection: 'row',
           alignItems: 'center',
           gap: 5,
-          marginBottom: 10,
+          marginVertical: 10,
         }}
       >
         <View style={{ flex: 1 }}>
@@ -64,35 +66,40 @@ const CustomerTransitions = ({ id }: { id: string }) => {
           <FilterIcon size={24} color={COLORS.text} />
         </TouchableOpacity>
       </View>
+
       <View>
         {isLoading ? (
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <ActivityIndicator size="large" color={COLORS.primary} />
           </View>
-        ) : sales?.length === 0 ? (
+        ) : data.length === 0 ? (
           <NotFound title="No Transactions Found" />
         ) : (
-          data?.map((item) =>{
-            if(item.type === 'sale'){
-              return <SalesCard
-              id={item.id}
-              key={item.id}
-              invoiceNumber={item.invoiceNumber}
-              invoiceDate={item?.invoiceDate}
-              grandTotalAmount={item.grandTotalAmount}
-              paymentStatus={item.status}
-              paymentType={item.paymentType}
-            />
+          data.map((item) => {
+            if (item.type === 'sale') {
+              return (
+                <SalesCard
+                  key={item.id}
+                  id={item.id}
+                  invoiceNumber={item.invoiceNumber}
+                  invoiceDate={item.invoiceDate}
+                  grandTotalAmount={item.grandTotalAmount}
+                  paymentStatus={item.status}
+                  paymentType={item.paymentType}
+                />
+              );
             }
-            if(item.type === 'paymentIn'){
-              return <PaymentInCard
-              id={item.id}
-              key={item.id}
-              receiptNumber={item.receiptNumber}
-              paymentDate={item?.paymentDate}
-              amount={item.amount}
-              paymentId={item.paymentId}
-            />
+            if (item.type === 'paymentIn') {
+              return (
+                <PaymentInCard
+                  key={item.id}
+                  id={item.id}
+                  receiptNumber={item.receiptNumber}
+                  paymentDate={item.paymentInDate}
+                  amount={item.amount}
+                  paymentId={item.paymentId}
+                />
+              );
             }
           })
         )}

@@ -2,6 +2,8 @@ import { CloudUpload } from 'lucide-react-native';
 import { useEffect, useRef } from 'react';
 import { Animated, Easing,StyleSheet, View } from 'react-native';
 
+import { COLORS } from '@/constants/Colors';
+
 import { Text } from './re-usables/text';
 
 interface SyncBannerProps {
@@ -9,7 +11,7 @@ interface SyncBannerProps {
   type?: 'syncing' | 'backup' | 'uploading';
 }
 
-const SyncBanner = ({ message = 'Syncing...' }: SyncBannerProps) => {
+const SyncBanner = ({ message = 'Data Backing Up......' }: SyncBannerProps) => {
   // Animation values for circles
   const circle1 = useRef(new Animated.Value(0)).current;
   const circle2 = useRef(new Animated.Value(0)).current;
@@ -95,8 +97,8 @@ const SyncBanner = ({ message = 'Syncing...' }: SyncBannerProps) => {
   return (
     <View style={styles.container}>
       {/* Icon Container */}
-      <Animated.View style={[styles.iconContainer, { transform: [{ translateY: cloudBounce }] }]}>
-        <CloudUpload size={20} color="#3b82f6" strokeWidth={2} />
+      <Animated.View style={[styles.iconContainer]}>
+        <CloudUpload size={26} color={COLORS.success} strokeWidth={2} />
       </Animated.View>
 
       {/* Text */}
@@ -116,9 +118,9 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#e5e7eb',
     backgroundColor: '#f9fafb',
@@ -127,16 +129,14 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 36,
     height: 36,
-    borderRadius: 18,
-    backgroundColor: '#dbeafe',
     justifyContent: 'center',
     alignItems: 'center',
   },
   message: {
     flex: 1,
     fontSize: 14,
-    fontWeight: '500',
-    color: '#374151',
+    fontFamily: 'Poppins-Medium',
+    color: COLORS.success,
   },
   circlesContainer: {
     flexDirection: 'row',

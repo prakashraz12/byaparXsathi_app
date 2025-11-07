@@ -1,35 +1,20 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Text } from '@/components/re-usables/text';
-import PXWrapper from '@/layouts/px-wrapper';
-import DashBoardTop from '@/components/dashbaord/sticky-top';
-import { LinearGradient } from 'expo-linear-gradient';
-import * as BackgroundTask from 'expo-background-task';
-import {
-  ArrowDownCircle,
-  ArrowUp,
-  Calculator,
-  CloudUpload,
-  Feather,
-  PiggyBank,
-  TruckIcon,
-  UserPlus,
-  Users,
-  Wallet,
-} from 'lucide-react-native';
-import { COLORS } from '@/constants/Colors';
-import UpgradeCard from '@/components/dashbaord/upgrade-card';
-import SalesOverviewChart from '@/components/dashbaord/sales-chart';
-import { useUserStore } from '@/store/useUserStore';
 import { router } from 'expo-router';
-import SyncBanner from '@/components/sync-banner';
-import { Button } from '@/components/re-usables/button';
-import { syncDatabase } from '@/database/sync.service';
+import { ArrowDownCircle, Calculator, TruckIcon, Wallet } from 'lucide-react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import DashBoardAnalaytics from '@/components/dashbaord/analaytics-card';
-import { useSyncStore } from '@/store/useSync';
-import { useSync } from '@/database/hooks/useSync';
-import SalesSummary from '@/components/dashbaord/sales-summary';
 import SalesBreakdownByMethod from '@/components/dashbaord/sales-breakdownby-method';
+import SalesOverviewChart from '@/components/dashbaord/sales-chart';
+import SalesSummary from '@/components/dashbaord/sales-summary';
+import DashBoardTop from '@/components/dashbaord/sticky-top';
 import TopSalesItems from '@/components/dashbaord/top-sales-items';
+import UpgradeCard from '@/components/dashbaord/upgrade-card';
+import { Text } from '@/components/re-usables/text';
+import SyncBanner from '@/components/sync-banner';
+import { COLORS } from '@/constants/Colors';
+import PXWrapper from '@/layouts/px-wrapper';
+import { useSyncStore } from '@/store/useSync';
+import { useUserStore } from '@/store/useUserStore';
 
 const CARD_MARGIN = 12;
 
@@ -69,7 +54,6 @@ export const ACTION_BUTTONS = [
 
 const DashboardScreen = () => {
   const user = useUserStore();
-  const { syncNow } = useSync();
   const { syncing } = useSyncStore();
   return (
     <>

@@ -1,6 +1,7 @@
 import { Model } from '@nozbe/watermelondb';
-import { SCHEMA_KEYS } from '../shema.keys';
 import { field } from '@nozbe/watermelondb/decorators';
+
+import { SCHEMA_KEYS } from '../shema.keys';
 
 export default class Income extends Model {
   static table = SCHEMA_KEYS.INCOME;

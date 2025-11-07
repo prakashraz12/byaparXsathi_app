@@ -1,17 +1,17 @@
+import { router } from 'expo-router';
+import { CheckCircleIcon } from 'lucide-react-native';
+import { useState } from 'react';
+import { TouchableOpacity, View } from 'react-native';
+
 import AvatarCard from '@/components/re-usables/avatar-card';
 import { Button } from '@/components/re-usables/button';
 import { Text } from '@/components/re-usables/text';
 import { COLORS } from '@/constants/Colors';
 import useShops from '@/database/hooks/useShops';
-import PXWrapper from '@/layouts/px-wrapper';
-import { TouchableOpacity, View } from 'react-native';
-import { router } from 'expo-router';
-import { useState } from 'react';
-import Shop from '@/database/model/shop.model';
-import { CheckCircleIcon } from 'lucide-react-native';
-import { useUserStore } from '@/store/useUserStore';
-import { syncDatabase } from '@/database/sync.service';
 import { useSync } from '@/database/hooks/useSync';
+import Shop from '@/database/model/shop.model';
+import PXWrapper from '@/layouts/px-wrapper';
+import { useUserStore } from '@/store/useUserStore';
 
 const SelectShopScreen = () => {
   const { shops } = useShops();

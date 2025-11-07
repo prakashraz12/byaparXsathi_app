@@ -16,8 +16,8 @@ export const salesService = {
   create: async (salesData: Partial<Sales>, shopId: string, salesItems?: Partial<SalesItem>[]) => {
     if (
       !salesData.invoiceDate ||
-      !salesData.status ||
-      (salesData?.status !== PaymentStatus.UNPAID && !salesData?.paymentType)
+      (!salesData.status && salesData?.payableAmount !== 0) ||
+      (salesData?.status !== PaymentStatus.UNPAID && !salesData?.paymentType && salesData?.payableAmount !== 0)
     ) {
       return responseHandler({
         message: 'Invoice date, payment status and payment type are required',
@@ -27,7 +27,6 @@ export const salesService = {
       });
     }
 
-    console.log(salesData, "this sis sales sdata")
     try {
       const invoiceTimestamp = normalizeToTimestamp((salesData as any).invoiceDate);
 

@@ -9,7 +9,7 @@ type SalesState = {
   paymentId?: string;
   paidAmount?: string;
   customer?: Customer | null;
-  subTotal: number;
+  subTotal: string;
   grandTotal: number;
   oldDue: number;
   invoiceDate: Date;
@@ -27,7 +27,7 @@ type SalesState = {
   setPaymentId: (id: string) => void;
   setPaidAmount: (amount: string) => void;
   setCustomer: (customer: Customer | null) => void;
-  setSubTotal: (amount: number) => void;
+  setSubTotal: (amount: string) => void;
   setGrandTotal: (amount: number) => void;
   setDiscountAmount: (amount: string) => void;
   setDiscountPercentage: (percentage: string) => void;
@@ -44,7 +44,7 @@ export const useSalesStore = create<SalesState>()((set) => ({
   paymentId: undefined,
   paidAmount: "",
   customer: null,
-  subTotal: 0,
+  subTotal: "",
   grandTotal: 0,
   oldDue: 0,
   invoiceDate: new Date(),
@@ -75,7 +75,7 @@ export const useSalesStore = create<SalesState>()((set) => ({
       paymentId: undefined,
       paidAmount:   "",
       customer: null,
-      subTotal: 0,
+      subTotal: "",
       grandTotal: 0,
       oldDue: 0,
       invoiceDate: new Date(),

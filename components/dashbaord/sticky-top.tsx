@@ -13,6 +13,7 @@ const DashBoardTop = () => {
         justifyContent: 'space-between',
         alignItems: 'center',
         marginTop: 10,
+        marginBottom:15
       }}
     >
       <ProfileCard />

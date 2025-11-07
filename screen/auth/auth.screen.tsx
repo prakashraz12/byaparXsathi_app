@@ -1,3 +1,9 @@
+import { useForm } from '@tanstack/react-form';
+import { router } from 'expo-router';
+import { Mail } from 'lucide-react-native';
+import { useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+
 import { Button } from '@/components/re-usables/button';
 import { Header } from '@/components/re-usables/header';
 import CustomInput from '@/components/re-usables/input';
@@ -8,11 +14,6 @@ import PXWrapper from '@/layouts/px-wrapper';
 import { useAuthControllerWithEmail } from '@/service/queries-components';
 import { apiOptions } from '@/utils/api-options.util';
 import { getUserLocation } from '@/utils/get-user-info';
-import { useForm } from '@tanstack/react-form';
-import { router } from 'expo-router';
-import { Mail } from 'lucide-react-native';
-import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
 
 const AuthScreen = () => {
   const [isLoading, setIsLoading] = useState(false);

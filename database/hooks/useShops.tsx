@@ -38,6 +38,7 @@ const useShops = () => {
   const currentPaymentAccount = paymentAccounts.filter(
     (p: PaymentAccount) => p.shopId === activeShopId,
   ) as PaymentAccount[] | undefined;
+  console.log(currentPaymentAccount, "yaha bata")
   return { shops, isLoading, activeShop, currentPaymentAccount };
 };
 export default useShops;

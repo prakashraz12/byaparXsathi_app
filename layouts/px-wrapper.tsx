@@ -7,6 +7,7 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -152,7 +153,8 @@ const PXWrapper = ({
               removeClippedSubviews={true}
               onScroll={handleScroll}
             >
-              {children}
+              {typeof children === 'string' ? <Text>{children}</Text> : children}
+
             </ScrollView>
           </KeyboardAvoidingView>
         )}

@@ -1,24 +1,17 @@
 import { router } from 'expo-router';
 import { Calendar, ChevronRight } from 'lucide-react-native';
 import { useMemo, useState } from 'react';
-import { Dimensions,StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { Button as OGButton } from '@/components/re-usables/button';
-import { Toast } from '@/components/re-usables/custom-toaster/toast-service';
 import DatePicker from '@/components/re-usables/date-picker/date-picker';
 import { Header } from '@/components/re-usables/header';
 import { COLORS } from '@/constants/Colors';
-import { PaymentStatus } from '@/constants/payment-status';
-import Customer from '@/database/model/customer.model';
-import { salesService } from '@/database/services/sales.service';
 import PXWrapper from '@/layouts/px-wrapper';
-import { useUserStore } from '@/store/useUserStore';
-import { PaymentStatusType } from '@/types/payment-status';
+import { useSalesStore } from '@/store/useSale';
 import { formatNumberWithComma } from '@/utils/format-number';
 
 import AddCustomerSlideup from '../add-customer-slideup';
-import PaymentModeSlideup from '../payment-mode-slideup';
-import PaymentStatusSlideUp from '../payment-status-slide-up';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -30,22 +23,13 @@ const BUTTON_HEIGHT = isSmallDevice ? 50 : isMediumDevice ? 55 : 60;
 const DISPLAY_MIN_HEIGHT = isSmallDevice ? 80 : isMediumDevice ? 100 : 120;
 
 const QuickSaleScreen = () => {
-  const { activeShopId } = useUserStore();
-
   const [expression, setExpression] = useState('');
-  const [result, setResult] = useState('0');
 
-  //billing
-  const [customer, setCustomer] = useState<Customer | null>(null);
-  const [paymentType, setPaymentType] = useState<string | null>(null);
-  const [paymentStatus, setPaymentStatus] = useState<PaymentStatusType | null>(null);
-  const [invoiceDate, setInvoiceDate] = useState<Date>(new Date());
-  const [partiallyPaidAmount, setPartiallyPaidAmount] = useState<string>('');
+  const { customer, setCustomer, invoiceDate, setInvoiceDate, setSubTotal, subTotal } =
+    useSalesStore();
 
   //states
   const [customerSelectionOpen, setCustomerSelectionOpen] = useState<boolean>(false);
-  const [paymentModeSelectionOpen, setPaymentModeSelectionOpen] = useState<boolean>(false);
-  const [paymentStatusOpen, setPaymentStatusOpen] = useState<boolean>(false);
 
   const calculateResult = useMemo(
     () => (expr: string) => {
@@ -66,7 +50,7 @@ const QuickSaleScreen = () => {
   const handleNumberPress = (num: string) => {
     const newExpression = expression + num;
     setExpression(newExpression);
-    setResult(calculateResult(newExpression));
+    setSubTotal(calculateResult(newExpression));
   };
 
   const handleOperatorPress = (operator: string) => {
@@ -84,57 +68,19 @@ const QuickSaleScreen = () => {
 
   const handleClear = () => {
     setExpression('');
-    setResult('0');
+    setSubTotal('0');
   };
 
   const handleBackspace = () => {
     const newExpression = expression.slice(0, -1);
     setExpression(newExpression);
-    setResult(calculateResult(newExpression));
+    setSubTotal(calculateResult(newExpression));
   };
   const handleEquals = () => () => {
     if (expression) {
       const finalResult = calculateResult(expression);
       setExpression(finalResult);
-      setResult(finalResult);
-    }
-  };
-
-  const createQuickSales = async (propsToPaymentType?: string) => {
-    if (paymentStatus === null) {
-      return setPaymentStatusOpen(true);
-    } else if (propsToPaymentType === null && paymentStatus !== PaymentStatus.UNPAID) {
-      return setPaymentModeSelectionOpen(true);
-    } else if (!activeShopId) return;
-
-    const response = await salesService.create(
-      {
-        subTotalAmount: Number(result),
-        grandTotalAmount: Number(result),
-        invoiceDate: invoiceDate?.getTime(),
-        customerId: customer ? customer?.id : '',
-        customerName: customer?.name || '',
-        paymentType: propsToPaymentType || paymentType,
-        status: paymentStatus,
-        paidAmount:
-          paymentStatus === PaymentStatus.PARTIALLY_PAID
-            ? Number(partiallyPaidAmount)
-            : PaymentStatus.PAID
-              ? Number(result)
-              : 0,
-      },
-      activeShopId || '',
-    );
-
-    if (response?.success) {
-      Toast.success(response?.message);
-      handleClear();
-      setCustomer(null);
-      setPaymentType(null);
-      setPaymentStatus(null);
-      setPaymentStatusOpen(false);
-      setPaymentModeSelectionOpen(false);
-      setInvoiceDate(new Date());
+      setSubTotal(finalResult);
     }
   };
 
@@ -151,8 +97,8 @@ const QuickSaleScreen = () => {
           <OGButton
             size="large"
             title="Record Sales"
-            onPress={() => createQuickSales(paymentType as string)}
-            disabled={Number(result) === 0}
+            onPress={() => router.push('/checkout')}
+            disabled={Number(subTotal) === 0}
             style={{ marginBottom: 10 }}
           />
         }
@@ -212,7 +158,7 @@ const QuickSaleScreen = () => {
                 {expression || '0'}
               </Text>
               <Text style={styles.result} numberOfLines={1} adjustsFontSizeToFit>
-                = {formatNumberWithComma(result)}
+                = {formatNumberWithComma(subTotal)}
               </Text>
             </View>
           </View>
@@ -280,51 +226,15 @@ const QuickSaleScreen = () => {
         </View>
       </PXWrapper>
 
-      <PaymentModeSlideup
-        visible={paymentModeSelectionOpen}
-        onClose={() => {
-          setPaymentModeSelectionOpen(false);
-          setPaymentType(null);
-          setPartiallyPaidAmount('0');
-          setPaymentStatus(null);
-        }}
-        paymentType={paymentType}
-        setPaymentType={setPaymentType}
-        setPaymentStatus={setPaymentStatus}
-        onClickAction={(paymentType) => createQuickSales(paymentType as string)}
-        setPaymentStatusOpen={setPaymentStatusOpen}
-        setPaymentMode={setPaymentModeSelectionOpen}
-      />
-      <PaymentStatusSlideUp
-        visible={paymentStatusOpen}
-        customerSelected={customer || undefined}
-        setCustomer={setCustomer}
-        mode="quick-sale"
-        onClose={() => {
-          setPaymentStatusOpen(false);
-          setPaymentStatus(null);
-        }}
-        paymentType={paymentType}
-        paymentStatus={paymentStatus}
-        setPaymentStatus={setPaymentStatus}
-        setPaymentModeSlideup={setPaymentModeSelectionOpen}
-        setPartiallyPaidAmount={setPartiallyPaidAmount}
-        partiallyPaidAmount={partiallyPaidAmount}
-        totalAmount={result}
-        setCustomerSelectionOpen={setCustomerSelectionOpen}
-      />
       <AddCustomerSlideup
         visible={customerSelectionOpen}
         onClose={() => {
           setCustomerSelectionOpen(false);
-          setPartiallyPaidAmount('0');
-          setPaymentStatus(null);
         }}
         onSelectCustomer={() => {
           setCustomerSelectionOpen(false);
-          Number(result) !== 0 && createQuickSales();
         }}
-        selectedCustomer={customer}
+        selectedCustomer={customer || null}
         setCustomer={setCustomer}
       />
     </>

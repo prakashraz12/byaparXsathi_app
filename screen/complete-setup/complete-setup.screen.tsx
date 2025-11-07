@@ -1,24 +1,22 @@
+import { useForm } from '@tanstack/react-form';
+import { router } from 'expo-router';
+import { MapPin, Phone, Sparkles,Store, User } from 'lucide-react-native';
+import { Image, Pressable, StyleSheet,View } from 'react-native';
+
 import { BANNER_LOGO } from '@/assets';
 import BadgeSelector from '@/components/re-usables/badge-selector';
 import { Button } from '@/components/re-usables/button';
-import { Toast } from '@/components/re-usables/custom-toaster/toast-service';
-import Dropdown from '@/components/re-usables/drop-down';
 import CustomInput from '@/components/re-usables/input';
 import { Text } from '@/components/re-usables/text';
 import { COLORS } from '@/constants/Colors';
 import { SHOP_TYPES_OPTIONS } from '@/constants/shop-types';
 import { useSync } from '@/database/hooks/useSync';
-import { shopService } from '@/database/services/shop.service';
 import { completeSchema, TCompleteSchema } from '@/forms/schema/complete.schema';
 import PXWrapper from '@/layouts/px-wrapper';
 import { useAuthControllerCompleteSetup } from '@/service/queries-components';
 import { CompletedSetupResponse } from '@/service/types-schemas';
 import { useUserStore } from '@/store/useUserStore';
 import { apiOptions } from '@/utils/api-options.util';
-import { useForm } from '@tanstack/react-form';
-import { router } from 'expo-router';
-import { MapPin, Phone, Store, User, Sparkles } from 'lucide-react-native';
-import { Image, Pressable, View, ScrollView, StyleSheet } from 'react-native';
 
 const CompleteSetUpScreen = () => {
   const { clearUser, setUser, setActiveShopId } = useUserStore();

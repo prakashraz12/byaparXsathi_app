@@ -1,21 +1,20 @@
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Pressable } from 'react-native';
+
 import { Button } from '@/components/re-usables/button';
 import { Header } from '@/components/re-usables/header';
 import OTPInput from '@/components/re-usables/otp-input';
 import { Text } from '@/components/re-usables/text';
 import { shopService } from '@/database/services/shop.service';
-import { syncDatabase } from '@/database/sync.service';
 import PXWrapper from '@/layouts/px-wrapper';
 import {
   useAuthControllerWithEmail,
   useAuthControllerWithOtpLogin,
 } from '@/service/queries-components';
 import { ShopResponse, TLoginWithOtpResponse } from '@/service/types-schemas';
-import { useSyncStore } from '@/store/useSync';
 import { useUserStore } from '@/store/useUserStore';
 import { apiOptions } from '@/utils/api-options.util';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable } from 'react-native';
 
 const OtpScreen = () => {
   const [otp, setOtp] = useState<string[]>(new Array(4).fill(''));
@@ -26,7 +25,6 @@ const OtpScreen = () => {
 
   const { mutateAsync: verifyOtp, isPending } = useAuthControllerWithOtpLogin(
     apiOptions(undefined, async (data: TLoginWithOtpResponse['data']) => {
-      console.log(data, 'data');
       if (data) {
         setUser({
           id: data?.id,
@@ -95,6 +93,12 @@ const OtpScreen = () => {
     resendOtp({
       body: {
         email: email,
+        country: '',
+        city: '',
+        region: '',
+        timezone: '',
+        latitude: '',
+        longitude: '',
       },
     });
   };
